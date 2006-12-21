@@ -1,0 +1,86 @@
+/*
+
+	Copyright (C) 2006 Josh Tynjala
+	Flex 2 TreeMap Component
+ 
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License (version 2) as
+	published by the Free Software Foundation. 
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	GNU General Public License (version 2) for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program. If not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
+TreeMap
+{
+	fillColors: #CC0000, #000000, #00CC00;
+	backgroundColor: #ffffff;
+	backgroundAlpha: 1.0;
+	
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+	
+	headerStyleName: "treeMapHeader";
+	
+	borderSkin: ClassReference("mx.skins.halo.HaloBorder");
+	borderStyle: "solid";
+	borderColor: #aaaaaa;
+	borderThickness: 1;
+	
+	nodeStyleName: null;
+}
+
+TreeMapHeader
+{
+	fillColors: #FFFFFF, #CCCCCC, #FFFFFF, #EEEEEE;
+	fillAlphas: 0.6, 0.4, 0.75, 0.65; /* last pair are for OVER state */
+	fontSize: "10";
+	fontWeight: "bold";
+	disabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	downSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	horizontalGap: 2;
+	overSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	paddingLeft: 5;
+	paddingRight: 5;
+	selectedDisabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	selectedDownSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	selectedOverSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	selectedUpSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	textAlign: "left";
+	upSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+}
+
+TreeMapNodeRenderer
+{
+	autoFitText: "none";
+	color: #ffffff;
+	fillAlphas: 1.0, 1.0;
+	highlightAlphas: 0.3, 0;
+	cornerRadius: 0;
+	borderColor: #676A6C;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+}
+
+.flatTreeMapNode
+{
+	fillAlphas: 1.0, 1.0;
+	highlightAlphas: 0, 0;
+	cornerRadius: 0;
+	borderColor: #000000;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+}

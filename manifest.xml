@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<componentPackage>
+    <component id="TreeMap" class="com.joshtynjala.controls.TreeMap"/>
+</componentPackage>

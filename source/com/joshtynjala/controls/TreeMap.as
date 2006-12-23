@@ -65,30 +65,30 @@ package com.joshtynjala.controls
 	/**
 	 *  Dispatched when the user rolls the mouse pointer over an node in the control.
 	 *
-	 *  @eventType zeuslabs.events.TreeMapEvent.NODE_ROLL_OVER
+	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OVER
 	 */
-	[Event(name="nodeRollOver", type="zeuslabs.visualization.treemaps.TreeMapEvent")]
+	[Event(name="nodeRollOver", type="com.joshtynjala.events.TreeMapEvent")]
 	
 	/**
 	 *  Dispatched when the user rolls the mouse pointer out of an node in the control.
 	 *
-	 *  @eventType zeuslabs.events.TreeMapEvent.NODE_ROLL_OUT
+	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OUT
 	 */
-	[Event(name="nodeRollOut", type="zeuslabs.visualization.treemaps.TreeMapEvent")]
+	[Event(name="nodeRollOut", type="com.joshtynjala.events.TreeMapEvent")]
 	
 	/**
 	 *  Dispatched when the user clicks on an node in the control.
 	 *
-	 *  @eventType zeuslabs.events.TreeMapEvent.NODE_CLICK
+	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_CLICK
 	 */
-	[Event(name="nodeClick", type="zeuslabs.visualization.treemaps.TreeMapEvent")]
+	[Event(name="nodeClick", type="com.joshtynjala.events.TreeMapEvent")]
 	
 	/**
 	 *  Dispatched when the user double-clicks on an node in the control.
 	 *
-	 *  @eventType zeuslabs.events.TreeMapEvent.NODE_DOUBLE_CLICK
+	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_DOUBLE_CLICK
 	 */
-	[Event(name="nodeDoubleClick", type="zeuslabs.visualization.treemaps.TreeMapEvent")]
+	[Event(name="nodeDoubleClick", type="com.joshtynjala.events.TreeMapEvent")]
 	
 	//--------------------------------------
 	//  Styles

@@ -216,13 +216,7 @@ package com.joshtynjala.controls
 		 *  Bounds are calculated from the padding styles and docked header size.
 		 */
 		treemap_internal var contentBounds:Rectangle = new Rectangle();
-		
-		/**
-		 *  @private
-		 *  Flag to indicate if the header needs to be redrawn.
-		 */
-		private var _headerChanged:Boolean = false;
-		
+				
 		/**
 		 *  @private
 		 *  Flag to indicate if the nodes need to be redrawn.
@@ -436,7 +430,6 @@ package com.joshtynjala.controls
 	        this.collectionChangeHandler(event);
 	        this.dispatchEvent(event);
 	
-			this._headerChanged = true;
 		    this._nodesNeedRedraw = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
@@ -548,7 +541,6 @@ package com.joshtynjala.controls
 			if(this._labelText != value)
 			{
 				this._labelText = value;
-				this._headerChanged = true;
 				this.invalidateProperties();
 			}
 		}
@@ -1109,40 +1101,16 @@ package com.joshtynjala.controls
 		{
 			super.commitProperties();
 			
-			if(this._collectionChangedFlag || this._headerChanged)
-			{
-				this.commitHeaderProperties();
-				this._headerChanged = false;
-			}
-			
+			this.commitHeaderProperties();
 			this.commitNodesAndBranches();
-			//if(this._collectionChangedFlag)
-			//{
+
+			//move the header to the top child index
+			this.setChildIndex(this.header, this.numChildren - 1);
 				
-				/*var collectionIterator:IViewCursor = this.collection.createCursor();
-				var nodeStyleNames:Array = this.getStyle("nodeStyleNames") as Array;
-				var nodeStyleName:String = this.getStyle("nodeStyleName");
-				for(var i:int = 0; i < this.nodes.length; i++)
-				{
-					var currentNode:ITreeMapNodeRenderer = this.nodes[i] as ITreeMapNodeRenderer;
-					var currentStyleName:String = nodeStyleName;
-					if(nodeStyleNames)
-					{
-						currentStyleName = nodeStyleNames[i] as String;
-					}
-					currentNode.styleName = currentStyleName;
-					
-					collectionIterator.moveNext();
-				}*/
-				
-				//move the header to the top child index
-				this.setChildIndex(this.header, this.numChildren - 1);
-					
-				if(this.zoomedNode)
-				{
-					this.setChildIndex(this.zoomedNode as DisplayObject, this.numChildren - 1);
-				}
-			//}
+			if(this.zoomedNode)
+			{
+				this.setChildIndex(this.zoomedNode as DisplayObject, this.numChildren - 1);
+			}
 			
 			if(!this.selected && this._selectedNode)
 			{

@@ -451,7 +451,7 @@ package com.joshtynjala.controls
 			return ITreeDataDescriptor(this._dataDescriptor);
 		}
 
-	    /**
+		/**
 		 *  TreeMap delegates to the data descriptor for information about the data.
 		 *  This data is then used to parse and move about the data source.
 		 *  <p>When you specify this property as an attribute in MXML you must
@@ -541,6 +541,42 @@ package com.joshtynjala.controls
 			if(this._labelText != value)
 			{
 				this._labelText = value;
+				this.invalidateProperties();
+			}
+		}
+		
+		/**
+		 *  @private
+		 *  Storage for the tooltip's text.
+		 */
+		private var _toolTipText:String;
+		
+		/**
+		 *  @private
+		 *  Indicates if the tooltip has been set by the user.
+		 */
+		private var _toolTipPropertySet:Boolean = false;
+		
+		/**
+		 *  A <code>TreeMap</code> may display a tooltip on its header.
+		 */
+		override public function get toolTip():String
+		{
+			return this._toolTipText;
+		}
+		
+		/**
+		 *  @private
+		 */
+		override public function set toolTip(value:String):void
+		{
+			//if the tooltip is set by the user, we will ignore the toolTipField and toolTipFunction
+			if(value) this._toolTipPropertySet = true;
+			else this._toolTipPropertySet = false;
+			
+			if(this._toolTipText != value)
+			{
+				this._toolTipText = value;
 				this.invalidateProperties();
 			}
 		}
@@ -1196,7 +1232,7 @@ package com.joshtynjala.controls
 		 */
 		private function commitHeaderProperties():void
 		{
-			if(this.parent is ITreeMapBranchRenderer)
+			if(!this._labelPropertySet && this.parent is ITreeMapBranchRenderer)
 			{
 				this._labelText = this.itemToLabel(this.data);
 			}
@@ -1206,9 +1242,14 @@ package com.joshtynjala.controls
 				this.header.label = this._labelText;
 			}
 			
-			if(this.parent is ITreeMapBranchRenderer)
+			if(!this._toolTipPropertySet && this.parent is ITreeMapBranchRenderer)
 			{
-				this.header.toolTip = this.itemToToolTip(this.data);
+				this._toolTipText = this.itemToToolTip(this.data);
+			}
+			
+			if(this._toolTipText)
+			{
+				this.header.toolTip = this._toolTipText;
 			}
 			
 			this.header.visible = this.header.label.length > 0;

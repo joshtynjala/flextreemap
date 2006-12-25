@@ -617,14 +617,14 @@ package com.joshtynjala.controls
 		 */
 		private var _weightFunction:Function;
 		
-	    [Bindable]
+	    [Bindable("weightFunctionChanged")]
 	    /**
 	     *  A user-supplied function to run on each item to determine its weight.
 	     *
-		 *  <p>The weight function takes two arguments--the item in the data provider
-		 *  and the weight field (which may be null). It returns a Number.
+		 *  <p>The weight function takes one arguments, the item in the data provider.
+		 *  It returns a Number.
 		 *  <blockquote>
-		 *  <code>weightFunction(item:Object, weightField:String):Number</code>
+		 *  <code>weightFunction(item:Object):Number</code>
 		 *  </blockquote></p>
 	     */
 	    public function get weightFunction():Function
@@ -637,12 +637,10 @@ package com.joshtynjala.controls
 		 */
 	    public function set weightFunction(value:Function):void
 	    {
-	    	if(this._weightFunction != value)
-	    	{
-		    	this._weightFunction = value;
-		    	this.invalidateProperties();
-		    	this.invalidateDisplayList();
-		    }
+		    this._weightFunction = value;
+		    this.invalidateProperties();
+		    this.invalidateDisplayList();
+	    	this.dispatchEvent(new Event("colorFunctionChanged"));
 	    }
 	    
 	//-- Color
@@ -681,16 +679,15 @@ package com.joshtynjala.controls
 		 */
 		private var _colorFunction:Function;
 		
-	    [Bindable]
+	    [Bindable("colorFunctionChanged")]
 	    /**
 	     *  A user-supplied function to run on each item to determine its color.
 	     *
-		 *  <p>The color function takes three arguments--the item in the data provider
-		 *  the color field (which may be null), and an Array provided by the fillColors
-		 *  style. It returns a uint.
+		 *  <p>The color function takes two arguments--the item in the data provider
+		 *  and an Array provided by the fillColors style. It returns a uint.
 		 * 
 		 *  <blockquote>
-		 *  <code>colorFunction(item:Object, colorField:String, fillColors:Array):uint</code>
+		 *  <code>colorFunction(item:Object, fillColors:Array = null):uint</code>
 		 *  </blockquote></p>
 	     */
 	    public function get colorFunction():Function
@@ -703,12 +700,10 @@ package com.joshtynjala.controls
 		 */
 	    public function set colorFunction(value:Function):void
 	    {
-	    	if(this._colorFunction != value)
-	    	{
-		    	this._colorFunction = value;
-		    	this._nodesNeedRedraw = true;
-		    	this.invalidateProperties();
-			}
+			this._colorFunction = value;
+			this._nodesNeedRedraw = true;
+			this.invalidateProperties();
+	    	this.dispatchEvent(new Event("colorFunctionChanged"));
 	    }
 	    
 	//-- Label
@@ -749,14 +744,14 @@ package com.joshtynjala.controls
 		 */
 		private var _labelFunction:Function;
 		
-	    [Bindable]
+	    [Bindable("labelFunctionChanged")]
 	    /**
 	     *  A user-supplied function to run on each item to determine its label.
 	     *
-		 *  <p>The label function takes two arguments--the item in the data provider
-		 *  and the label field (which may be null). It returns a String.
+		 *  <p>The label function takes one argument, the item in the data provider.
+		 *  It returns a String.
 		 *  <blockquote>
-		 *  <code>labelFunction(item:Object, labelField:String):String</code>
+		 *  <code>labelFunction(item:Object):String</code>
 		 *  </blockquote></p>
 	     */
 	    public function get labelFunction():Function
@@ -769,12 +764,10 @@ package com.joshtynjala.controls
 		 */
 	    public function set labelFunction(value:Function):void
 	    {
-	    	if(this._labelFunction != value)
-	    	{
-			   	this._labelFunction = value;
-		    	this._nodesNeedRedraw = true;
-	    		this.invalidateProperties();
-	    	}
+			this._labelFunction = value;
+			this._nodesNeedRedraw = true;
+			this.invalidateProperties();
+	    	this.dispatchEvent(new Event("labelFunctionChanged"));
 	    }
 	    
 	//-- ToolTip
@@ -784,6 +777,7 @@ package com.joshtynjala.controls
 		 *  Storage for the field used to calculate a node's tooltip.
 		 */
 		private var _toolTipField:String = "toolTip";
+		
 	    [Bindable]
 	    /**
 	     *  The name of the field in the data provider items to display as the ToolTip
@@ -801,10 +795,10 @@ package com.joshtynjala.controls
 	    {
 	    	if(this._toolTipField != value)
 	    	{
-		    	this._toolTipField = value;
-		    	this._nodesNeedRedraw = true;
-		    	this.invalidateProperties();
-		    }
+				this._toolTipField = value;
+				this._nodesNeedRedraw = true;
+				this.invalidateProperties();
+			}
 	    }
 	    
 		/**
@@ -813,14 +807,14 @@ package com.joshtynjala.controls
 		 */
 		private var _toolTipFunction:Function;
 		
-	    [Bindable]
+		[Bindable("toolTipFunctionChanged")]
 	    /**
 	     *  A user-supplied function to run on each item to determine its ToolTip.
 	     *
-		 *  <p>The label function takes one arguments, the item in the data provider.
+		 *  <p>The tooltip function takes one argument, the item in the data provider.
 		 *  It returns a String.
 		 *  <blockquote>
-		 *  <code>labelFunction(item:Object, labelField:String):String</code>
+		 *  <code>toolTipFunction(item:Object):String</code>
 		 *  </blockquote></p>
 	     */
 	    public function get toolTipFunction():Function
@@ -833,12 +827,11 @@ package com.joshtynjala.controls
 		 */
 	    public function set toolTipFunction(value:Function):void
 	    {
-	    	if(this._toolTipFunction != value)
-	    	{
-			   	this._toolTipFunction = value;
-		    	this._nodesNeedRedraw = true;
-	    		this.invalidateProperties();
-	    	}
+			this._toolTipFunction = value;
+		    this._nodesNeedRedraw = true;
+	    	this.invalidateProperties();
+	    	
+	    	this.dispatchEvent(new Event("toolTipFunctionChanged"));
 	    }
 		
 	//-- Selection
@@ -1344,7 +1337,10 @@ package com.joshtynjala.controls
 			}
 			
 			if(this._nodesNeedRedraw)
+			{
 				(node as UIComponent).invalidateProperties();
+				(node as UIComponent).invalidateDisplayList();
+			}
 			
 			return node;
 		}

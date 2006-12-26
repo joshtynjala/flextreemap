@@ -20,43 +20,41 @@
 
 TreeMap
 {
-	fillColors: #CC0000, #000000, #00CC00;
+	fillColors: #FFFFFF, #CCCCCC, #FFFFFF, #EEEEEE;
+	fillAlphas: 0.6, 0.4, 0.75, 0.65; /* last pair are for OVER state */
+	
 	backgroundColor: #ffffff;
 	backgroundAlpha: 1.0;
 	
-	paddingLeft: 1;
-	paddingRight: 1;
-	paddingTop: 1;
-	paddingBottom: 1;
-	
-	headerStyleName: "treeMapHeader";
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
 	
 	borderSkin: ClassReference("mx.skins.halo.HaloBorder");
 	borderStyle: "solid";
 	borderColor: #aaaaaa;
 	borderThickness: 1;
 	
+	fontSize: "10";
+	fontWeight: "bold";
+	textAlign: "left";
+	
 	nodeStyleName: null;
 }
 
 TreeMapHeader
 {
-	fillColors: #FFFFFF, #CCCCCC, #FFFFFF, #EEEEEE;
-	fillAlphas: 0.6, 0.4, 0.75, 0.65; /* last pair are for OVER state */
-	fontSize: "10";
-	fontWeight: "bold";
-	disabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
-	downSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
-	horizontalGap: 2;
-	overSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
 	paddingLeft: 5;
 	paddingRight: 5;
-	selectedDisabledSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
-	selectedDownSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
-	selectedOverSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
-	selectedUpSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
-	textAlign: "left";
-	upSkin: ClassReference("mx.skins.halo.AccordionHeaderSkin");
+	upSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
+	downSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
+	overSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
+	disabledSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
+	selectedUpSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
+	selectedDownSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
+	selectedOverSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
+	selectedDisabledSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapHeaderSkin");
 }
 
 TreeMapNodeRenderer
@@ -71,6 +69,14 @@ TreeMapNodeRenderer
 	paddingRight: 0;
 	paddingTop: 0;
 	paddingBottom: 0;
+	upSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
+	downSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
+	overSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
+	disabledSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
+	selectedUpSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
+	selectedDownSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
+	selectedOverSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
+	selectedDisabledSkin: ClassReference("com.joshtynjala.skins.halo.TreeMapNodeSkin");
 }
 
 .flatTreeMapNode

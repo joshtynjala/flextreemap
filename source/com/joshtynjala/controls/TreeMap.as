@@ -47,6 +47,8 @@ package com.joshtynjala.controls
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
 	import flash.events.Event;
+	import mx.styles.CSSStyleDeclaration;
+	import mx.styles.StyleManager;
 
 	use namespace treemap_internal;
 
@@ -105,19 +107,19 @@ package com.joshtynjala.controls
 	[Style(name="borderStyle", type="String")]
 	
 	/**
-	 *  Sets the style name for the header
+	 *  Sets the style name for the header.
 	 */
 	[Style(name="headerStyleName", type="String")]
 	
 	/**
-	 *  Sets the style name for all nodes
+	 *  Sets the style name for all standard nodes.
 	 */
 	[Style(name="nodeStyleName", type="String")]
 	
 	/**
-	 *  Sets a unique style name for each node
+	 *  Sets the style name for all branches.
 	 */
-	[Style(name="nodeStyleNames", type="Array")]
+	[Style(name="branchStyleName", type="String")]
 	
 	/**
 	 *  A treemap is a space-constrained visualization of hierarchical
@@ -683,12 +685,12 @@ package com.joshtynjala.controls
 	    /**
 	     *  A user-supplied function to run on each item to determine its color.
 	     *
-		 *  <p>The color function takes two arguments--the item in the data provider
-		 *  and an Array provided by the fillColors style. It returns a uint.
+		 *  <p>The color function takes one argument, the item in the data provider.
+		 *  It returns a uint.</p>
 		 * 
 		 *  <blockquote>
-		 *  <code>colorFunction(item:Object, fillColors:Array = null):uint</code>
-		 *  </blockquote></p>
+		 *  <code>colorFunction(item:Object):uint</code>
+		 *  </blockquote>
 	     */
 	    public function get colorFunction():Function
 	    {
@@ -836,6 +838,7 @@ package com.joshtynjala.controls
 		
 	//-- Selection
 	
+		[Bindable]
 		/**
 		 *  @private
 		 *  Storage for the selectable property.
@@ -895,6 +898,7 @@ package com.joshtynjala.controls
 		 */
 		private var _selectedNode:ITreeMapNodeRenderer;
 		
+		[Bindable("change")]
 		/**
 		 *  The data for the currently selected node. May be the data for
 		 *  a grandchild or deeper ancestor.
@@ -971,26 +975,51 @@ package com.joshtynjala.controls
 				if(this.header)
 				{
 					var headerStyleName:String = this.getStyle("headerStyleName");
-					this.header.styleName = headerStyleName;
+					if(headerStyleName)
+					{
+						var headerStyleDecl:CSSStyleDeclaration = 
+							StyleManager.getStyleDeclaration("." + headerStyleName);
+						if(headerStyleDecl)
+						{
+							this.header.styleDeclaration = headerStyleDecl;
+							this.header.regenerateStyleCache(true);
+							this.header.styleChanged(null);
+						}
+					}
 				}
 			}
 			
-			if(allStyles || styleProp == "nodeStyleName" || styleProp == "nodeStyleNames")
+			if(allStyles || styleProp == "nodeStyleName")
 			{
 				var nodeStyleName:String = this.getStyle("nodeStyleName");
-				var nodeStyleNames:Array = this.getStyle("nodeStyleNames") as Array;
 				for(var i:int = 0; i < this.nodes.length; i++)
 				{
 					var currentNode:ITreeMapNodeRenderer = this.nodes[i] as ITreeMapNodeRenderer;
-					var currentStyleName:String = nodeStyleName;
-					if(nodeStyleNames && nodeStyleNames.length > i)
+					
+					//The style nodeStyleName doesn't apply to branches
+					if(currentNode is ITreeMapBranchRenderer)
 					{
-						currentStyleName = nodeStyleNames[i] as String;
+						continue;
 					}
 					
-					if(currentNode is UIComponent)
+					if(currentNode is ISimpleStyleClient)
 					{
-						(currentNode as UIComponent).styleName = currentStyleName;
+						(currentNode as ISimpleStyleClient).styleName = nodeStyleName;
+					}
+				}
+			}
+			
+			if(allStyles || styleProp == "branchStyleName")
+			{
+				var branchStyleName:String = this.getStyle("branchStyleName");
+				for(i = 0; i < this.nodes.length; i++)
+				{
+					var currentBranch:ITreeMapBranchRenderer = this.nodes[i] as ITreeMapBranchRenderer;
+					
+					//no need to check for null because null can't be an ISimpleStyleClient
+					if(currentBranch is ISimpleStyleClient)
+					{
+						(currentBranch as ISimpleStyleClient).styleName = branchStyleName;
 					}
 				}
 			}
@@ -1035,7 +1064,7 @@ package com.joshtynjala.controls
 		{
 			if(this.colorFunction != null)
 			{
-				return this.colorFunction(item, this.getStyle("fillColors"));
+				return this.colorFunction(item);
 			}
 			else if(item.hasOwnProperty(this.colorField))
 			{
@@ -1117,7 +1146,20 @@ package com.joshtynjala.controls
 				this.header = new TreeMapHeader();
 				this.addChild(this.header);
 			}
-			this.header.styleName = this.getStyle("headerStyleName");
+			
+			this.header.styleName = this;
+			var headerStyleName:String = this.getStyle("headerStyleName");
+			if(headerStyleName)
+			{
+				var headerStyleDecl:CSSStyleDeclaration = 
+					StyleManager.getStyleDeclaration("." + headerStyleName);
+				if(headerStyleDecl)
+				{
+					this.header.styleDeclaration = headerStyleDecl;
+					this.header.regenerateStyleCache(true);
+					this.header.styleChanged(null);
+				}
+			}
 			this.header.visible = false;
 			this.header.addEventListener(MouseEvent.CLICK, headerClickHandler, false, 0, true);
 		}
@@ -1130,6 +1172,13 @@ package com.joshtynjala.controls
 		{
 			super.commitProperties();
 			
+			//remove the selected node before we handle the header selection!
+			if(this.parent is ITreeMapNodeRenderer && !this.selected && this._selectedNode)
+			{
+				this._selectedNode.selected = false;
+				this._selectedNode = null;
+			}
+			
 			this.commitHeaderProperties();
 			this.commitNodesAndBranches();
 
@@ -1139,12 +1188,6 @@ package com.joshtynjala.controls
 			if(this.zoomedNode)
 			{
 				this.setChildIndex(this.zoomedNode as DisplayObject, this.numChildren - 1);
-			}
-			
-			if(!this.selected && this._selectedNode)
-			{
-				this._selectedNode.selected = false;
-				this._selectedNode = null;
 			}
 			
 		    this._nodesNeedRedraw = false;
@@ -1208,10 +1251,11 @@ package com.joshtynjala.controls
 			
 			for(var i:int = 0; i < this.nodes.length; i++)
 			{
-				var node:ITreeMapNodeRenderer = this.nodes[i];
-				node.selected = node == this._selectedNode;
+				var node:ITreeMapNodeRenderer = this.nodes[i] as ITreeMapNodeRenderer;
+				node.selected = (node == this._selectedNode);
 			}
 			
+			//dispatch the change event
 			var changeEvent:Event = new Event(Event.CHANGE);
 			this.dispatchEvent(changeEvent);	
 		}
@@ -1245,6 +1289,7 @@ package com.joshtynjala.controls
 				this.header.toolTip = this._toolTipText;
 			}
 			
+			this.header.selected = this.selectable && (this.selected || this._selectedNode != null);
 			this.header.visible = this.header.label.length > 0;
 		}
 		
@@ -1255,14 +1300,14 @@ package com.joshtynjala.controls
 		private function commitNodesAndBranches():void
 		{
 			if(this._collectionChangedFlag) this._dataUIDs = [];
-			
-			var nodeStyleNames:Array = this.getStyle("nodeStyleNames") as Array;
-			var nodeStyleName:String = this.getStyle("nodeStyleName");
 				
 			var collectionIterator:IViewCursor = this.collection.createCursor();
 			var nodeCount:int = 0;
 			if(!collectionIterator.afterLast)
 			{
+			
+				var nodeStyleName:String = this.getStyle("nodeStyleName");
+				var branchStyleName:String = this.getStyle("branchStyleName");
 				do
 				{
 					//get the current data and the current node. The node may not exist!
@@ -1270,12 +1315,15 @@ package com.joshtynjala.controls
 					var currentNode:ITreeMapNodeRenderer = this.nodes[nodeCount];
 					
 					if(this.dataDescriptor.isBranch(currentData))
+					{
 						currentNode = this.updateBranch(currentNode, currentData);
-					else currentNode = this.updateNode(currentNode, currentData);
-					
-					var currentStyleName:String = nodeStyleName;
-					if(nodeStyleNames) currentStyleName = nodeStyleNames[nodeCount] as String;
-					currentNode.styleName = currentStyleName;
+						currentNode.styleName = branchStyleName;
+					}
+					else
+					{
+						currentNode = this.updateNode(currentNode, currentData);
+						currentNode.styleName = nodeStyleName;
+					}
 					
 					//generate a UID for the node's data so that we can get the node based on its data.
 					if(this._collectionChangedFlag)
@@ -1390,6 +1438,7 @@ package com.joshtynjala.controls
 				nodeToAdd = this._nodeRenderer.newInstance();
 				this.addChild(nodeToAdd as DisplayObject);
 			}
+			
 			nodeToAdd.addEventListener(MouseEvent.CLICK, nodeClickHandler, false, 0, true);
 			nodeToAdd.addEventListener(MouseEvent.DOUBLE_CLICK, nodeDoubleClickHandler, false, 0, true);
 			nodeToAdd.addEventListener(MouseEvent.ROLL_OVER, nodeRollOverHandler, false, 0, true);
@@ -1412,6 +1461,7 @@ package com.joshtynjala.controls
 				branchToAdd = this._branchRenderer.newInstance();
 				this.addChild(branchToAdd as DisplayObject);
 			}
+			
 			branchToAdd.addEventListener(TreeMapEvent.NODE_CLICK, childMapNodeClick, false, 0, true);
 			branchToAdd.addEventListener(TreeMapEvent.NODE_DOUBLE_CLICK, childMapNodeDoubleClick, false, 0, true);
 			branchToAdd.addEventListener(TreeMapEvent.NODE_ROLL_OVER, childMapNodeRollOver, false, 0, true);
@@ -1623,6 +1673,9 @@ package com.joshtynjala.controls
 		{
 			var selectedBranch:ITreeMapBranchRenderer = event.target as ITreeMapBranchRenderer;
 			this.selectNode(selectedBranch);
+			
+			if(!(this.parent is ITreeMapBranchRenderer))
+				this.invalidateProperties();
 		}
 	}
 }

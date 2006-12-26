@@ -167,12 +167,27 @@ package com.joshtynjala.skins.halo
 			switch (name)
 			{			
 				case "selectedUpSkin":
-				case "selectedOverSkin":
 				{
 					// button border/edge
 					drawRoundRect(
 						0, 0, w, h, cr,
 						[ borderColor, borderColorDrk1 ], 1,
+						verticalGradientMatrix(0, 0, w , h )); 
+													
+					// button fill
+					drawRoundRect(
+						1, 1, w - 2, h - 2, cr1,
+						selectedFillColors, 1,
+						verticalGradientMatrix(0, 0, w - 2, h - 2));
+															
+					break;
+				}
+				case "selectedOverSkin":
+				{
+					// button border/edge
+					drawRoundRect(
+						0, 0, w, h, cr,
+						[ themeColor, themeColorDrk1 ], 1,
 						verticalGradientMatrix(0, 0, w , h )); 
 													
 					// button fill
@@ -256,7 +271,7 @@ package com.joshtynjala.skins.halo
 					// button border/edge
 					drawRoundRect(
 						0, 0, w, h, cr,
-						[ borderColor, borderColorDrk1 ], 1,
+						[ themeColor, themeColorDrk1 ], 1,
 						verticalGradientMatrix(0, 0, w , h),
 						GradientType.LINEAR, null, 
 						{ x: 1, y: 1, w: w - 2, h: h - 2, r: cornerRadius - 1 }); 

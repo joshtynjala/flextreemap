@@ -26,7 +26,10 @@ package com.joshtynjala.controls
 	
 	import mx.core.UIComponent;
 	import mx.core.ClassFactory;
-	import mx.utils.UIDUtil;
+	import mx.core.UITextField;
+	import mx.core.IFlexDisplayObject;
+	import mx.controls.treeClasses.ITreeDataDescriptor;
+	import mx.controls.treeClasses.DefaultDataDescriptor;
 	import mx.events.CollectionEvent;
 	import mx.events.CollectionEventKind;
 	import mx.collections.ICollectionView;
@@ -35,11 +38,10 @@ package com.joshtynjala.controls
 	import mx.collections.IViewCursor;
 	import mx.states.State;
 	import mx.styles.ISimpleStyleClient;
-	import mx.core.IFlexDisplayObject;
+	import mx.styles.CSSStyleDeclaration;
+	import mx.styles.StyleManager;
 	import mx.skins.RectangularBorder;
-	import mx.controls.treeClasses.ITreeDataDescriptor;
-	import mx.controls.treeClasses.DefaultDataDescriptor;
-	import mx.core.UITextField;
+	import mx.utils.UIDUtil;
 	
 	import flash.utils.*;
 	import flash.xml.XMLNode;
@@ -47,8 +49,6 @@ package com.joshtynjala.controls
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
 	import flash.events.Event;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
 
 	use namespace treemap_internal;
 

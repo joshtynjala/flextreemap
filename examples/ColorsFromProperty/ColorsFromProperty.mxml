@@ -108,24 +108,30 @@
 		
 			/**
 			 * Rebuild an array so that it contains only unique items.
+			 * @author Senocular (http://www.senocular.com/flash/actionscript.php?file=ActionScript_1.0/Prototypes/Array/unique.as)
 			 */
 			private function buildUniqueArray(original:Array):Array
 			{
-				var z:int,y:int=original.length;
+				var z:int = original.length;
+				var y:int = original.length;
 				var c:Boolean = false;
 				var copy:Array = [];
 				while(y--)
 				{
-					z=0;
-					while(z<y){
-						if(original[y]==original[z]){
-							c=true;
+					z = 0;
+					while(z<y)
+					{
+						if(original[y] == original[z]){
+							c = true;
 							break;
 						}
 						z++;
 					}
-					if(!c) copy[copy.length] = original[y];
-					else c=false;
+					if(!c)
+					{
+						copy[copy.length] = original[y];
+					}
+					else c = false;
 				}
 				return copy;
 			}

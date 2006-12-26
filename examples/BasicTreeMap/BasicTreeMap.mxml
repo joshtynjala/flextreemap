@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:zx="http://www.joshtynjala.com/2006/mxml"
+	layout="vertical">
+	
+	<!-- A TreeMap component displaying some sample data. The label value
+		comes from the "name" attribute in the XML and the weight value
+		comes from the "value" attribute. -->
+		
+	<zx:TreeMap id="map" width="100%" height="100%"
+			dataProvider="{sampleData}"
+			labelField="@name"
+			weightField="@value"/>
+			
+	<!-- Some XML containing sample data to display in the TreeMap component. 
+		It contains built-in label and weight values. -->
+		
+	<mx:XML id="sampleData">
+		<branch>
+			<branch name="Nintendo" value="4">
+				<branch name="Consoles" value="2">
+					<leaf name="GameCube" value="1"/>
+					<leaf name="Wii" value="1"/>
+				</branch>
+				<branch name="Handheld" value="2">
+					<leaf name="Game Boy Advance" value="1"/>
+					<leaf name="Nintendo DS" value="1"/>
+				</branch>
+			</branch>
+			<branch name="Sony" value="3">
+				<branch name="Consoles" value="2">
+					<leaf name="PlayStation 2" value="1"/>
+					<leaf name="PlayStation 3" value="1"/>
+				</branch>
+				<branch name="Handheld" value="1">
+					<leaf name="PSP" value="1"/>
+				</branch>
+			</branch>
+			<branch name="Microsoft" value="2">
+				<leaf name="XBOX" value="1"/>
+				<leaf name="XBOX 360" value="1"/>
+			</branch>
+		</branch>
+	</mx:XML>
+	
+	<!-- The file "treemap.css" is included in the component swc.
+		It's best to include it for most projects. -->
+		
+	<mx:Style source="treemap.css"/>
+	
+</mx:Application>

@@ -24,10 +24,10 @@ TreeMap
 	backgroundColor: #ffffff;
 	backgroundAlpha: 1.0;
 	
-	paddingLeft: 0;
-	paddingRight: 0;
-	paddingTop: 0;
-	paddingBottom: 0;
+	paddingLeft: 1;
+	paddingRight: 1;
+	paddingTop: 1;
+	paddingBottom: 1;
 	
 	headerStyleName: "treeMapHeader";
 	

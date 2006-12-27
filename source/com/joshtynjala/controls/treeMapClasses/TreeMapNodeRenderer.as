@@ -109,11 +109,12 @@ package com.joshtynjala.controls.treeMapClasses
 		private var _labelChanged:Boolean = false;
 		
 		/**
-		 *  @copy mx.controls.Button#label
+		 *  Always returns an empty string ("") because anything else ruins the component's performance.
+		 *  It's okay, though, because the component sets its own label text anyway!
 		 */
 		override public function get label():String
 		{
-			return this._label;
+			return "";
 		}
 		
 		/**
@@ -241,18 +242,14 @@ package com.joshtynjala.controls.treeMapClasses
 				//may not be html, but this will account for that case!
 				if(this._label)
 				{
-					/*if(this._useHTML)
-					{
-						this._textField.htmlText = this._label;
-					}
-					else*/ this._textField.text = this._label;
+					this._textField.text = this._label;
 				}
 				
 				//set the initial text format
 				var format:TextFormat = this.getTextStyles();
 				this._textField.setTextFormat(format);
 				
-				var autoFitText:String = this.getStyle("autoFitText")
+				var autoFitText:String = this.getStyle("autoFitText");
 				this.increaseOrDecreaseFontSizeToFit(autoFitText);
 				this._labelChanged = false;
 			}
@@ -366,22 +363,22 @@ package com.joshtynjala.controls.treeMapClasses
 	    {
 	        var textFormat:TextFormat = new TextFormat();
 	
-	        textFormat.align = getStyle("textAlign");
-	        textFormat.bold = getStyle("fontWeight") == "bold";
+	        textFormat.align = this.getStyle("textAlign");
+	        textFormat.bold = this.getStyle("fontWeight") == "bold";
 			if(enabled)
 	        {
-	            textFormat.color = getStyle("color");
+	            textFormat.color = this.getStyle("color");
 	        }
 	        else
 	        {
-	            textFormat.color = getStyle("disabledColor");
+	            textFormat.color = this.getStyle("disabledColor");
 	        }
-	        textFormat.font = getStyle("fontFamily");
-	        textFormat.indent = getStyle("textIndent");
-	        textFormat.italic = getStyle("fontStyle") == "italic";
-	        textFormat.leading = getStyle("leading");
-	        textFormat.size = getStyle("fontSize");
-	        textFormat.underline = getStyle("textDecoration") == "underline";
+	        textFormat.font = this.getStyle("fontFamily");
+	        textFormat.indent = this.getStyle("textIndent");
+	        textFormat.italic = this.getStyle("fontStyle") == "italic";
+	        textFormat.leading = this.getStyle("leading");
+	        textFormat.size = this.getStyle("fontSize");
+	        textFormat.underline = this.getStyle("textDecoration") == "underline";
 	
 	        return textFormat;
 	    }

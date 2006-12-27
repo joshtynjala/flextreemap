@@ -1568,7 +1568,7 @@ package com.joshtynjala.controls
 		private function nodeDoubleClickHandler(event:MouseEvent):void
 		{
 			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(!renderer || renderer is TreeMap) return;
+			if(!renderer || renderer is ITreeMapBranchRenderer) return;
 			var doubleClick:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_DOUBLE_CLICK, false, false, renderer);
 			this.dispatchEvent(doubleClick);
 		}
@@ -1580,7 +1580,7 @@ package com.joshtynjala.controls
 		private function nodeRollOverHandler(event:MouseEvent):void
 		{
 			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(!renderer || renderer is TreeMap) return;
+			if(!renderer || renderer is ITreeMapBranchRenderer) return;
 			var rollOver:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_ROLL_OVER, false, false, renderer);
 			this.dispatchEvent(rollOver);
 		}
@@ -1592,7 +1592,7 @@ package com.joshtynjala.controls
 		private function nodeRollOutHandler(event:MouseEvent):void
 		{
 			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(!renderer || renderer is TreeMap) return;
+			if(!renderer || renderer is ITreeMapBranchRenderer) return;
 			var rollOut:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_ROLL_OUT, false, false, renderer);
 			this.dispatchEvent(rollOut);
 		}

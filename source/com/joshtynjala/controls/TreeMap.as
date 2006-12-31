@@ -1368,6 +1368,9 @@ package com.joshtynjala.controls
 			branch.colorField = this.colorField;
 			branch.colorFunction = this.colorFunction;
 				
+			branch.nodeRenderer = this.nodeRenderer;
+			branch.branchRenderer = this.branchRenderer;
+				
 			branch.layoutStrategy = this.layoutStrategy;
 			branch.dataDescriptor = this.dataDescriptor;
 			branch.selectable = this.selectable;

@@ -20,6 +20,7 @@
 
 package com.joshtynjala.controls.treeMapClasses
 {
+	import mx.core.ClassFactory;
 	import mx.controls.treeClasses.ITreeDataDescriptor;
 	
 	public interface ITreeMapBranchRenderer extends ITreeMapNodeRenderer
@@ -53,8 +54,10 @@ package com.joshtynjala.controls.treeMapClasses
 		function get selectable():Boolean;
 		function set selectable(value:Boolean):void;
 		
-		/*function get selectedNode():ITreeMapNodeRenderer;
-		function set selectedNode(value:ITreeMapNodeRenderer):void;*/
+		function get nodeRenderer():ClassFactory;
+		function set nodeRenderer(value:ClassFactory):void;
+		function get branchRenderer():ClassFactory;
+		function set branchRenderer(value:ClassFactory):void;
 		
 		function get dataDescriptor():ITreeDataDescriptor;
 		function set dataDescriptor(value:ITreeDataDescriptor):void;

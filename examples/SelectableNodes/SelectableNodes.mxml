@@ -51,9 +51,4 @@
 		</branch>
 	</mx:XML>
 	
-	<!-- The file "treemap.css" is included in the component swc.
-		It's best to include it for most projects. -->
-		
-	<mx:Style source="treemap.css"/>
-	
 </mx:Application>

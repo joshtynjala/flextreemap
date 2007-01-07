@@ -57,11 +57,6 @@
 		<mx:Number>0x000099</mx:Number>
 	</mx:Array>
 	
-	<!-- The file "treemap.css" is included in the component swc.
-		It's best to include it for most projects. -->
-		
-	<mx:Style source="treemap.css"/>
-	
 	<mx:Script>
 		<![CDATA[
 		

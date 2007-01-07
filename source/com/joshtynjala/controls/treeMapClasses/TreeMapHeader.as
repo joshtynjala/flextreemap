@@ -21,6 +21,7 @@
 package com.joshtynjala.controls.treeMapClasses
 {
 	import com.joshtynjala.controls.TreeMap;
+	import com.joshtynjala.skins.halo.TreeMapHeaderSkin;
 	
 	import mx.containers.Accordion;
 	import mx.controls.Button;
@@ -55,23 +56,55 @@ package com.joshtynjala.controls.treeMapClasses
 	public class TreeMapHeader extends Button implements IDataRenderer
 	{
 	
-		//--------------------------------------------------------------------------
-		//
-		//  Class mixins
-		//
-		//--------------------------------------------------------------------------
+    //----------------------------------
+	//  Class Mixins
+    //----------------------------------
 	
 		/**
 		 *  @private
 		 *  Placeholder for mixin by AccordionHeaderAccImpl.
 		 */
 		mx_internal static var createAccessibilityImplementation:Function;
+		
+    //----------------------------------
+	//  Class Methods
+    //----------------------------------
+    
+		/**
+		 * @private
+		 */
+		private static function initializeStyles():void
+		{
+			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapHeader");
+			
+			if(!selector)
+			{
+				selector = new CSSStyleDeclaration();
+			}
+			
+			selector.defaultFactory = function():void
+			{
+				this.paddingLeft = 5;
+				this.paddingRight = 5;
+				this.upSkin = TreeMapHeaderSkin;
+				this.downSkin = TreeMapHeaderSkin;
+				this.overSkin = TreeMapHeaderSkin;
+				this.disabledSkin = TreeMapHeaderSkin;
+				this.selectedUpSkin = TreeMapHeaderSkin;
+				this.selectedDownSkin = TreeMapHeaderSkin;
+				this.selectedOverSkin = TreeMapHeaderSkin;
+				this.selectedDisabledSkin = TreeMapHeaderSkin;
+			}
+			
+			StyleManager.setStyleDeclaration("TreeMapHeader", selector, false);
+		}
+		
+		//initialize the default styles
+		initializeStyles();
 	
-		//--------------------------------------------------------------------------
-		//
-		//  Constructor
-		//
-		//--------------------------------------------------------------------------
+    //----------------------------------
+	//  Constructor
+    //----------------------------------
 	
 		/**
 		 *  Constructor.
@@ -89,11 +122,9 @@ package com.joshtynjala.controls.treeMapClasses
 			tabEnabled = false;
 		}
 	
-		//--------------------------------------------------------------------------
-		//
-		//  Variables
-		//
-		//--------------------------------------------------------------------------
+    //----------------------------------
+	//  Variables and Properties
+    //----------------------------------
 	
 		/**
 		 *  @private
@@ -104,16 +135,6 @@ package com.joshtynjala.controls.treeMapClasses
 		 *  @private
 		 */
 		private var focusSkin:IFlexDisplayObject;
-	
-		//--------------------------------------------------------------------------
-		//
-		//  Overridden properties
-		//
-		//--------------------------------------------------------------------------
-	
-		//----------------------------------
-		//  data
-		//----------------------------------
 	
 		/**
 		 *  @private
@@ -136,10 +157,6 @@ package com.joshtynjala.controls.treeMapClasses
 		{
 			_data = value;
 		}
-		
-		//----------------------------------
-		//  selected
-		//----------------------------------
 	
 		/**
 		 *  @private
@@ -151,11 +168,9 @@ package com.joshtynjala.controls.treeMapClasses
 			invalidateDisplayList();
 		}
 	
-		//--------------------------------------------------------------------------
-		//
-		//  Overridden methods: UIComponent
-		//
-		//--------------------------------------------------------------------------
+    //----------------------------------
+	//  Protected Methods
+    //----------------------------------
 	
 		/**
 		 *  @private
@@ -230,12 +245,6 @@ package com.joshtynjala.controls.treeMapClasses
 			}
 		}
 	
-		//--------------------------------------------------------------------------
-		//
-		//  Overridden methods: Button
-		//
-		//--------------------------------------------------------------------------
-	
 		/**
 		 *  @private
 		 */
@@ -251,12 +260,6 @@ package com.joshtynjala.controls.treeMapClasses
 			if (focusObj)
 				setChildIndex(focusObj, numChildren - 1);
 		}
-	
-		//--------------------------------------------------------------------------
-		//
-		//  Overridden event handlers: Button
-		//
-		//--------------------------------------------------------------------------
 	
 		/**
 		 *  @private

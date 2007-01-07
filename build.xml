@@ -9,7 +9,6 @@
 		<arg line="--source-path source"/>
 		<arg line="--output deploy/TreeMap.swc"/>
 		<arg line="--include-classes com.joshtynjala.controls.TreeMap com.joshtynjala.controls.treeMapClasses.ITreeMapBranchRenderer com.joshtynjala.controls.treeMapClasses.ITreeMapLayoutStrategy com.joshtynjala.controls.treeMapClasses.ITreeMapNodeRenderer com.joshtynjala.controls.treeMapClasses.SliceAndDice com.joshtynjala.controls.treeMapClasses.Squarify com.joshtynjala.controls.treeMapClasses.treemap_internal com.joshtynjala.controls.treeMapClasses.TreeMapHeader com.joshtynjala.controls.treeMapClasses.TreeMapNodeRenderer com.joshtynjala.events.TreeMapEvent com.joshtynjala.skins.halo.TreeMapHeaderSkin com.joshtynjala.skins.halo.TreeMapNodeSkin"/>
-		<arg line="--include-file treemap.css treemap.css"/>
 		<arg line="--namespace http://www.joshtynjala.com/2006/mxml manifest.xml"/>
 		<arg line="--include-namespaces http://www.joshtynjala.com/2006/mxml"/>
 	    </exec>

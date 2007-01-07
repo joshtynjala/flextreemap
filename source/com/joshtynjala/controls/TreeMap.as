@@ -20,9 +20,12 @@
 
 package com.joshtynjala.controls
 {
-	import com.joshtynjala.controls.treeMapClasses.treemap_internal;
-	import com.joshtynjala.events.TreeMapEvent;
-	import com.joshtynjala.controls.treeMapClasses.*;
+	import flash.utils.*;
+	import flash.xml.XMLNode;
+	import flash.geom.Rectangle;
+	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
+	import flash.events.Event;
 	
 	import mx.core.UIComponent;
 	import mx.core.ClassFactory;
@@ -41,14 +44,12 @@ package com.joshtynjala.controls
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	import mx.skins.RectangularBorder;
+	import mx.skins.halo.HaloBorder;
 	import mx.utils.UIDUtil;
 	
-	import flash.utils.*;
-	import flash.xml.XMLNode;
-	import flash.geom.Rectangle;
-	import flash.display.DisplayObject;
-	import flash.events.MouseEvent;
-	import flash.events.Event;
+	import com.joshtynjala.controls.treeMapClasses.treemap_internal;
+	import com.joshtynjala.events.TreeMapEvent;
+	import com.joshtynjala.controls.treeMapClasses.*;
 
 	use namespace treemap_internal;
 
@@ -148,6 +149,51 @@ package com.joshtynjala.controls
 		 *  The default height of the TreeMap.
 		 */
 		private static const DEFAULT_MEASURED_HEIGHT:Number = 200;
+		
+    //----------------------------------
+	//  Class Methods
+    //----------------------------------
+    
+		/**
+		 * @private
+		 */
+		private static function initializeStyles():void
+		{
+			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMap");
+			
+			if(!selector)
+			{
+				selector = new CSSStyleDeclaration();
+			}
+			
+			selector.defaultFactory = function():void
+			{
+				this.fillColors = [0xffffff, 0xcccccc, 0xffffff, 0xeeeeee];
+				this.fillAlphas = [0.6, 0.4, 0.75, 0.65]; /* last pair are for OVER state */
+				
+				this.backgroundColor = 0xffffff;
+				this.backgroundAlpha = 1.0;
+				
+				this.paddingLeft = 0;
+				this.paddingRight = 0;
+				this.paddingTop = 0;
+				this.paddingBottom = 0;
+				
+				this.borderSkin = HaloBorder;
+				this.borderStyle = "solid";
+				this.borderColor = 0xaaaaaa;
+				this.borderThickness = 1;
+				
+				this.fontSize = 10;
+				this.fontWeight = "bold";
+				this.textAlign = "left";
+			}
+			
+			StyleManager.setStyleDeclaration("TreeMap", selector, false);
+		}
+		
+		//initialize the default styles
+		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor
@@ -1555,13 +1601,13 @@ package com.joshtynjala.controls
 			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
 			if(!renderer || renderer is ITreeMapBranchRenderer) return;
 			
-			var click:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_CLICK, false, false, renderer);
-			this.dispatchEvent(click);
-			
 			if(this.selectable)
 			{
 				this.selectNode(renderer);
 			}
+			
+			var click:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_CLICK, false, false, renderer);
+			this.dispatchEvent(click);
 		}
 		
 		/**

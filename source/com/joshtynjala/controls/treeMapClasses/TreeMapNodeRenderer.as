@@ -20,15 +20,17 @@
 
 package com.joshtynjala.controls.treeMapClasses
 {
-	import mx.styles.StyleManager;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	import mx.core.mx_internal;
+	import mx.core.UIComponent;
 	import mx.core.ClassFactory;
 	import mx.controls.Button;
 	import mx.events.FlexEvent;
-	import mx.core.UIComponent;
-	import flash.text.TextFormat;
-	import flash.text.TextField;
+	import mx.styles.StyleManager;
+	import mx.styles.CSSStyleDeclaration;
 	import com.joshtynjala.controls.TreeMap;
+	import com.joshtynjala.skins.halo.TreeMapNodeSkin;
 	
 	use namespace mx_internal;
 	
@@ -50,6 +52,50 @@ package com.joshtynjala.controls.treeMapClasses
 	 */
 	public class TreeMapNodeRenderer extends Button implements ITreeMapNodeRenderer
 	{
+		
+    //----------------------------------
+	//  Class Methods
+    //----------------------------------
+    
+		/**
+		 * @private
+		 */
+		private static function initializeStyles():void
+		{
+			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapNodeRenderer");
+			
+			if(!selector)
+			{
+				selector = new CSSStyleDeclaration();
+			}
+			
+			selector.defaultFactory = function():void
+			{
+				this.autoFitText = "none";
+				this.color = 0xffffff;
+				this.fillAlphas = [1.0, 1.0];
+				this.highlightAlphas = [0.3, 0];
+				this.cornerRadius = 0;
+				this.borderColor = 0x676a6c;
+				this.paddingLeft = 0;
+				this.paddingRight = 0;
+				this.paddingTop = 0;
+				this.paddingBottom = 0;
+				this.upSkin = TreeMapNodeSkin;
+				this.downSkin = TreeMapNodeSkin;
+				this.overSkin = TreeMapNodeSkin;
+				this.disabledSkin = TreeMapNodeSkin;
+				this.selectedUpSkin = TreeMapNodeSkin;
+				this.selectedDownSkin = TreeMapNodeSkin;
+				this.selectedOverSkin = TreeMapNodeSkin;
+				this.selectedDisabledSkin = TreeMapNodeSkin;
+			}
+			
+			StyleManager.setStyleDeclaration("TreeMapNodeRenderer", selector, false);
+		}
+		
+		//initialize the default styles
+		initializeStyles();
 
 	//--------------------------------------
 	//  Constructor

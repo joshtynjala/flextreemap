@@ -27,21 +27,21 @@ package com.joshtynjala.controls.treeMapClasses
 	import mx.styles.IStyleClient;
 
 	/**
-	 *  Dispatched when the <code>data</code> property changes.
+	 * Dispatched when the <code>data</code> property changes.
 	 *
-	 *  <p>When you use a component as an node renderer,
-	 *  the <code>data</code> property contains the data to display.
-	 *  You can listen for this event and update the component
-	 *  when the <code>data</code> property changes.</p>
+	 * <p>When you use a component as an node renderer,
+	 * the <code>data</code> property contains the data to display.
+	 * You can listen for this event and update the component
+	 * when the <code>data</code> property changes.</p>
 	 * 
-	 *  @eventType mx.events.FlexEvent.DATA_CHANGE
+	 * @eventType mx.events.FlexEvent.DATA_CHANGE
 	 */
 	[Event(name="dataChange", type="mx.events.FlexEvent")]
 
 	/**
-	 *  Defines an interface for nodes that appear inside a <code>TreeMap</code> component.
+	 * Defines an interface for nodes that appear inside a <code>TreeMap</code> component.
 	 * 
-	 *  @see zeuslabs.visualization.treemaps.TreeMap
+	 * @see zeuslabs.visualization.treemaps.TreeMap
 	 */
 	public interface ITreeMapNodeRenderer
 		extends IUIComponent, IEventDispatcher, IDataRenderer, IFlexDisplayObject, IStyleClient

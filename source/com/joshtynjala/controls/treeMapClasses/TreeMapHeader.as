@@ -43,15 +43,15 @@ package com.joshtynjala.controls.treeMapClasses
 	[AccessibilityClass(implementation="mx.accessibility.AccordionHeaderAccImpl")]
 	
 	/**
-	 *  The TreeMapHeader class defines the appearance of the header buttons
-	 *  of an TreeMap.
-	 *  You use the <code>getHeaderAt()</code> method of the TreeMap class to get a reference
-	 *  to an individual TreeMapHeader object.
+	 * The TreeMapHeader class defines the appearance of the header buttons
+	 * of an TreeMap.
+	 * You use the <code>getHeaderAt()</code> method of the TreeMap class to get a reference
+	 * to an individual TreeMapHeader object.
 	 * 
-	 *  <p>Note: The majority of this comes from the class <code>mx.containers.accordionClasses.AccordionHeader</code>,
-	 *  from the source code provided with the Flex 2 SDK.</p>
+	 * <p>Note: The majority of this comes from the class <code>mx.containers.accordionClasses.AccordionHeader</code>,
+	 * from the source code provided with the Flex 2 SDK.</p>
 	 *
-	 *  @see com.joshtynjala.controls.TreeMap
+	 * @see com.joshtynjala.controls.TreeMap
 	 */
 	public class TreeMapHeader extends Button implements IDataRenderer
 	{
@@ -61,8 +61,8 @@ package com.joshtynjala.controls.treeMapClasses
     //----------------------------------
 	
 		/**
-		 *  @private
-		 *  Placeholder for mixin by AccordionHeaderAccImpl.
+		 * @private
+		 * Placeholder for mixin by AccordionHeaderAccImpl.
 		 */
 		mx_internal static var createAccessibilityImplementation:Function;
 		
@@ -107,7 +107,7 @@ package com.joshtynjala.controls.treeMapClasses
     //----------------------------------
 	
 		/**
-		 *  Constructor.
+		 * Constructor.
 		 */
 		public function TreeMapHeader()
 		{
@@ -127,23 +127,23 @@ package com.joshtynjala.controls.treeMapClasses
     //----------------------------------
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		private var focusObj:DisplayObject;
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		private var focusSkin:IFlexDisplayObject;
 	
 		/**
-		 *  @private
-		 *  Storage for the _data property.
+		 * @private
+		 * Storage for the _data property.
 		 */
 		private var _data:Object;
 	
 		/**
-		 *  Stores a reference to the content associated with the header.
+		 * Stores a reference to the content associated with the header.
 		 */
 		override public function get data():Object
 		{
@@ -151,7 +151,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function set data(value:Object):void
 		{
@@ -159,7 +159,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function set selected(value:Boolean):void
 		{
@@ -173,7 +173,7 @@ package com.joshtynjala.controls.treeMapClasses
     //----------------------------------
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		override protected function initializeAccessibility():void
 		{
@@ -182,7 +182,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		override protected function createChildren():void
 		{
@@ -207,7 +207,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function drawFocus(isFocused:Boolean):void
 		{
@@ -246,7 +246,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		override mx_internal function layoutContents(unscaledWidth:Number,
 												     unscaledHeight:Number,
@@ -262,7 +262,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		override protected function rollOverHandler(event:MouseEvent):void
 		{

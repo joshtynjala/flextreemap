@@ -35,11 +35,11 @@ package com.joshtynjala.controls.treeMapClasses
 	use namespace treemap_internal;
 
 	/**
-	 *  Lays out <code>TreeMap</code> nodes using the Squarified subdivision alogrithm.
-	 *  Generates excellent aspect ratios, but doesn't preserve the original
-	 *  ordering of the data set. Node positions have medium stability.
+	 * Lays out <code>TreeMap</code> nodes using the Squarified subdivision alogrithm.
+	 * Generates excellent aspect ratios, but doesn't preserve the original
+	 * ordering of the data set. Node positions have medium stability.
 	 * 
-	 *  @see zeuslabs.visualization.treemaps.TreeMap
+	 * @see zeuslabs.visualization.treemaps.TreeMap
 	 */
 	public class Squarify implements ITreeMapLayoutStrategy
 	{
@@ -49,9 +49,9 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  Constructor.
+		 * Constructor.
 		 * 
-		 *  @param target		The <code>TreeMap</code> that this layout strategy will manipulate.
+		 * @param target		The <code>TreeMap</code> that this layout strategy will manipulate.
 		 */
 		public function Squarify()
 		{
@@ -62,46 +62,46 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  @private
-		 *  Storage for the treemap whose nodes are being laid out.
+		 * @private
+		 * Storage for the treemap whose nodes are being laid out.
 		 */
 		private var _target:TreeMap;
 		
 		/**
-		 *  @private
-		 *  Storage for the length of the shorter side of the remaining unfilled space.
+		 * @private
+		 * Storage for the length of the shorter side of the remaining unfilled space.
 		 */
 		private var _shorterSide:Number;
 		
 		/**
-		 *  @private
-		 *  Storage for the length of the longer side of the remaining unfilled space.
+		 * @private
+		 * Storage for the length of the longer side of the remaining unfilled space.
 		 */
 		private var _longerSide:Number;
 		
 		/**
-		 *  @private
-		 *  The number of nodes that have been drawn during a layout update.
+		 * @private
+		 * The number of nodes that have been drawn during a layout update.
 		 */
 		private var _numDrawnNodes:int;
 		
 		/**
-		 *  @private
-		 *  Storage for the target's data provider.
+		 * @private
+		 * Storage for the target's data provider.
 		 */
 		private var _dataProvider:ICollectionView;
 		
 		/**
-		 *  @private
-		 *  Iterator for the target's data provider.
+		 * @private
+		 * Iterator for the target's data provider.
 		 */
 		private var _dataIterator:IViewCursor;
 		
 		/**
-		 *  @private
-		 *  At the beginning of a layout update, store the weights as calculated by the
-		 *  target TreeMap. This provides a huge performance boost because we won't need
-		 *  to calculate these values many times.
+		 * @private
+		 * At the beginning of a layout update, store the weights as calculated by the
+		 * target TreeMap. This provides a huge performance boost because we won't need
+		 * to calculate these values many times.
 		 */
 		private var _savedWeights:Dictionary;
 		
@@ -110,7 +110,7 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 		
 		/**
-		 *  @copy com.joshtynjala.controls.treeMapClasses.ITreeMapLayoutStrategy#updateLayout
+		 * @copy com.joshtynjala.controls.treeMapClasses.ITreeMapLayoutStrategy#updateLayout
 		 */
 		public function updateLayout(treeMap:TreeMap):void
 		{
@@ -153,9 +153,9 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 		
 		/**
-		 *  @private
-		 *  Determines the weight of items from the target TreeMap and saves the values
-		 *  so that they don't need to be calculated every time a weight is required.
+		 * @private
+		 * Determines the weight of items from the target TreeMap and saves the values
+		 * so that they don't need to be calculated every time a weight is required.
 		 */
 		private function saveWeightsAndGetTotalSum(data:ICollectionView):Number
 		{
@@ -174,8 +174,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Called recursively to calculate the <code>TreeMap</code>'s layout.
+		 * @private
+		 * Called recursively to calculate the <code>TreeMap</code>'s layout.
 		 */
 		private function squarify(dataInCurrentRow:Array, sumOfRemaining:Number, mapBounds:Rectangle):void
 		{
@@ -217,13 +217,13 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Determines the worst (maximum) aspect ratio of a row if it contained a specific set of data.
+		 * @private
+		 * Determines the worst (maximum) aspect ratio of a row if it contained a specific set of data.
 		 * 
-		 *  @param dataInRow		the data for which to calculate the worst aspect ratio for a row
-		 *  @param sumOfRow			a precalculated sum of the data in the row
-		 *  @param sumOfRemaining	a precalculated sum of the remaining data to be drawn
-		 *  @return					the worst aspect ratio for the data in the row
+		 * @param dataInRow		the data for which to calculate the worst aspect ratio for a row
+		 * @param sumOfRow			a precalculated sum of the data in the row
+		 * @param sumOfRemaining	a precalculated sum of the remaining data to be drawn
+		 * @return					the worst aspect ratio for the data in the row
 		 */
 		private function aspectRatio(dataInRow:Array, sumOfRow:Number, sumOfRemaining:Number):Number
 		{
@@ -251,8 +251,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Draws a single row of nodes.
+		 * @private
+		 * Draws a single row of nodes.
 		 */
 		private function drawRow(dataInRow:Array, sumOfRow:Number, sumOfRemaining:Number, mapBounds:Rectangle):Rectangle
 		{
@@ -298,8 +298,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  After a row is drawn, the bounds are modified to fit the smaller region.
+		 * @private
+		 * After a row is drawn, the bounds are modified to fit the smaller region.
 		 */
 		private function updateBoundsForNextRow(mapBounds:Rectangle, modifier:Number):Rectangle
 		{
@@ -318,8 +318,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Determines the portion of the longer remaining side that will be used for a set of data.
+		 * @private
+		 * Determines the portion of the longer remaining side that will be used for a set of data.
 		 */
 		private function calculateLengthOfLongerSide(dataInRow:Array, sumOfRow:Number, sumOfRemaining:Number):Number
 		{
@@ -337,8 +337,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 	
 		/**
-		 *  @private
-		 *  Adds the weight value from each item in the TreeMap's data provider.
+		 * @private
+		 * Adds the weight value from each item in the TreeMap's data provider.
 		 */
 		private function sumWeights(q:Array):Number
 		{
@@ -353,8 +353,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Compares the weights from two items in the TreeMap's data provider.
+		 * @private
+		 * Compares the weights from two items in the TreeMap's data provider.
 		 */
 		private function compareWeights(a:Object, b:Object, fields:Array = null):int
 		{

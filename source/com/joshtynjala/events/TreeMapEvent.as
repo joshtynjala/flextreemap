@@ -24,8 +24,8 @@ package com.joshtynjala.events
 	import com.joshtynjala.controls.treeMapClasses.ITreeMapNodeRenderer;
 
 	/**
-	 *  The TreeMapEvent class represents events associated with nodes of the
-	 *  <code>TreeMap</code> control.
+	 * The TreeMapEvent class represents events associated with nodes of the
+	 * <code>TreeMap</code> control.
 	 */
 	public class TreeMapEvent extends Event
 	{
@@ -35,27 +35,27 @@ package com.joshtynjala.events
 	//--------------------------------------
 	
 		/**
-		 *  Dispatched when the user clicks on a node in the TreeMap component.
+		 * Dispatched when the user clicks on a node in the TreeMap component.
 		 */
 		public static const NODE_CLICK:String = "nodeClick";
 		
 		/**
-		 *  Dispatched when the user double clicks on a node in the TreeMap component.
+		 * Dispatched when the user double clicks on a node in the TreeMap component.
 		 */
 		public static const NODE_DOUBLE_CLICK:String = "nodeDoubleClick";
 		
 		/**
-		 *  Dispatched when the user rolls over a node in the TreeMap component.
+		 * Dispatched when the user rolls over a node in the TreeMap component.
 		 */
 		public static const NODE_ROLL_OVER:String = "nodeRollOver";
 		
 		/**
-		 *  Dispatched when the user rolls out of a node in the TreeMap component.
+		 * Dispatched when the user rolls out of a node in the TreeMap component.
 		 */
 		public static const NODE_ROLL_OUT:String = "nodeRollOut";
 	
 		/**
-		 *  Dispatched when a node should be zoomed in the TreeMap compoennt.
+		 * Dispatched when a node should be zoomed in the TreeMap compoennt.
 		 */
 		public static const NODE_REQUEST_ZOOM:String = "nodeRequestZoom";
 	
@@ -64,7 +64,7 @@ package com.joshtynjala.events
 	//--------------------------------------
 	
 		/**
-		 *  Constructor.
+		 * Constructor.
 		 */
 		public function TreeMapEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, nodeRenderer:ITreeMapNodeRenderer = null)
 		{
@@ -77,13 +77,13 @@ package com.joshtynjala.events
 	//--------------------------------------
 		
 		/**
-		 *  @private
-		 *  Storage for the affected node renderer.
+		 * @private
+		 * Storage for the affected node renderer.
 		 */
 		private var _nodeRenderer:ITreeMapNodeRenderer;
 		
 		/**
-		 *  The node renderer where the event occurred.
+		 * The node renderer where the event occurred.
 		 */
 		public function get nodeRenderer():ITreeMapNodeRenderer
 		{
@@ -91,7 +91,7 @@ package com.joshtynjala.events
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		public function set nodeRenderer(renderer:ITreeMapNodeRenderer):void
 		{
@@ -103,7 +103,7 @@ package com.joshtynjala.events
 	//--------------------------------------
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function clone():Event
 		{

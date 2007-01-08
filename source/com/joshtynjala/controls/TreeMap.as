@@ -58,38 +58,38 @@ package com.joshtynjala.controls
 	//--------------------------------------
 	
 	/**
-	 *  Dispatched when the <code>selectedIndex</code> or <code>selectedItem</code> property
-	 *  changes as a result of user interaction.
+	 * Dispatched when the <code>selectedIndex</code> or <code>selectedItem</code> property
+	 * changes as a result of user interaction.
 	 *
-	 *  @eventType flash.events.event.CHANGE
+	 * @eventType flash.events.event.CHANGE
 	 */
 	[Event(name="change", type="flash.events.Event")]
 	
 	/**
-	 *  Dispatched when the user rolls the mouse pointer over an node in the control.
+	 * Dispatched when the user rolls the mouse pointer over an node in the control.
 	 *
-	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OVER
+	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OVER
 	 */
 	[Event(name="nodeRollOver", type="com.joshtynjala.events.TreeMapEvent")]
 	
 	/**
-	 *  Dispatched when the user rolls the mouse pointer out of an node in the control.
+	 * Dispatched when the user rolls the mouse pointer out of an node in the control.
 	 *
-	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OUT
+	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OUT
 	 */
 	[Event(name="nodeRollOut", type="com.joshtynjala.events.TreeMapEvent")]
 	
 	/**
-	 *  Dispatched when the user clicks on an node in the control.
+	 * Dispatched when the user clicks on an node in the control.
 	 *
-	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_CLICK
+	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_CLICK
 	 */
 	[Event(name="nodeClick", type="com.joshtynjala.events.TreeMapEvent")]
 	
 	/**
-	 *  Dispatched when the user double-clicks on an node in the control.
+	 * Dispatched when the user double-clicks on an node in the control.
 	 *
-	 *  @eventType com.joshtynjala.events.TreeMapEvent.NODE_DOUBLE_CLICK
+	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_DOUBLE_CLICK
 	 */
 	[Event(name="nodeDoubleClick", type="com.joshtynjala.events.TreeMapEvent")]
 	
@@ -98,38 +98,38 @@ package com.joshtynjala.controls
 	//--------------------------------------
 	
 	/**
-	 *  The border skin of the component.
+	 * The border skin of the component.
 	 */
 	[Style(name="borderSkin", type="Class")]
 	
 	/**
-	 *  The style name for the border skin.
+	 * The style name for the border skin.
 	 */
 	[Style(name="borderStyle", type="String")]
 	
 	/**
-	 *  Sets the style name for the header.
+	 * Sets the style name for the header.
 	 */
 	[Style(name="headerStyleName", type="String")]
 	
 	/**
-	 *  Sets the style name for all standard nodes.
+	 * Sets the style name for all standard nodes.
 	 */
 	[Style(name="nodeStyleName", type="String")]
 	
 	/**
-	 *  Sets the style name for all branches.
+	 * Sets the style name for all branches.
 	 */
 	[Style(name="branchStyleName", type="String")]
 	
 	/**
-	 *  A treemap is a space-constrained visualization of hierarchical
-	 *  structures. It is very effective in showing attributes of leaf nodes
-	 *  using size and color coding.
+	 * A treemap is a space-constrained visualization of hierarchical
+	 * structures. It is very effective in showing attributes of leaf nodes
+	 * using size and color coding.
 	 * 
-	 *  @author Josh Tynjala
-	 *  @see http://en.wikipedia.org/wiki/Treemapping
-	 *  @see http://www.cs.umd.edu/hcil/treemap-history/
+	 * @author Josh Tynjala
+	 * @see http://en.wikipedia.org/wiki/Treemapping
+	 * @see http://www.cs.umd.edu/hcil/treemap-history/
 	 */
 	public class TreeMap extends UIComponent implements ITreeMapBranchRenderer
 	{
@@ -139,14 +139,14 @@ package com.joshtynjala.controls
 	//--------------------------------------
 		
 		/**
-		 *  @private
-		 *  The default width of the TreeMap.
+		 * @private
+		 * The default width of the TreeMap.
 		 */
 		private static const DEFAULT_MEASURED_WIDTH:Number = 300;
 		
 		/**
-		 *  @private
-		 *  The default height of the TreeMap.
+		 * @private
+		 * The default height of the TreeMap.
 		 */
 		private static const DEFAULT_MEASURED_HEIGHT:Number = 200;
 		
@@ -200,7 +200,7 @@ package com.joshtynjala.controls
 	//--------------------------------------
 	
 		/**
-		 *  Constructor.
+		 * Constructor.
 		 */
 		public function TreeMap()
 		{
@@ -213,75 +213,104 @@ package com.joshtynjala.controls
 	//--------------------------------------
 	    
 	    /**
-	     *  The skinnable border.
+	     * The skinnable border.
 	     */
 		protected var border:IFlexDisplayObject;
 		
 		/**
-		 *  The header. Contains a label. Works like the Accordion's header.
-		 *  @see mx.containers.Accordion
+		 * The header. Contains a label. Works like the Accordion's header.
+		 * @see mx.containers.Accordion
 		 */
 		public var header:TreeMapHeader;
 		
 		/**
-		 *  The node that is currently zoomed. Null if none are zoomed.
+		 * The node that is currently zoomed. Null if none are zoomed.
 		 */
 		protected var zoomedNode:ITreeMapNodeRenderer;
 		
 		/**
-		 *  Stores true if this TreeMap is zoomed, false if not.
+		 * Stores true if this TreeMap is zoomed, false if not.
 		 */
 		protected var zoomed:Boolean = false;
 		
+		/**
+		 * @private
+		 * Storage for the zoomOutType property.
+		 */
+		private var _zoomOutType:String = TreeMapZoomOutType.PREVIOUS;
 		
 		/**
-		 *  @private
-		 *  Stores UIDs for the data stored in each renderer that is a direct child of
-		 *  this TreeMap.
+		 * Determines the way that zoom out actions work. Values are defined by the
+		 * constants in the <code>TreeMapZoomOutType</code> class.
+		 */
+		public function get zoomOutType():String
+		{
+			return this._zoomOutType;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set zoomOutType(value:String):void
+		{
+			this._zoomOutType = value;
+		}
+		
+		/**
+		 * @private
+		 * If true, and the zoomOutType property is set to <code>TreeMapZoomOutType.PREVIOUS</code>,
+		 * zoom out operations will stop at this TreeMap.
+		 */
+		private var _stopZoomOut:Boolean = false;
+		
+		/**
+		 * @private
+		 * Stores UIDs for the data stored in each renderer that is a direct child of
+		 * this TreeMap.
 		 */
 		private var _dataUIDs:Array = [];
 		
 		/**
-		 *  @private
-		 *  Nodes may be accessed by the layout classes.
+		 * @private
+		 * Nodes may be accessed by the layout classes.
 		 */
 		treemap_internal var nodes:Array = [];
 		
 		/**
-		 *  @private
-		 *  Caches previously-used node renderers to minmize display list manipulation.
+		 * @private
+		 * Caches previously-used node renderers to minmize display list manipulation.
 		 */
 		private var _freeNodeRenderers:Array = [];
 		
 		/**
-		 *  @private
-		 *  Caches previously-used branch renderers to minmize display list manipulation.
+		 * @private
+		 * Caches previously-used branch renderers to minmize display list manipulation.
 		 */
 		private var _freeBranchRenderers:Array = [];
 		
 		/**
-		 *  @private
-		 *  Bounds are calculated from the padding styles and docked header size.
+		 * @private
+		 * Bounds are calculated from the padding styles and docked header size.
 		 */
 		treemap_internal var contentBounds:Rectangle = new Rectangle();
 				
 		/**
-		 *  @private
-		 *  Flag to indicate if the nodes need to be redrawn.
+		 * @private
+		 * Flag to indicate if the nodes need to be redrawn.
 		 */
 		private var _nodesNeedRedraw:Boolean = false;
 	    
 	    /**
-	     *  @private
-	     *  Storage for the node renderer factory.
+	     * @private
+	     * Storage for the node renderer factory.
 	     */
 	    private var _nodeRenderer:ClassFactory = new ClassFactory(TreeMapNodeRenderer);
 	
 	    /**
-	     *  The custom node renderer for the control.
-	     *  You can specify a drop-in, inline, or custom node renderer.
+	     * The custom node renderer for the control.
+	     * You can specify a drop-in, inline, or custom node renderer.
 	     *
-		 *  <p>The default node renderer is TreeMapNodeRenderer.</p>
+		 * <p>The default node renderer is TreeMapNodeRenderer.</p>
 	     */
 	    public function get nodeRenderer():ClassFactory
 	    {
@@ -289,7 +318,7 @@ package com.joshtynjala.controls
 	    }
 	
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set nodeRenderer(value:ClassFactory):void
 	    {
@@ -310,19 +339,19 @@ package com.joshtynjala.controls
 	    }
 	
 		/**
-		 *  @private
-		 *  Storage for the branch renderer factory.
+		 * @private
+		 * Storage for the branch renderer factory.
 		 */
 		private var _branchRenderer:ClassFactory = new ClassFactory(TreeMap);
 		
 	    /**
-	     *  The custom branch renderer for the control. You can specify a drop-in,
-	     *  inline, or custom branch renderer. Unlike the renderers used by Tree
-	     *  components, nodes and branches in a TreeMap are quite different visually and
-	     *  functionally. As a result, it's easier to specify and customize seperate
-	     *  renderers for either type.
+	     * The custom branch renderer for the control. You can specify a drop-in,
+	     * inline, or custom branch renderer. Unlike the renderers used by Tree
+	     * components, nodes and branches in a TreeMap are quite different visually and
+	     * functionally. As a result, it's easier to specify and customize seperate
+	     * renderers for either type.
 	     *
-		 *  <p>The default branch renderer is TreeMap.</p>
+		 * <p>The default branch renderer is TreeMap.</p>
 	     */
 	    public function get branchRenderer():ClassFactory
 	    {
@@ -330,7 +359,7 @@ package com.joshtynjala.controls
 	    }
 	
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set branchRenderer(value:ClassFactory):void
 	    {
@@ -350,17 +379,17 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-	     *  @private
-	     *  Storage for the original data set by the user.
+	     * @private
+	     * Storage for the original data set by the user.
 	     */
 		private var _data:Object;
 	
 		/**
-		 *  Used to render data when the <code>TreeMap</code> is a branch renderer
-		 *  for a parent <code>TreeMap</code>. For most applications, it is
-		 *  recommended that you use the <code>dataProvider</code> property.
+		 * Used to render data when the <code>TreeMap</code> is a branch renderer
+		 * for a parent <code>TreeMap</code>. For most applications, it is
+		 * recommended that you use the <code>dataProvider</code> property.
 		 * 
-		 *  @see TreeMap#dataProvider
+		 * @see TreeMap#dataProvider
 		 */
 		public function get data():Object
 		{
@@ -368,7 +397,7 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		public function set data(value:Object):void
 		{
@@ -376,48 +405,48 @@ package com.joshtynjala.controls
 		}
 	    
 		/**
-		 *  An ICollectionView that represents the data provider.
-		 *  When you set the <code>dataProvider</code> property,
-		 *  Flex wraps the data provider as necessary to 
-		 *  support the ICollectionView interface and 
-		 *  sets this property to the result.
-		 *  The TreeMap class then uses this property to access
-		 *  data in the provider.
-		 *  When you get the <code>dataProvider</code> property, 
-		 *  Flex returns this value.  
+		 * An ICollectionView that represents the data provider.
+		 * When you set the <code>dataProvider</code> property,
+		 * Flex wraps the data provider as necessary to 
+		 * support the ICollectionView interface and 
+		 * sets this property to the result.
+		 * The TreeMap class then uses this property to access
+		 * data in the provider.
+		 * When you get the <code>dataProvider</code> property, 
+		 * Flex returns this value.  
 	     */
 		protected var collection:ICollectionView = new ArrayCollection();
 		
 		/**
-		 *  @private
-		 *  Flag that is set when the collection of data displayed by the TreeMap
-		 *  component changes.
+		 * @private
+		 * Flag that is set when the collection of data displayed by the TreeMap
+		 * component changes.
 		 */
 		private var _collectionChangedFlag:Boolean = false;
 		
 		[Bindable("collectionChange")]
 		/**
-	     *  Set of data to be viewed.
-	     *  This property lets you use most types of objects as data providers.
-		 *  If you set the <code>dataProvider</code> property to an Array, 
-		 *  it will be converted to an ArrayCollection. If you set the property to
-		 *  an XML object, it will be converted into an XMLListCollection with
-		 *  only one item. If you set the property to an XMLList, it will be 
-		 *  converted to an XMLListCollection.  
-		 *  If you set the property to an object that implements the 
-		 *  ICollectionView interface, the object will be used directly.
+	     * Set of data to be viewed.
+	     * This property lets you use most types of objects as data providers.
+		 * If you set the <code>dataProvider</code> property to an Array, 
+		 * it will be converted to an ArrayCollection. If you set the property to
+		 * an XML object, it will be converted into an XMLListCollection with
+		 * only one item. If you set the property to an XMLList, it will be 
+		 * converted to an XMLListCollection.  
+		 * If you set the property to an object that implements the 
+		 * ICollectionView interface, the object will be used directly.
 		 *
-		 *  <p>As a consequence of the conversions, when you get the 
-		 *  <code>dataProvider</code> property, it will always be
-		 *  an ICollectionView, and therefore not necessarily be the type of object
-		 *  you used to set the property.
-		 *  This behavor is important to understand if you want to modify the data 
-		 *  in the data provider: changes to the original data may not be detected, 
-		 *  but changes to the ICollectionView object that you get back from the 
-		 *  <code>dataProvider</code> property will be detected.</p>
+		 * <p>As a consequence of the conversions, when you get the 
+		 * <code>dataProvider</code> property, it will always be
+		 * an ICollectionView, and therefore not necessarily be the type of object
+		 * you used to set the property.
+		 * This behavor is important to understand if you want to modify the data 
+		 * in the data provider: changes to the original data may not be detected, 
+		 * but changes to the ICollectionView object that you get back from the 
+		 * <code>dataProvider</code> property will be detected.</p>
 	     * 
-	     *  @default null
-	     *  @see mx.collections.ICollectionView
+	     * @default null
+	     * @see mx.collections.ICollectionView
 	     */
 	    public function get dataProvider():Object
 	    {
@@ -425,7 +454,7 @@ package com.joshtynjala.controls
 	    }
 	
 	    /**
-		 *  @private
+		 * @private
 		 */
 		public function set dataProvider(value:Object):void
 	    {
@@ -484,15 +513,15 @@ package com.joshtynjala.controls
 	    }
 		
 		/**
-		 *  @private
-		 *  Storage for the data descriptor used to crawl the data.
+		 * @private
+		 * Storage for the data descriptor used to crawl the data.
 		 */
 		private var _dataDescriptor:ITreeDataDescriptor = new DefaultDataDescriptor();
 	
 		/**
-		 *  Returns the current ITreeDataDescriptor.
+		 * Returns the current ITreeDataDescriptor.
 		 *
-		 *  @default DefaultDataDescriptor
+		 * @default DefaultDataDescriptor
 		 */
 		public function get dataDescriptor():ITreeDataDescriptor
 		{
@@ -500,23 +529,23 @@ package com.joshtynjala.controls
 		}
 
 		/**
-		 *  TreeMap delegates to the data descriptor for information about the data.
-		 *  This data is then used to parse and move about the data source.
-		 *  <p>When you specify this property as an attribute in MXML you must
-		 *  use a reference to the data descriptor, not the string name of the
-		 *  descriptor. Use the following format for the property:</p>
+		 * TreeMap delegates to the data descriptor for information about the data.
+		 * This data is then used to parse and move about the data source.
+		 * <p>When you specify this property as an attribute in MXML you must
+		 * use a reference to the data descriptor, not the string name of the
+		 * descriptor. Use the following format for the property:</p>
 		 *
 		 * <pre>&lt;mx:TreeMap id="treemap" dataDescriptor="{new MyCustomTreeDataDescriptor()}"/&gt;></pre>
 		 *
-		 *  <p>Alternatively, you can specify the property in MXML as a nested
-		 *  subtag, as the following example shows:</p>
+		 * <p>Alternatively, you can specify the property in MXML as a nested
+		 * subtag, as the following example shows:</p>
 		 *
 		 * <pre>&lt;mx:TreeMap&gt;
 		 * &lt;mx:dataDescriptor&gt;
 		 * &lt;myCustomTreeDataDescriptor&gt;</pre>
 		 *
 		 * <p>The default value is an internal instance of the
-		 *  DefaultDataDescriptor class.</p>
+		 * DefaultDataDescriptor class.</p>
 		 *
 		 */
 		public function set dataDescriptor(value:ITreeDataDescriptor):void
@@ -530,15 +559,15 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Storage for the strategy used for layout of nodes and branches.
+		 * @private
+		 * Storage for the strategy used for layout of nodes and branches.
 		 */
 		private var _layoutStrategy:ITreeMapLayoutStrategy = new Squarify();
 	    
 	    /**
-	     *  The custom layout algorithm for the control.
+	     * The custom layout algorithm for the control.
 	     *
-		 *  <p>The default alogrithm is Squarify.</p>
+		 * <p>The default alogrithm is Squarify.</p>
 	     */
 	    public function get layoutStrategy():ITreeMapLayoutStrategy
 	    {
@@ -546,7 +575,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set layoutStrategy(strategy:ITreeMapLayoutStrategy):void
 	    {
@@ -558,19 +587,19 @@ package com.joshtynjala.controls
 	    }
 		
 		/**
-		 *  @private
-		 *  Storage for the label's text.
+		 * @private
+		 * Storage for the label's text.
 		 */
 		private var _labelText:String;
 		
 		/**
-		 *  @private
-		 *  Indicates if the label has been set by the user.
+		 * @private
+		 * Indicates if the label has been set by the user.
 		 */
 		private var _labelPropertySet:Boolean = false;
 		
 		/**
-		 *  A <code>TreeMap</code> may display a label in its header.
+		 * A <code>TreeMap</code> may display a label in its header.
 		 */
 		public function get label():String
 		{
@@ -578,7 +607,7 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		public function set label(value:String):void
 		{
@@ -594,19 +623,19 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Storage for the tooltip's text.
+		 * @private
+		 * Storage for the tooltip's text.
 		 */
 		private var _toolTipText:String;
 		
 		/**
-		 *  @private
-		 *  Indicates if the tooltip has been set by the user.
+		 * @private
+		 * Indicates if the tooltip has been set by the user.
 		 */
 		private var _toolTipPropertySet:Boolean = false;
 		
 		/**
-		 *  A <code>TreeMap</code> may display a tooltip on its header.
+		 * A <code>TreeMap</code> may display a tooltip on its header.
 		 */
 		override public function get toolTip():String
 		{
@@ -614,7 +643,7 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function set toolTip(value:String):void
 		{
@@ -633,13 +662,13 @@ package com.joshtynjala.controls
 	//-- Weight
 	
 		/**
-		 *  @private
-		 *  Storage for the field used to calculate a node's weight.
+		 * @private
+		 * Storage for the field used to calculate a node's weight.
 		 */
 		private var _weightField:String = "weight";
 		[Bindable]
 	    /**
-	     *  The name of the field in the data provider items to use in weight calculations.
+	     * The name of the field in the data provider items to use in weight calculations.
 	     */
 	    public function get weightField():String
 	    {
@@ -647,7 +676,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set weightField(value:String):void
 	    {
@@ -660,20 +689,20 @@ package com.joshtynjala.controls
 	    }
 	    
 		/**
-		 *  @private
-		 *  Storage for the function used to calculate a node's weight.
+		 * @private
+		 * Storage for the function used to calculate a node's weight.
 		 */
 		private var _weightFunction:Function;
 		
 	    [Bindable("weightFunctionChanged")]
 	    /**
-	     *  A user-supplied function to run on each item to determine its weight.
+	     * A user-supplied function to run on each item to determine its weight.
 	     *
-		 *  <p>The weight function takes one arguments, the item in the data provider.
-		 *  It returns a Number.
-		 *  <blockquote>
-		 *  <code>weightFunction(item:Object):Number</code>
-		 *  </blockquote></p>
+		 * <p>The weight function takes one arguments, the item in the data provider.
+		 * It returns a Number.
+		 * <blockquote>
+		 * <code>weightFunction(item:Object):Number</code>
+		 * </blockquote></p>
 	     */
 	    public function get weightFunction():Function
 	    {
@@ -681,7 +710,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set weightFunction(value:Function):void
 	    {
@@ -694,14 +723,14 @@ package com.joshtynjala.controls
 	//-- Color
 	    
 		/**
-		 *  @private
-		 *  Storage for the field used to calculate a node's color.
+		 * @private
+		 * Storage for the field used to calculate a node's color.
 		 */
 		private var _colorField:String = "color";
 		
 	    [Bindable]
 	    /**
-	     *  The name of the field in the data provider items to use as the color.
+	     * The name of the field in the data provider items to use as the color.
 	     */
 	    public function get colorField():String
 	    {
@@ -709,7 +738,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set colorField(value:String):void
 	    {
@@ -722,21 +751,21 @@ package com.joshtynjala.controls
 	    }
 	    
 		/**
-		 *  @private
-		 *  Storage for the function used to calculate a node's color.
+		 * @private
+		 * Storage for the function used to calculate a node's color.
 		 */
 		private var _colorFunction:Function;
 		
 	    [Bindable("colorFunctionChanged")]
 	    /**
-	     *  A user-supplied function to run on each item to determine its color.
+	     * A user-supplied function to run on each item to determine its color.
 	     *
-		 *  <p>The color function takes one argument, the item in the data provider.
-		 *  It returns a uint.</p>
+		 * <p>The color function takes one argument, the item in the data provider.
+		 * It returns a uint.</p>
 		 * 
-		 *  <blockquote>
-		 *  <code>colorFunction(item:Object):uint</code>
-		 *  </blockquote>
+		 * <blockquote>
+		 * <code>colorFunction(item:Object):uint</code>
+		 * </blockquote>
 	     */
 	    public function get colorFunction():Function
 	    {
@@ -744,7 +773,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set colorFunction(value:Function):void
 	    {
@@ -757,16 +786,16 @@ package com.joshtynjala.controls
 	//-- Label
 	    
 		/**
-		 *  @private
-		 *  Storage for the field used to calculate a node's label.
+		 * @private
+		 * Storage for the field used to calculate a node's label.
 		 */
 		private var _labelField:String = "label";
 		
 	    [Bindable]
 	    /**
-	     *  The name of the field in the data provider items to display as the label
-	     *  of the data renderer. As a special case, if the nodes are <code>TreeMap</code>
-	     *  components, this function applies to the TreeMap label.
+	     * The name of the field in the data provider items to display as the label
+	     * of the data renderer. As a special case, if the nodes are <code>TreeMap</code>
+	     * components, this function applies to the TreeMap label.
 	     */
 	    public function get labelField():String
 	    {
@@ -774,7 +803,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set labelField(value:String):void
 	    {
@@ -787,20 +816,20 @@ package com.joshtynjala.controls
 	    }
 	    
 		/**
-		 *  @private
-		 *  Storage for the function used to calculate a node's label.
+		 * @private
+		 * Storage for the function used to calculate a node's label.
 		 */
 		private var _labelFunction:Function;
 		
 	    [Bindable("labelFunctionChanged")]
 	    /**
-	     *  A user-supplied function to run on each item to determine its label.
+	     * A user-supplied function to run on each item to determine its label.
 	     *
-		 *  <p>The label function takes one argument, the item in the data provider.
-		 *  It returns a String.
-		 *  <blockquote>
-		 *  <code>labelFunction(item:Object):String</code>
-		 *  </blockquote></p>
+		 * <p>The label function takes one argument, the item in the data provider.
+		 * It returns a String.
+		 * <blockquote>
+		 * <code>labelFunction(item:Object):String</code>
+		 * </blockquote></p>
 	     */
 	    public function get labelFunction():Function
 	    {
@@ -808,7 +837,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set labelFunction(value:Function):void
 	    {
@@ -821,15 +850,15 @@ package com.joshtynjala.controls
 	//-- ToolTip
 	    
 		/**
-		 *  @private
-		 *  Storage for the field used to calculate a node's tooltip.
+		 * @private
+		 * Storage for the field used to calculate a node's tooltip.
 		 */
 		private var _toolTipField:String = "toolTip";
 		
 	    [Bindable]
 	    /**
-	     *  The name of the field in the data provider items to display as the ToolTip
-	     *  of the data renderer.
+	     * The name of the field in the data provider items to display as the ToolTip
+	     * of the data renderer.
 	     */
 	    public function get toolTipField():String
 	    {
@@ -837,7 +866,7 @@ package com.joshtynjala.controls
 	    }
 		
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set toolTipField(value:String):void
 	    {
@@ -850,20 +879,20 @@ package com.joshtynjala.controls
 	    }
 	    
 		/**
-		 *  @private
-		 *  Storage for the function used to calculate a node's tooltip.
+		 * @private
+		 * Storage for the function used to calculate a node's tooltip.
 		 */
 		private var _toolTipFunction:Function;
 		
 		[Bindable("toolTipFunctionChanged")]
 	    /**
-	     *  A user-supplied function to run on each item to determine its ToolTip.
+	     * A user-supplied function to run on each item to determine its ToolTip.
 	     *
-		 *  <p>The tooltip function takes one argument, the item in the data provider.
-		 *  It returns a String.
-		 *  <blockquote>
-		 *  <code>toolTipFunction(item:Object):String</code>
-		 *  </blockquote></p>
+		 * <p>The tooltip function takes one argument, the item in the data provider.
+		 * It returns a String.
+		 * <blockquote>
+		 * <code>toolTipFunction(item:Object):String</code>
+		 * </blockquote></p>
 	     */
 	    public function get toolTipFunction():Function
 	    {
@@ -871,7 +900,7 @@ package com.joshtynjala.controls
 	    }
 	    
 	    /**
-		 *  @private
+		 * @private
 		 */
 	    public function set toolTipFunction(value:Function):void
 	    {
@@ -886,13 +915,13 @@ package com.joshtynjala.controls
 	
 		[Bindable]
 		/**
-		 *  @private
-		 *  Storage for the selectable property.
+		 * @private
+		 * Storage for the selectable property.
 		 */
 		private var _selectable:Boolean = false;
 		
 	    /**
-	     *  Indicates if the node's within the TreeMap can be selected by the user.
+	     * Indicates if the node's within the TreeMap can be selected by the user.
 		 */
 		public function get selectable():Boolean
 		{
@@ -900,7 +929,7 @@ package com.joshtynjala.controls
 		}
 		
 	    /**
-		 *  @private
+		 * @private
 		 */
 		public function set selectable(value:Boolean):void
 		{
@@ -912,14 +941,14 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  @private
-		 *  Storage for the selected property.
+		 * @private
+		 * Storage for the selected property.
 		 */
 		private var _selected:Boolean = false;
 		
 	    /**
-	     *  If this TreeMap is a renderer for a parent TreeMap,
-	     *  it may be the selected node.
+	     * If this TreeMap is a renderer for a parent TreeMap,
+	     * it may be the selected node.
 		 */
 		public function get selected():Boolean
 		{
@@ -927,7 +956,7 @@ package com.joshtynjala.controls
 		}
 		
 	    /**
-		 *  @private
+		 * @private
 		 */
 		public function set selected(value:Boolean):void
 		{
@@ -939,15 +968,15 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Stores the node that is currently selected.
+		 * @private
+		 * Stores the node that is currently selected.
 		 */
 		private var _selectedNode:ITreeMapNodeRenderer;
 		
 		[Bindable("change")]
 		/**
-		 *  The data for the currently selected node. May be the data for
-		 *  a grandchild or deeper ancestor.
+		 * The data for the currently selected node. May be the data for
+		 * a grandchild or deeper ancestor.
 		 */
 		public function get selectedItem():Object
 		{
@@ -963,7 +992,7 @@ package com.joshtynjala.controls
 		}
 		
 	    /**
-		 *  @private
+		 * @private
 		 */
 		public function set selectedItem(item:Object):void
 		{
@@ -976,8 +1005,8 @@ package com.joshtynjala.controls
 	//--------------------------------------
 	
 		/**
-		 *  @private
-		 *  Creates the zoomedIn state.
+		 * @private
+		 * Creates the zoomedIn state.
 		 */
 		override public function initialize():void
 		{
@@ -989,7 +1018,7 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function styleChanged(styleProp:String):void
 		{
@@ -1072,7 +1101,7 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  Determines the label text for an item from the data provider.
+		 * Determines the label text for an item from the data provider.
 		 */
 		public function itemToLabel(item:Object):String
 		{
@@ -1088,7 +1117,7 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  Determines the tooltip text for an item from the data provider.
+		 * Determines the tooltip text for an item from the data provider.
 		 */
 		public function itemToToolTip(item:Object):String
 		{
@@ -1104,7 +1133,7 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  Determines the color value for an item from the data provider.
+		 * Determines the color value for an item from the data provider.
 		 */
 		public function itemToColor(item:Object):uint
 		{
@@ -1120,7 +1149,7 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  Determines the weight value for an item from the data provider.
+		 * Determines the weight value for an item from the data provider.
 		 */
 		public function itemToWeight(item:Object):Number
 		{
@@ -1136,10 +1165,10 @@ package com.joshtynjala.controls
 		}
 	    
 	    /**
-	     *  Returns the node renderer that displays specific data.
+	     * Returns the node renderer that displays specific data.
 	     * 
-	     *  @param data				the data for which to find a matching node renderer
-	     *  @return					the node renderer that matches the data
+	     * @param data				the data for which to find a matching node renderer
+	     * @return					the node renderer that matches the data
 	     */
 	    public function nodeDataToRenderer(data:Object):ITreeMapNodeRenderer
 	    {
@@ -1167,7 +1196,7 @@ package com.joshtynjala.controls
 	//--------------------------------------
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		override protected function createChildren():void
 		{
@@ -1211,8 +1240,8 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  @private
-		 *  Create the renderers.
+		 * @private
+		 * Create the renderers.
 		 */
 		override protected function commitProperties():void
 		{
@@ -1241,9 +1270,9 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  @private
-		 *  Treemaps measure as the default size. The user or parent container
-		 *  will resize as needed.
+		 * @private
+		 * Treemaps measure as the default size. The user or parent container
+		 * will resize as needed.
 		 */
 		override protected function measure():void
 		{
@@ -1254,8 +1283,8 @@ package com.joshtynjala.controls
 		}
 	
 		/**
-		 *  @private
-		 *  The layout strategy handles redrawing the nodes.
+		 * @private
+		 * The layout strategy handles redrawing the nodes.
 		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
@@ -1279,7 +1308,7 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		protected function requestZoom():void
 		{
@@ -1289,7 +1318,7 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  Selects a node.
+		 * Selects a node.
 		 */
 		protected function selectNode(node:ITreeMapNodeRenderer):void
 		{
@@ -1311,7 +1340,7 @@ package com.joshtynjala.controls
 	//--------------------------------------
 	
 		/**
-		 *  @private
+		 * @private
 		 */
 		private function commitHeaderProperties():void
 		{
@@ -1340,8 +1369,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Iterate through the collection and add or remove nodes and branches as needed.
+		 * @private
+		 * Iterate through the collection and add or remove nodes and branches as needed.
 		 */
 		private function commitNodesAndBranches():void
 		{
@@ -1420,6 +1449,7 @@ package com.joshtynjala.controls
 			branch.layoutStrategy = this.layoutStrategy;
 			branch.dataDescriptor = this.dataDescriptor;
 			branch.selectable = this.selectable;
+			branch.zoomOutType = this.zoomOutType;
 			
 			return branch;
 		}
@@ -1443,9 +1473,9 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Removes a node from the active listing and holds it in a cache for later use.
-		 *  @param nodeToRemove			an ITreeMapNodeRenderer to save in the pool
+		 * @private
+		 * Removes a node from the active listing and holds it in a cache for later use.
+		 * @param nodeToRemove			an ITreeMapNodeRenderer to save in the pool
 		 */
 		private function removeNodeOrBranch(nodeToRemove:ITreeMapNodeRenderer):int
 		{
@@ -1523,8 +1553,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Draws the background.
+		 * @private
+		 * Draws the background.
 		 */
 		private function updateBackground():void
 		{
@@ -1538,8 +1568,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Positions and sizes the header.
+		 * @private
+		 * Positions and sizes the header.
 		 */
 		private function updateHeader():void
 		{
@@ -1579,8 +1609,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  When the collection changes, we need to redraw.
+		 * @private
+		 * When the collection changes, we need to redraw.
 		 */
 		private function collectionChangeHandler(event:CollectionEvent):void
 		{
@@ -1593,8 +1623,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Passes the node click event to external listeners.
+		 * @private
+		 * Passes the node click event to external listeners.
 		 */
 		private function nodeClickHandler(event:MouseEvent):void
 		{
@@ -1611,8 +1641,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Passes the node double click event to the outside world.
+		 * @private
+		 * Passes the node double click event to the outside world.
 		 */
 		private function nodeDoubleClickHandler(event:MouseEvent):void
 		{
@@ -1623,8 +1653,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Passes the node roll over event to the outside world.
+		 * @private
+		 * Passes the node roll over event to the outside world.
 		 */
 		private function nodeRollOverHandler(event:MouseEvent):void
 		{
@@ -1635,8 +1665,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Passes the node roll out event to the outside world.
+		 * @private
+		 * Passes the node roll out event to the outside world.
 		 */
 		private function nodeRollOutHandler(event:MouseEvent):void
 		{
@@ -1647,8 +1677,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  We're pretty much bubbling the click event, but it's more restricted.
+		 * @private
+		 * We're pretty much bubbling the click event, but it's more restricted.
 		 */
 		private function childMapNodeClick(event:TreeMapEvent):void
 		{
@@ -1656,8 +1686,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  We're pretty much bubbling the double click event, but it's more restricted.
+		 * @private
+		 * We're pretty much bubbling the double click event, but it's more restricted.
 		 */
 		private function childMapNodeDoubleClick(event:TreeMapEvent):void
 		{
@@ -1665,8 +1695,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  We're pretty much bubbling the roll over event, but it's more restricted.
+		 * @private
+		 * We're pretty much bubbling the roll over event, but it's more restricted.
 		 */
 		private function childMapNodeRollOver(event:TreeMapEvent):void
 		{
@@ -1674,8 +1704,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  We're pretty much bubbling the roll out event, but it's more restricted.
+		 * @private
+		 * We're pretty much bubbling the roll out event, but it's more restricted.
 		 */
 		private function childMapNodeRollOut(event:TreeMapEvent):void
 		{
@@ -1683,8 +1713,8 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Requests that this TreeMap be zoomed when the header is clicked.
+		 * @private
+		 * Requests that this TreeMap be zoomed when the header is clicked.
 		 */
 		private function headerClickHandler(event:MouseEvent):void
 		{
@@ -1692,31 +1722,39 @@ package com.joshtynjala.controls
 		}
 		
 		/**
-		 *  @private
-		 *  Handles a zoom request from a child treemap.
+		 * @private
+		 * Handles a zoom request from a child treemap.
 		 */
 		private function childMapNodeZoom(event:TreeMapEvent):void
 		{
 			var nodeToZoom:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(this.zoomedNode != nodeToZoom)
+			if(this.zoomedNode != nodeToZoom) //request to zoom in
 			{
 				this.zoomedNode = nodeToZoom;
 				if(!this.zoomed)
 				{
 					this.requestZoom();
 				}
+				//if we're already zoomed in
+				else this._stopZoomOut = true;
 				this.setChildIndex(this.zoomedNode as DisplayObject, this.numChildren - 1);
 			}
-			else
+			else //request to zoom out
 			{
 				this.zoomedNode = null;
+				if(this._zoomOutType == TreeMapZoomOutType.FULL || 
+					(this._zoomOutType == TreeMapZoomOutType.PREVIOUS && !this._stopZoomOut))
+				{
+					this.requestZoom();
+				}
+				this._stopZoomOut = false;
 			}
 			this.invalidateDisplayList();
 		}
 		
 		/**
-		 *  @private
-		 *  If the selected node for a child TreeMap changes, select that child.
+		 * @private
+		 * If the selected node for a child TreeMap changes, select that child.
 		 */
 		private function childMapSelectedNodeChange(event:Event):void
 		{

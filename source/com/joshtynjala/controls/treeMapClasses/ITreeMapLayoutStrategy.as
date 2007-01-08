@@ -23,9 +23,9 @@ package com.joshtynjala.controls.treeMapClasses
 	import com.joshtynjala.controls.TreeMap;
 		
 	/**
-	 *  Designed to allow easy switching between treemap layout algorithms. 
-	 *  Several algorithms have been developed for treemaps and this interface
-	 *  may be extended to allow new layout methods.
+	 * Designed to allow easy switching between treemap layout algorithms. 
+	 * Several algorithms have been developed for treemaps and this interface
+	 * may be extended to allow new layout methods.
 	 */
 	public interface ITreeMapLayoutStrategy
 	{
@@ -35,7 +35,7 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  Updates the size and positions of a <code>TreeMap</a>'s renderers.
+		 * Updates the size and positions of a <code>TreeMap</a>'s renderers.
 		 */
 		function updateLayout(treeMap:TreeMap):void;
 	}

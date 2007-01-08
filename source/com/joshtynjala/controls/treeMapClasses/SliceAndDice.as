@@ -30,11 +30,11 @@ package com.joshtynjala.controls.treeMapClasses
 	use namespace treemap_internal;
 	
 	/**
-	 *  Lays out <code>TreeMap</code> nodes using the Slice-and-dice subdivision alogrithm.
-	 *  Preserves the original ordering of the data set, but generates high aspect ratios.
-	 *  Node positions are very stable.
+	 * Lays out <code>TreeMap</code> nodes using the Slice-and-dice subdivision alogrithm.
+	 * Preserves the original ordering of the data set, but generates high aspect ratios.
+	 * Node positions are very stable.
 	 * 
-	 *  @see zeuslabs.visualization.treemaps.TreeMap
+	 * @see zeuslabs.visualization.treemaps.TreeMap
 	 */
 	public class SliceAndDice implements ITreeMapLayoutStrategy
 	{
@@ -44,7 +44,7 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  Constructor.
+		 * Constructor.
 		 */
 		public function SliceAndDice()
 		{
@@ -55,13 +55,13 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  Storage for the treemap whose nodes are being laid out.
+		 * Storage for the treemap whose nodes are being laid out.
 		 */
 		private var _target:TreeMap;
 		
 		/**
-		 *  @private
-		 *  Iterator for the target's data provider.
+		 * @private
+		 * Iterator for the target's data provider.
 		 */
 		private var _dataIterator:IViewCursor;
 		
@@ -70,7 +70,7 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 		
 		/**
-		 *  @copy com.joshtynjala.controls.treeMapClasses.ITreeMapLayoutStrategy#updateLayout
+		 * @copy com.joshtynjala.controls.treeMapClasses.ITreeMapLayoutStrategy#updateLayout
 		 */
 		public function updateLayout(treeMap:TreeMap):void
 		{
@@ -121,8 +121,8 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  @private
-		 *  Places a node and sets its dimensions.
+		 * @private
+		 * Places a node and sets its dimensions.
 		 */
 		private function drawNode(nodeID:int, bounds:Rectangle):void
 		{
@@ -132,9 +132,9 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Uses the data provider's iterator to access each data item to
-		 *  determine the total sum of the items' weight properties.
+		 * @private
+		 * Uses the data provider's iterator to access each data item to
+		 * determine the total sum of the items' weight properties.
 		 */
 		private function calculateTotalWeightSum():Number
 		{

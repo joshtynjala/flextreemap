@@ -54,6 +54,9 @@ package com.joshtynjala.controls.treeMapClasses
 		function get selectable():Boolean;
 		function set selectable(value:Boolean):void;
 		
+		function get zoomOutType():String;
+		function set zoomOutType(value:String):void;
+		
 		function get nodeRenderer():ClassFactory;
 		function set nodeRenderer(value:ClassFactory):void;
 		function get branchRenderer():ClassFactory;

@@ -39,16 +39,16 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 	/**
-	 *  If "full" or "partial", the node's text may increase or decrease in size to 
-	 *  fill the node. Choose "partial" for best readability.
+	 * If "full" or "partial", the node's text may increase or decrease in size to 
+	 * fill the node. Choose "partial" for best readability.
 	 * 
-	 *  @default "none"
+	 * @default "none"
 	 */
 	[Style(name="autoFitText", type="String")]
 	
 	/**
-	 *  The standard renderer used for <code>TreeMap</code> nodes. It's actually a button
-	 *  with specialized functionality for the label and coloring.
+	 * The standard renderer used for <code>TreeMap</code> nodes. It's actually a button
+	 * with specialized functionality for the label and coloring.
 	 */
 	public class TreeMapNodeRenderer extends Button implements ITreeMapNodeRenderer
 	{
@@ -102,7 +102,7 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  Constructor.
+		 * Constructor.
 		 */
 		public function TreeMapNodeRenderer()
 		{
@@ -114,13 +114,13 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 *  @private
-		 *  Holds the data assigned to this node.
+		 * @private
+		 * Holds the data assigned to this node.
 		 */
 		private var _data:Object;
 		
 		/**
-		 *  The data to render.
+		 * The data to render.
 		 */
 		override public function get data():Object
 		{
@@ -128,7 +128,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function set data(value:Object):void
 		{
@@ -143,20 +143,20 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Storage for the label value.
+		 * @private
+		 * Storage for the label value.
 		 */
 		private var _label:String = "";
 		
 		/**
-		 *  @private
-		 *  Flag set when the label changes.
+		 * @private
+		 * Flag set when the label changes.
 		 */
 		private var _labelChanged:Boolean = false;
 		
 		/**
-		 *  Always returns an empty string ("") because anything else ruins the component's performance.
-		 *  It's okay, though, because the component sets its own label text anyway!
+		 * Always returns an empty string ("") because anything else ruins the component's performance.
+		 * It's okay, though, because the component sets its own label text anyway!
 		 */
 		override public function get label():String
 		{
@@ -164,7 +164,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function set label(value:String):void
 		{
@@ -177,27 +177,27 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  The text field used to display the label text. Replaces the standard button
-		 *  label used by mx.controls.Button.
+		 * @private
+		 * The text field used to display the label text. Replaces the standard button
+		 * label used by mx.controls.Button.
 		 */
 		private var _textField:TextField;
 		
 		/**
-		 *  @private
-		 *  Flag required by the update
+		 * @private
+		 * Flag required by the update
 		 */
 		private var _styleChanged:Boolean = false;
 		
 		/**
-		 *  @private
-		 *  Saved value used to determine if the label needs to be updated.
+		 * @private
+		 * Saved value used to determine if the label needs to be updated.
 		 */
 		private var _oldUnscaledWidth:Number = 0;
 		
 		/**
-		 *  @private
-		 *  Saved value used to determine if the label needs to be updated.
+		 * @private
+		 * Saved value used to determine if the label needs to be updated.
 		 */
 		private var _oldUnscaledHeight:Number = 0;
 		
@@ -206,7 +206,7 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override public function styleChanged(styleProp:String):void
 		{
@@ -226,7 +226,7 @@ package com.joshtynjala.controls.treeMapClasses
 	//--------------------------------------
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override protected function createChildren():void
 		{
@@ -243,8 +243,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Updates the label property and fillColors style with the data.
+		 * @private
+		 * Updates the label property and fillColors style with the data.
 		 */
 		override protected function commitProperties():void
 		{
@@ -263,7 +263,7 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
+		 * @private
 		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{			
@@ -312,8 +312,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Overrides the labels regular sizing because we allow it to grow.
+		 * @private
+		 * Overrides the labels regular sizing because we allow it to grow.
 		 */
 		override mx_internal function layoutContents(unscaledWidth:Number,
 									    unscaledHeight:Number, offset:Boolean):void
@@ -336,8 +336,8 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-		 *  @private
-		 *  Increases the font size until the text fills the bounds.
+		 * @private
+		 * Increases the font size until the text fills the bounds.
 		 */
 		private function increaseOrDecreaseFontSizeToFit(mode:String = "none"):void
 		{
@@ -398,12 +398,12 @@ package com.joshtynjala.controls.treeMapClasses
 		}
 		
 		/**
-	     *  Returns the TextFormat object that represents 
-	     *  character formatting information for the label.
+	     * Returns the TextFormat object that represents 
+	     * character formatting information for the label.
 	     *
-	     *  @return		A TextFormat object. 
+	     * @return		A TextFormat object. 
 	     *
-	     *  @see		flash.text.TextFormat
+	     * @see		flash.text.TextFormat
 	     */
 	    public function getTextStyles():TextFormat
 	    {

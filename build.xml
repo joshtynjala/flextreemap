@@ -5,7 +5,7 @@
 <project name="TreeMap" default="compile" basedir=".">
 	
 	<target name="compile">
-	    <exec executable="compc.exe">
+	    <exec executable="compc">
 		<arg line="--source-path source"/>
 		<arg line="--output deploy/TreeMap.swc"/>
 		<arg line="--include-classes com.joshtynjala.controls.TreeMap 

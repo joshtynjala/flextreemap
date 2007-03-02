@@ -624,9 +624,9 @@ package com.joshtynjala.controls
 		
 		/**
 		 * @private
-		 * Storage for the tooltip's text.
+		 * Storage for the header's tooltip text.
 		 */
-		private var _toolTipText:String;
+		private var _headerToolTip:String;
 		
 		/**
 		 * @private
@@ -637,23 +637,23 @@ package com.joshtynjala.controls
 		/**
 		 * A <code>TreeMap</code> may display a tooltip on its header.
 		 */
-		override public function get toolTip():String
+		public function get headerToolTip():String
 		{
-			return this._toolTipText;
+			return this._headerToolTip;
 		}
 		
 		/**
 		 * @private
 		 */
-		override public function set toolTip(value:String):void
+		public function set headerToolTip(value:String):void
 		{
 			//if the tooltip is set by the user, we will ignore the toolTipField and toolTipFunction
 			if(value) this._toolTipPropertySet = true;
 			else this._toolTipPropertySet = false;
 			
-			if(this._toolTipText != value)
+			if(this._headerToolTip != value)
 			{
-				this._toolTipText = value;
+				this._headerToolTip = value;
 				this.invalidateProperties();
 			}
 		}
@@ -1356,12 +1356,12 @@ package com.joshtynjala.controls
 			
 			if(!this._toolTipPropertySet && this.parent is ITreeMapBranchRenderer)
 			{
-				this._toolTipText = this.itemToToolTip(this.data);
+				this._headerToolTip = this.itemToToolTip(this.data);
 			}
 			
-			if(this._toolTipText)
+			if(this._headerToolTip)
 			{
-				this.header.toolTip = this._toolTipText;
+				this.header.toolTip = this._headerToolTip;
 			}
 			
 			this.header.selected = this.selectable && (this.selected || this._selectedNode != null);

@@ -239,7 +239,8 @@ package com.joshtynjala.controls.treeMapClasses
 			var weight:Number = this._savedWeights[dataInRow[0]];
 			var minValue:Number = weight;
 			var maxValue:Number = weight;
-			for(var i:int = 1; i < dataInRow.length; i++)
+			var rowCount:int = dataInRow.length;
+			for(var i:int = 1; i < rowCount; i++)
 			{
 				weight = this._savedWeights[dataInRow[i]];
 				minValue = Math.min(minValue, weight);
@@ -259,7 +260,8 @@ package com.joshtynjala.controls.treeMapClasses
 			var lengthOfLongerSide:Number = this.calculateLengthOfLongerSide(dataInRow, sumOfRow, sumOfRemaining);
 			
 			var currentDistance:Number = 0;
-			for(var i:int = 0; i < dataInRow.length; i++)
+			var rowCount:int = dataInRow.length;
+			for(var i:int = 0; i < rowCount; i++)
 			{	
 				var currentData:Object = dataInRow[i];
 				var currentNode:ITreeMapNodeRenderer = this._target.nodeDataToRenderer(currentData);
@@ -343,7 +345,8 @@ package com.joshtynjala.controls.treeMapClasses
 		private function sumWeights(q:Array):Number
 		{
 			var sum:Number = 0;
-			for(var i:int = 0; i < q.length; i++)
+			var qCount:int = q.length;
+			for(var i:int = 0; i < qCount; i++)
 			{
 				var currentItem:Object = q[i] as Object;
 				var weight:Number = this._savedWeights[currentItem];

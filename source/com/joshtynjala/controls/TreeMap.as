@@ -326,7 +326,8 @@ package com.joshtynjala.controls
 	    	{
 				this._nodeRenderer = value;
 	
-				for(var i:int = 0; i < this._freeNodeRenderers.length; i++)
+				var freeRenderersCount:int = this._freeNodeRenderers.length
+				for(var i:int = 0; i < freeRenderersCount; i++)
 				{
 					var node:ITreeMapNodeRenderer = this._freeNodeRenderers.pop() as ITreeMapNodeRenderer;
 					this.removeChild(node as DisplayObject);
@@ -367,7 +368,8 @@ package com.joshtynjala.controls
 	    	{
 				this._branchRenderer = value;
 	
-				for(var i:int = 0; i < this._freeBranchRenderers.length; i++)
+				var freeRenderersCount:int = this._freeBranchRenderers.length;
+				for(var i:int = 0; i < freeRenderersCount; i++)
 				{
 					var node:ITreeMapBranchRenderer = this._freeBranchRenderers.pop() as ITreeMapBranchRenderer;
 					this.removeChild(node as DisplayObject);
@@ -1067,7 +1069,8 @@ package com.joshtynjala.controls
 			if(allStyles || styleProp == "nodeStyleName")
 			{
 				var nodeStyleName:String = this.getStyle("nodeStyleName");
-				for(var i:int = 0; i < this.nodes.length; i++)
+				var nodeCount:int = this.nodes.length;
+				for(var i:int = 0; i < nodeCount; i++)
 				{
 					var currentNode:ITreeMapNodeRenderer = this.nodes[i] as ITreeMapNodeRenderer;
 					
@@ -1324,7 +1327,8 @@ package com.joshtynjala.controls
 		{
 			this._selectedNode = node;
 			
-			for(var i:int = 0; i < this.nodes.length; i++)
+			var nodeCount:int = this.nodes.length;
+			for(var i:int = 0; i < nodeCount; i++)
 			{
 				var node:ITreeMapNodeRenderer = this.nodes[i] as ITreeMapNodeRenderer;
 				node.selected = (node == this._selectedNode);

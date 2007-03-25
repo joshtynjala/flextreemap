@@ -1,6 +1,6 @@
 /*
 
-	Copyright (C) 2006 Josh Tynjala
+	Copyright (C) 2007 Josh Tynjala
 	Flex 2 TreeMap Component
  
 	This program is free software; you can redistribute it and/or modify

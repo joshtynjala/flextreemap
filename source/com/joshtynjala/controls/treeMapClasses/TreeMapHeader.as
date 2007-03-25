@@ -84,6 +84,7 @@ package com.joshtynjala.controls.treeMapClasses
 			
 			selector.defaultFactory = function():void
 			{
+				//this.fillAlphas = [1.0, 1.0];
 				this.paddingLeft = 5;
 				this.paddingRight = 5;
 				this.upSkin = TreeMapHeaderSkin;

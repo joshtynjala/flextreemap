@@ -1,6 +1,6 @@
 /*
 
-	Copyright (C) 2006 Josh Tynjala
+	Copyright (C) 2007 Josh Tynjala
 	Flex 2 TreeMap Component
  
 	This program is free software; you can redistribute it and/or modify
@@ -50,15 +50,13 @@ package com.joshtynjala.controls.treeMapClasses
 	
 		/**
 		 * Constructor.
-		 * 
-		 * @param target		The <code>TreeMap</code> that this layout strategy will manipulate.
 		 */
 		public function Squarify()
 		{
 		}
 		
 	//--------------------------------------
-	//  Variables and Properties
+	//  Properties
 	//--------------------------------------
 	
 		/**
@@ -120,7 +118,7 @@ package com.joshtynjala.controls.treeMapClasses
 			this._dataProvider = this._target.dataProvider as ICollectionView;
 			if(this._dataProvider.length == 0) return;
 			
-			this.saveWeightsAndGetTotalSum(this._dataProvider);
+			var weightSum:Number = this.saveWeightsAndGetTotalSum(this._dataProvider);
 			
 			var sortWeights:Sort = new Sort();
 			var weightField:SortField = new SortField(null, true, true, true);
@@ -129,8 +127,6 @@ package com.joshtynjala.controls.treeMapClasses
 
 			this._dataProvider.sort = sortWeights;
 			this._dataProvider.refresh();
-			
-			var weightSum:Number = this.saveWeightsAndGetTotalSum(this._dataProvider);
 			
 			//the starting bounds are based on the map's calculated content area
 			var mapBounds:Rectangle = this._target.contentBounds.clone();

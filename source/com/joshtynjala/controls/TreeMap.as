@@ -1,6 +1,6 @@
 /*
 
-	Copyright (C) 2006 Josh Tynjala
+	Copyright (C) 2007 Josh Tynjala
 	Flex 2 TreeMap Component
  
 	This program is free software; you can redistribute it and/or modify
@@ -168,9 +168,6 @@ package com.joshtynjala.controls
 			
 			selector.defaultFactory = function():void
 			{
-				this.fillColors = [0xffffff, 0xcccccc, 0xffffff, 0xeeeeee];
-				this.fillAlphas = [0.6, 0.4, 0.75, 0.65]; /* last pair are for OVER state */
-				
 				this.backgroundColor = 0xffffff;
 				this.backgroundAlpha = 1.0;
 				
@@ -209,7 +206,7 @@ package com.joshtynjala.controls
 		}
 		
 	//--------------------------------------
-	//  Variables and Properties
+	//  Properties
 	//--------------------------------------
 	    
 	    /**
@@ -662,6 +659,8 @@ package com.joshtynjala.controls
 		
 	    
 	//-- Weight
+	
+		private var _cachedWeights:Dictionary;
 	
 		/**
 		 * @private
@@ -1156,15 +1155,20 @@ package com.joshtynjala.controls
 		 */
 		public function itemToWeight(item:Object):Number
 		{
-			if(this.weightFunction != null)
+			var weight:Number = this._cachedWeights[item];
+			if(isNaN(weight))
 			{
-				return this.weightFunction(item);
+				if(this.weightFunction != null)
+				{
+					weight = this.weightFunction(item);
+				}
+				else if(item.hasOwnProperty(this.weightField))
+				{
+					weight = item[this.weightField];
+				}
+				this._cachedWeights[item] = weight;
 			}
-			else if(item.hasOwnProperty(this.weightField))
-			{
-				return item[this.weightField];
-			}
-			return 0;
+			return weight;
 		}
 	    
 	    /**
@@ -1250,6 +1254,8 @@ package com.joshtynjala.controls
 		{
 			super.commitProperties();
 			
+			this._cachedWeights = new Dictionary(true);
+			
 			//remove the selected node before we handle the header selection!
 			if(this.parent is ITreeMapNodeRenderer && !this.selected && this._selectedNode)
 			{
@@ -1257,8 +1263,10 @@ package com.joshtynjala.controls
 				this._selectedNode = null;
 			}
 			
+			var startTime:int = flash.utils.getTimer();
 			this.commitHeaderProperties();
 			this.commitNodesAndBranches();
+			trace((flash.utils.getTimer() - startTime), "ms");
 
 			//move the header to the top child index
 			this.setChildIndex(this.header, this.numChildren - 1);
@@ -1301,7 +1309,9 @@ package com.joshtynjala.controls
 			this.updateBackground();
 			this.updateHeader();
 			
+			var startTime:int = flash.utils.getTimer();
 			this._layoutStrategy.updateLayout(this);
+			trace((flash.utils.getTimer() - startTime), "ms");
 			
 			if(this.zoomedNode)
 			{
@@ -1408,6 +1418,10 @@ package com.joshtynjala.controls
 					if(this._collectionChangedFlag)
 					{
 						currentNode.data = currentData;
+						if(currentNode is IDropInTreeMapNodeRenderer)
+						{
+							currentNode.treeMapData = this.generateTreeMapData(currentData);
+						}
 						this._dataUIDs.push(UIDUtil.getUID(currentData));
 					}
 					
@@ -1427,6 +1441,9 @@ package com.joshtynjala.controls
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		private function updateBranch(node:ITreeMapNodeRenderer, data:Object):ITreeMapBranchRenderer
 		{
 			//make sure we're using the branch renderer
@@ -1554,6 +1571,19 @@ package com.joshtynjala.controls
 			this.nodes.splice(index, 0, branchToAdd);
 			
 			return branchToAdd;
+		}
+		
+		/**
+		 * @private
+		 */
+		private function generateTreeMapData(data:Object):TreeMapNodeData
+		{
+			var label:String = this.itemToLabel(data);
+			var weight:Number = this.itemToWeight(data);
+			var color:uint = this.itemToColor(data);
+			var toolTip:String = this.itemToToolTip(data);
+			var uid:String = UIDUtil.getUID(data);
+			return new TreeMapNodeData(label, weight, color, toolTip, uid, this);
 		}
 		
 		/**

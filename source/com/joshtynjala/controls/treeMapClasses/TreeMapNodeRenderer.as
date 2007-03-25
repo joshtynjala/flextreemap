@@ -1,6 +1,6 @@
 /*
 
-	Copyright (C) 2006 Josh Tynjala
+	Copyright (C) 2007 Josh Tynjala
 	Flex 2 TreeMap Component
  
 	This program is free software; you can redistribute it and/or modify
@@ -22,14 +22,14 @@ package com.joshtynjala.controls.treeMapClasses
 {
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import mx.core.ClassFactory;
+	import mx.core.IDataRenderer;
 	import mx.core.mx_internal;
 	import mx.core.UIComponent;
-	import mx.core.ClassFactory;
 	import mx.controls.Button;
 	import mx.events.FlexEvent;
 	import mx.styles.StyleManager;
 	import mx.styles.CSSStyleDeclaration;
-	import com.joshtynjala.controls.TreeMap;
 	import com.joshtynjala.skins.halo.TreeMapNodeSkin;
 	
 	use namespace mx_internal;
@@ -50,7 +50,7 @@ package com.joshtynjala.controls.treeMapClasses
 	 * The standard renderer used for <code>TreeMap</code> nodes. It's actually a button
 	 * with specialized functionality for the label and coloring.
 	 */
-	public class TreeMapNodeRenderer extends Button implements ITreeMapNodeRenderer
+	public class TreeMapNodeRenderer extends Button implements ITreeMapNodeRenderer, IDropInTreeMapNodeRenderer, IDataRenderer
 	{
 		
     //----------------------------------
@@ -140,6 +140,29 @@ package com.joshtynjala.controls.treeMapClasses
 			}
 
 			this.dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
+		}
+		
+		private var _treeMapData:TreeMapNodeData;
+		
+		/**
+		 * @copy com.joshtynjala.controls.treeMapClasses.IDropInTreeMapNodeRenderer#treeMapData
+		 */
+		public function get treeMapData():TreeMapNodeData
+		{
+			return this._treeMapData;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set treeMapData(value:TreeMapNodeData):void
+		{
+			if(this._treeMapData != value)
+			{
+				this._treeMapData = value;
+				this.invalidateProperties();
+				this.invalidateDisplayList();
+			}
 		}
 		
 		/**
@@ -250,14 +273,10 @@ package com.joshtynjala.controls.treeMapClasses
 		{
 			super.commitProperties();
 			
-			if(this._data)
+			if(this.treeMapData)
 			{
-				var parentTreeMap:ITreeMapBranchRenderer = this.parent as ITreeMapBranchRenderer;
-				if(!parentTreeMap) return;
-				
-				this.label = parentTreeMap.itemToLabel(this.data);
-					
-				var color:Number = parentTreeMap.itemToColor(this.data);
+				this.label = this.treeMapData.label;
+				var color:Number = this.treeMapData.color;
 				this.setStyle("fillColors", [color, color]);
 			}
 		}
@@ -273,11 +292,11 @@ package com.joshtynjala.controls.treeMapClasses
 			this.textField.text = "";
 			this.textField.setActualSize(0, 0);
 			
-			if(this.data)
+			if(this.treeMapData)
 			{
 				//normally, I'd set this in commitProperties, but I have to override the standard
 				//Button behavior that sets the toolTip in updateDisplayList
-				this.toolTip = (this.parent as TreeMap).itemToToolTip(this.data);
+				this.toolTip = this.treeMapData.toolTip;
 			}
 			else this.toolTip = null;
 				
@@ -368,7 +387,7 @@ package com.joshtynjala.controls.treeMapClasses
 				this._textField.setTextFormat(format);
 				
 				//special case for partial mode
-				if(mode == "partial")
+				if(mode == "partial" && this._textField.numLines > 1)
 				{
 					//minimize words being broken into multiple lines!
 					for(var i:int = 1; i < this._textField.numLines; i++)
@@ -377,8 +396,9 @@ package com.joshtynjala.controls.treeMapClasses
 						
 						//check for a space or dash at the end of the previous line
 						var beginningOfLine:String = this._textField.text.charAt(lineOffset);
-						var endOfPreviousLine:String = this._textField.text.charAt(lineOffset - 1)
-						if(endOfPreviousLine != " " && endOfPreviousLine != "-")
+						var endOfPreviousLine:String = this._textField.text.charAt(lineOffset - 1);
+						
+						if(endOfPreviousLine != " " && endOfPreviousLine != "-" && this._textField.numLines > 1 && currentSize > 1)
 						{
 							format.size = currentSize -= 1;
 							this._textField.setTextFormat(format);

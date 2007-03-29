@@ -260,7 +260,7 @@ package com.joshtynjala.controls.treeMapClasses
 			for(var i:int = 0; i < rowCount; i++)
 			{	
 				var currentData:Object = dataInRow[i];
-				var currentNode:ITreeMapNodeRenderer = this._target.nodeDataToRenderer(currentData);
+				var currentNode:ITreeMapNodeRenderer = this._target.itemToRenderer(currentData);
 				if(!currentNode) continue;
 				var currentWeight:Number = this._savedWeights[currentData];
 				

@@ -29,7 +29,7 @@ package com.joshtynjala.controls.treeMapClasses
 		function itemToToolTip(item:Object):String;
 		function itemToColor(item:Object):uint;
 		function itemToWeight(item:Object):Number;
-		function nodeDataToRenderer(data:Object):ITreeMapNodeRenderer;
+		function itemToRenderer(item:Object):ITreeMapNodeRenderer;
 		
 		function get labelField():String;
 		function set labelField(value:String):void;
@@ -53,6 +53,8 @@ package com.joshtynjala.controls.treeMapClasses
 		
 		function get selectable():Boolean;
 		function set selectable(value:Boolean):void;
+		function get selectedItem():Object;
+		function set selectedItem(value:Object):void;
 		
 		function get zoomOutType():String;
 		function set zoomOutType(value:String):void;
@@ -67,5 +69,8 @@ package com.joshtynjala.controls.treeMapClasses
 		
 		function get layoutStrategy():ITreeMapLayoutStrategy;
 		function set layoutStrategy(value:ITreeMapLayoutStrategy):void;
+		
+		function get maximumDepth():int;
+		function set maximumDepth(value:int):void;
 	}
 }

@@ -225,9 +225,6 @@ package com.joshtynjala.controls
 		 */
 		protected var zoomedNode:ITreeMapNodeRenderer;
 		
-		/**
-		 * Stores true if this TreeMap is zoomed, false if not.
-		 */
 		protected var zoomed:Boolean = false;
 		
 		/**
@@ -964,15 +961,21 @@ package com.joshtynjala.controls
 			if(this._selected != value)
 			{
 				this._selected = value;
+				if(!this._selected)
+				{
+					this._selectedItem = null;
+					this._directChildSelectedItem = null;
+				}
 				this.invalidateProperties();
 			}
 		}
 		
 		/**
 		 * @private
-		 * Stores the node that is currently selected.
+		 * Stores the item that is currently selected.
 		 */
-		private var _selectedNode:ITreeMapNodeRenderer;
+		private var _selectedItem:Object;
+		private var _directChildSelectedItem:Object;
 		
 		[Bindable("change")]
 		/**
@@ -981,15 +984,7 @@ package com.joshtynjala.controls
 		 */
 		public function get selectedItem():Object
 		{
-			if(this._selectedNode is TreeMap)
-			{
-				return (this._selectedNode as TreeMap).selectedItem;
-			}
-			else if(this._selectedNode)
-			{
-				return this._selectedNode.data;
-			}
-			return null;
+			return this._selectedItem;
 		}
 		
 	    /**
@@ -997,8 +992,38 @@ package com.joshtynjala.controls
 		 */
 		public function set selectedItem(item:Object):void
 		{
-			var node:ITreeMapNodeRenderer = this.nodeDataToRenderer(item);
-			this.selectNode(node);
+			if(this._selectedItem != item)
+			{
+				this._selectedItem = item;
+				this.invalidateProperties();
+				this.dispatchEvent(new Event(Event.CHANGE));
+			}
+		}
+		
+		/**
+		 * @private
+		 * Storage for the maximumDepth property.
+		 */
+		private var _maximumDepth:int = -1;
+		
+		/**
+		 * If value is >= 0, the treemap will only render branches to a specific depth.
+		 */
+		public function get maximumDepth():int
+		{
+			return this._maximumDepth;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set maximumDepth(value:int):void
+		{
+			if(this._maximumDepth != value)
+			{
+				this._maximumDepth = value;
+				this.invalidateProperties();
+			}
 		}
 		
 	//--------------------------------------
@@ -1177,23 +1202,12 @@ package com.joshtynjala.controls
 	     * @param data				the data for which to find a matching node renderer
 	     * @return					the node renderer that matches the data
 	     */
-	    public function nodeDataToRenderer(data:Object):ITreeMapNodeRenderer
+	    public function itemToRenderer(data:Object):ITreeMapNodeRenderer
 	    {
 	    	var index:int = this._dataUIDs.indexOf(UIDUtil.getUID(data));
 	    	if(index >= 0)
 	    	{
 	    		return this.nodes[index] as ITreeMapNodeRenderer;
-	    	}
-	    	
-	    	var nodeCount:int = this.nodes.length;
-	    	for(var i:int = 0; i < nodeCount; i++)
-	    	{
-	    		var node:ITreeMapNodeRenderer = this.nodes[i];
-	    		if(node is ITreeMapBranchRenderer)
-	    		{
-	    			var renderer:ITreeMapNodeRenderer = (node as ITreeMapBranchRenderer).nodeDataToRenderer(data);
-	    			if(renderer) return renderer;
-	    		}
 	    	}
 	    	return null;
 	    }
@@ -1256,21 +1270,13 @@ package com.joshtynjala.controls
 			
 			this._cachedWeights = new Dictionary(true);
 			
-			//remove the selected node before we handle the header selection!
-			if(this.parent is ITreeMapNodeRenderer && !this.selected && this._selectedNode)
-			{
-				this._selectedNode.selected = false;
-				this._selectedNode = null;
-			}
-			
-			var startTime:int = flash.utils.getTimer();
 			this.commitHeaderProperties();
 			this.commitNodesAndBranches();
-			trace((flash.utils.getTimer() - startTime), "ms");
 
 			//move the header to the top child index
 			this.setChildIndex(this.header, this.numChildren - 1);
 				
+			//unless, of course, we have a zoomed node. that should be on top.
 			if(this.zoomedNode)
 			{
 				this.setChildIndex(this.zoomedNode as DisplayObject, this.numChildren - 1);
@@ -1309,9 +1315,10 @@ package com.joshtynjala.controls
 			this.updateBackground();
 			this.updateHeader();
 			
-			var startTime:int = flash.utils.getTimer();
-			this._layoutStrategy.updateLayout(this);
-			trace((flash.utils.getTimer() - startTime), "ms");
+			if(this.maximumDepth != 0)
+			{
+				this._layoutStrategy.updateLayout(this);
+			}
 			
 			if(this.zoomedNode)
 			{
@@ -1329,25 +1336,33 @@ package com.joshtynjala.controls
 			var zoomEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_REQUEST_ZOOM, false, false, this);
 			this.dispatchEvent(zoomEvent);
 		}
-		
-		/**
-		 * Selects a node.
-		 */
-		protected function selectNode(node:ITreeMapNodeRenderer):void
-		{
-			this._selectedNode = node;
-			
-			var nodeCount:int = this.nodes.length;
-			for(var i:int = 0; i < nodeCount; i++)
-			{
-				var node:ITreeMapNodeRenderer = this.nodes[i] as ITreeMapNodeRenderer;
-				node.selected = (node == this._selectedNode);
-			}
-			
-			//dispatch the change event
-			var changeEvent:Event = new Event(Event.CHANGE);
-			this.dispatchEvent(changeEvent);	
-		}
+	    
+	    /**
+	     * Searches the data provider for the specified item.
+	     * 
+	     * @param item		this item to search for within the data provider
+	     * @param data		the current recursive position within the data provider
+	     */
+	    protected function containsItem(item:Object, data:Object = null):Boolean
+	    {
+	    	if(!data) data = this.data;
+	    	
+	    	var children:ICollectionView = this.dataDescriptor.getChildren(data);
+	    	if(children.contains(item)) return true;
+	    	
+	    	var iterator:IViewCursor = children.createCursor();
+	    	while(!iterator.afterLast)
+	    	{
+	    		var currentItem:Object = iterator.current;
+	    		if(this.dataDescriptor.isBranch(currentItem) && this.containsItem(item, currentItem))
+	    		{
+	    			return true;
+	    		}
+	    		iterator.moveNext();
+	    	}
+	    	
+	    	return false;
+	    }
 		
 	//--------------------------------------
 	//  Private Methods
@@ -1378,7 +1393,7 @@ package com.joshtynjala.controls
 				this.header.toolTip = this._headerToolTip;
 			}
 			
-			this.header.selected = this.selectable && (this.selected || this._selectedNode != null);
+			this.header.selected = this.selectable && (this.selected || !(this.parent is ITreeMapBranchRenderer) && this._selectedItem != null);
 			this.header.visible = this.header.label.length > 0;
 		}
 		
@@ -1388,13 +1403,12 @@ package com.joshtynjala.controls
 		 */
 		private function commitNodesAndBranches():void
 		{
-			if(this._collectionChangedFlag) this._dataUIDs = [];
+			this._dataUIDs = [];
 				
 			var collectionIterator:IViewCursor = this.collection.createCursor();
 			var nodeCount:int = 0;
 			if(!collectionIterator.afterLast)
 			{
-			
 				var nodeStyleName:String = this.getStyle("nodeStyleName");
 				var branchStyleName:String = this.getStyle("branchStyleName");
 				do
@@ -1403,7 +1417,11 @@ package com.joshtynjala.controls
 					var currentData:Object = collectionIterator.current;
 					var currentNode:ITreeMapNodeRenderer = this.nodes[nodeCount];
 					
-					if(this.dataDescriptor.isBranch(currentData))
+					if(this.maximumDepth == 0)
+					{
+						if(currentNode) this.removeNodeOrBranch(currentNode);
+					}
+					else if(this.dataDescriptor.isBranch(currentData))
 					{
 						currentNode = this.updateBranch(currentNode, currentData);
 						currentNode.styleName = branchStyleName;
@@ -1414,18 +1432,31 @@ package com.joshtynjala.controls
 						currentNode.styleName = nodeStyleName;
 					}
 					
-					//generate a UID for the node's data so that we can get the node based on its data.
-					if(this._collectionChangedFlag)
+					if(currentNode)
 					{
 						currentNode.data = currentData;
 						if(currentNode is IDropInTreeMapNodeRenderer)
 						{
 							currentNode.treeMapData = this.generateTreeMapData(currentData);
 						}
+						//generate a UID for the node's data so that we can get the node based on its data.
 						this._dataUIDs.push(UIDUtil.getUID(currentData));
+						
+						if(currentNode is ITreeMapBranchRenderer)
+						{
+							var branch:ITreeMapBranchRenderer = currentNode as ITreeMapBranchRenderer;
+							if(this.selectable && branch.containsItem(this.selectedItem))
+							{
+								branch.selected = true;
+								branch.selectedItem = this.selectedItem
+							}
+							else branch.selected = false;
+						}
+						else currentNode.selected = this.selectable && this.selectedItem == currentNode.data;
+						nodeCount++;
 					}
 					
-					nodeCount++;
+					
 				}
 				while(collectionIterator.moveNext());
 			}
@@ -1472,6 +1503,12 @@ package com.joshtynjala.controls
 			branch.selectable = this.selectable;
 			branch.zoomOutType = this.zoomOutType;
 			
+			if(this.maximumDepth < 0 || this.zoomedNode == branch)
+			{
+				branch.maximumDepth = this.maximumDepth;
+			}
+			else branch.maximumDepth = this.maximumDepth - 1;
+			
 			return branch;
 		}
 		
@@ -1512,6 +1549,7 @@ package com.joshtynjala.controls
 				nodeToRemove.removeEventListener(TreeMapEvent.NODE_ROLL_OUT, childMapNodeRollOut);	
 				nodeToRemove.removeEventListener(TreeMapEvent.NODE_REQUEST_ZOOM, childMapNodeZoom);
 				nodeToRemove.removeEventListener(Event.CHANGE, childMapSelectedNodeChange);
+				(nodeToRemove as ITreeMapBranchRenderer).selectedItem = null;
 		        this._freeBranchRenderers.push(nodeToRemove);
 			}
 			else
@@ -1622,14 +1660,18 @@ package com.joshtynjala.controls
 				paddingBottom += rectBorder.borderMetrics.bottom;
 			}
 			
-			//this.header.move(paddingLeft, paddingTop);
-			
-			var headerWidth:Number = this.width;
+			var headerWidth:Number = this.unscaledWidth;
 			var headerHeight:Number = this.header.getExplicitOrMeasuredHeight();
+			if(this.maximumDepth == 0)
+			{
+				headerHeight = unscaledHeight;// - (paddingTop + paddingBottom);
+			}
+			else
+			{	
+				var minimumContentHeight:Number = 6;
+				headerHeight = Math.min(headerHeight, unscaledHeight - (paddingTop + paddingBottom + minimumContentHeight));
+			}
 			
-			var minimumContentHeight:Number = 6;
-			
-			headerHeight = Math.min(headerHeight, unscaledHeight - (paddingTop + paddingBottom + minimumContentHeight));
 			if(this.header.visible)
 			{
 				paddingTop += headerHeight;
@@ -1667,11 +1709,8 @@ package com.joshtynjala.controls
 			
 			if(this.selectable)
 			{
-				this.selectNode(renderer);
+				this.selectedItem = renderer.data;
 			}
-			
-			var click:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_CLICK, false, false, renderer);
-			this.dispatchEvent(click);
 		}
 		
 		/**
@@ -1771,7 +1810,6 @@ package com.joshtynjala.controls
 				}
 				//if we're already zoomed in
 				else this._stopZoomOut = true;
-				this.setChildIndex(this.zoomedNode as DisplayObject, this.numChildren - 1);
 			}
 			else //request to zoom out
 			{
@@ -1783,6 +1821,7 @@ package com.joshtynjala.controls
 				}
 				this._stopZoomOut = false;
 			}
+			this.invalidateProperties();
 			this.invalidateDisplayList();
 		}
 		
@@ -1793,10 +1832,10 @@ package com.joshtynjala.controls
 		private function childMapSelectedNodeChange(event:Event):void
 		{
 			var selectedBranch:ITreeMapBranchRenderer = event.target as ITreeMapBranchRenderer;
-			this.selectNode(selectedBranch);
-			
-			if(!(this.parent is ITreeMapBranchRenderer))
-				this.invalidateProperties();
+			if(this.selectable)
+			{
+				this.selectedItem = selectedBranch.selectedItem;
+			}
 		}
 	}
 }

@@ -24,6 +24,9 @@
 
 package com.flextoolbox.controls
 {
+	/**
+	 * Defines constants for different behaviors a TreeMap may follow when zooming out.
+	 */
 	public class TreeMapZoomOutType
 	{
 		/**

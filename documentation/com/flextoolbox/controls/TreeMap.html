@@ -1,0 +1,1117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="../../../style.css" type="text/css" media="screen">
+<link rel="stylesheet" href="../../../print.css" type="text/css" media="print">
+<meta content="TreeMap,com.flextoolbox.controls.TreeMap,border,header,zoomedNode,zoomed,collection,zoomOutType,nodeRenderer,branchRenderer,data,dataProvider,dataDescriptor,layoutStrategy,label,headerToolTip,weightField,weightFunction,colorField,colorFunction,labelField,labelFunction,toolTipField,toolTipFunction,selectable,selected,selectedItem,maximumDepth,itemToLabel,itemToToolTip,itemToColor,itemToWeight,itemToRenderer,containsItem" name="keywords">
+<title>com.flextoolbox.controls.TreeMap</title>
+</head>
+<body>
+<script type="text/javascript" language="javascript" src="../../../asdoc.js"></script><script type="text/javascript" language="javascript" src="../../../cookies.js"></script><script type="text/javascript" language="javascript">
+<!--
+				asdocTitle = 'TreeMap - API Documentation';
+				var baseRef = '../../../';
+				window.onload = configPage;
+			--></script>
+<table style="display:none" id="titleTable" cellspacing="0" cellpadding="0" class="titleTable">
+<tr>
+<td align="left" class="titleTableTitle">API Documentation</td><td align="right" class="titleTableTopNav"><a onclick="loadClassListFrame('../../../all-classes.html')" href="../../../package-summary.html">All&nbsp;Packages</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../all-classes.html')" href="../../../class-summary.html">All&nbsp;Classes</a>&nbsp;|&nbsp;<a onclick="loadClassListFrame('../../../index-list.html')" href="../../../all-index-A.html">Index</a>&nbsp;|&nbsp;<a href="../../../index.html?com/flextoolbox/controls/TreeMap.html&amp;com/flextoolbox/controls/class-list.html" id="framesLink1">Frames</a><a onclick="parent.location=document.location" href="" style="display:none" id="noFramesLink1">No&nbsp;Frames</a></td><td rowspan="3" align="right" class="titleTableLogo"><img alt="Adobe Logo" title="Adobe Logo" class="logoImage" src="../../../images/logo.jpg"></td>
+</tr>
+<tr class="titleTableRow2">
+<td align="left" id="subTitle" class="titleTableSubTitle">Class&nbsp;TreeMap</td><td align="right" id="subNav" class="titleTableSubNav"><a href="#propertySummary">Properties</a>&nbsp;| <a href="#methodSummary">Methods</a>&nbsp;| <a href="#eventSummary">Events</a>&nbsp;| <a href="#styleSummary">Styles</a></td>
+</tr>
+<tr class="titleTableRow3">
+<td colspan="2">&nbsp;</td>
+</tr>
+</table>
+<script type="text/javascript" language="javascript">
+<!--
+if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Class TreeMap"); titleBar_setSubNav(false,true,true,false,true,false,true,false,false,false,false,false,false,false);}
+--></script>
+<div class="MainContent">
+<table cellspacing="0" cellpadding="0" class="classHeaderTable">
+<tr>
+<td class="classHeaderTableLabel">Package</td><td><a onclick="javascript:loadClassListFrame('class-list.html')" href="package-detail.html">com.flextoolbox.controls</a></td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Class</td><td class="classSignature">public class TreeMap</td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">TreeMap <img class="inheritArrow" alt="Inheritance" title="Inheritance" src="../../../images/inherit-arrow.gif"> mx.core.UIComponent</td>
+</tr>
+<tr>
+<td class="classHeaderTableLabel">Implements</td><td><a href="treeMapClasses/ITreeMapBranchRenderer.html">ITreeMapBranchRenderer</a></td>
+</tr>
+</table>
+<p></p>
+  A treemap is a space-constrained visualization of hierarchical
+  structures. It is very effective in showing attributes of leaf nodes
+  using size and color coding.
+  
+  <p></p>
+<p>
+<span class="classHeaderTableLabel">See also</span>
+</p>
+<div class="seeAlso">
+<a href="http://en.wikipedia.org/wiki/Treemapping" target="mm_external">http://en.wikipedia.org/wiki/Treemapping</a>
+<br>
+<a href="http://www.cs.umd.edu/hcil/treemap-history/" target="mm_external">http://www.cs.umd.edu/hcil/treemap-history/</a>
+</div>
+<br>
+<hr>
+</div>
+<a name="propertySummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Properties</div>
+<table id="summaryTableProperty" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#branchRenderer">branchRenderer</a> : ClassFactory<div class="summaryTableDescription">
+      The custom branch renderer for the control.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#colorField">colorField</a> : String<div class="summaryTableDescription">
+      The name of the field in the data provider items to use as the color.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#colorFunction">colorFunction</a> : Function<div class="summaryTableDescription">
+      A user-supplied function to run on each item to determine its color.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#data">data</a> : Object<div class="summaryTableDescription">
+   Used to render data when the <code>TreeMap</code> is a branch renderer
+   for a parent <code>TreeMap</code>.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#dataDescriptor">dataDescriptor</a> : ITreeDataDescriptor<div class="summaryTableDescription">
+   Returns the current ITreeDataDescriptor.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#dataProvider">dataProvider</a> : Object<div class="summaryTableDescription">
+      Set of data to be viewed.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#header">header</a> : <a href="treeMapClasses/TreeMapHeader.html">TreeMapHeader</a>
+<div class="summaryTableDescription">
+   The header.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#headerToolTip">headerToolTip</a> : String<div class="summaryTableDescription">
+   A <code>TreeMap</code> may display a tooltip on its header.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#label">label</a> : String<div class="summaryTableDescription">
+   A <code>TreeMap</code> may display a label in its header.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#labelField">labelField</a> : String<div class="summaryTableDescription">
+      The name of the field in the data provider items to display as the label
+      of the data renderer.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#labelFunction">labelFunction</a> : Function<div class="summaryTableDescription">
+      A user-supplied function to run on each item to determine its label.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#layoutStrategy">layoutStrategy</a> : <a href="treeMapClasses/ITreeMapLayoutStrategy.html">ITreeMapLayoutStrategy</a>
+<div class="summaryTableDescription">
+      The custom layout algorithm for the control.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#maximumDepth">maximumDepth</a> : int<div class="summaryTableDescription">
+   If value is >= 0, the treemap will only render branches to a specific depth.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#nodeRenderer">nodeRenderer</a> : ClassFactory<div class="summaryTableDescription">
+      The custom node renderer for the control.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#selectable">selectable</a> : Boolean<div class="summaryTableDescription">
+      Indicates if the node's within the TreeMap can be selected by the user.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#selected">selected</a> : Boolean<div class="summaryTableDescription">
+      If this TreeMap is a renderer for a parent TreeMap,
+      it may be the selected node.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#selectedItem">selectedItem</a> : Object<div class="summaryTableDescription">
+   The data for the currently selected node.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#toolTipField">toolTipField</a> : String<div class="summaryTableDescription">
+      The name of the field in the data provider items to display as the ToolTip
+      of the data renderer.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#toolTipFunction">toolTipFunction</a> : Function<div class="summaryTableDescription">
+      A user-supplied function to run on each item to determine its ToolTip.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#weightField">weightField</a> : String<div class="summaryTableDescription">
+      The name of the field in the data provider items to use in weight calculations.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#weightFunction">weightFunction</a> : Function<div class="summaryTableDescription">
+      A user-supplied function to run on each item to determine its weight.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#zoomOutType">zoomOutType</a> : String<div class="summaryTableDescription">
+   Determines the way that zoom out actions work.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+</table>
+</div>
+<a name="protectedPropertySummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Protected Properties</div>
+<table id="summaryTableProtectedProperty" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#border">border</a> : IFlexDisplayObject<div class="summaryTableDescription">
+      The skinnable border.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#collection">collection</a> : ICollectionView<div class="summaryTableDescription">
+   An ICollectionView that represents the data provider.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#zoomed">zoomed</a> : Boolean = false<div class="summaryTableDescription"></div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#zoomedNode">zoomedNode</a> : <a href="treeMapClasses/ITreeMapNodeRenderer.html">ITreeMapNodeRenderer</a>
+<div class="summaryTableDescription">
+   The node that is currently zoomed.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+</table>
+</div>
+<a name="methodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Public Methods</div>
+<table id="summaryTableMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#TreeMap()">TreeMap</a>()</div>
+<div class="summaryTableDescription">
+   Constructor.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#itemToColor()">itemToColor</a>(item:Object):uint</div>
+<div class="summaryTableDescription">
+   Determines the color value for an item from the data provider.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#itemToLabel()">itemToLabel</a>(item:Object):String</div>
+<div class="summaryTableDescription">
+   Determines the label text for an item from the data provider.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#itemToRenderer()">itemToRenderer</a>(data:Object):<a href="treeMapClasses/ITreeMapNodeRenderer.html">ITreeMapNodeRenderer</a>
+</div>
+<div class="summaryTableDescription">
+      Returns the node renderer that displays specific data.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#itemToToolTip()">itemToToolTip</a>(item:Object):String</div>
+<div class="summaryTableDescription">
+   Determines the tooltip text for an item from the data provider.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#itemToWeight()">itemToWeight</a>(item:Object):Number</div>
+<div class="summaryTableDescription">
+   Determines the weight value for an item from the data provider.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+</table>
+</div>
+<a name="protectedMethodSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Protected Methods</div>
+<table id="summaryTableProtectedMethod" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#containsItem()">containsItem</a>(item:Object, data:Object = null):Boolean</div>
+<div class="summaryTableDescription">
+      Searches the data provider for the specified item.</div>
+</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+</table>
+</div>
+<a name="eventSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Events</div>
+<table id="summaryTableEvent" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Event</th><th>Summary</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:change">change</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">
+  Dispatched when the <code>selectedIndex</code> or <code>selectedItem</code> property
+  changes as a result of user interaction.</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:nodeClick">nodeClick</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">
+  Dispatched when the user clicks on an node in the control.</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:nodeDoubleClick">nodeDoubleClick</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">
+  Dispatched when the user double-clicks on an node in the control.</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:nodeRollOut">nodeRollOut</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">
+  Dispatched when the user rolls the mouse pointer out of an node in the control.</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="#event:nodeRollOver">nodeRollOver</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">
+  Dispatched when the user rolls the mouse pointer over an node in the control.</td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+</table>
+</div>
+<a name="styleSummary"></a>
+<div class="summarySection">
+<div class="summaryTableTitle">Styles</div>
+<table id="summaryTableStyle" class="summaryTable " cellpadding="3" cellspacing="0">
+<tr>
+<th>&nbsp;</th><th colspan="2">Style</th><th>Description</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol"><a name="style:borderSkin"></a>&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<span class="signatureLink">borderSkin</span>
+</div>
+</td><td class="summaryTableDescription"><span class="label">Type: </span>Class<br>
+  The border skin of the component.
+  </td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol"><a name="style:borderStyle"></a>&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<span class="signatureLink">borderStyle</span>
+</div>
+</td><td class="summaryTableDescription"><span class="label">Type: </span>String<br>
+  The style name for the border skin.
+  </td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol"><a name="style:branchStyleName"></a>&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<span class="signatureLink">branchStyleName</span>
+</div>
+</td><td class="summaryTableDescription"><span class="label">Type: </span>String<br>
+  Sets the style name for all branches.
+  </td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol"><a name="style:headerStyleName"></a>&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<span class="signatureLink">headerStyleName</span>
+</div>
+</td><td class="summaryTableDescription"><span class="label">Type: </span>String<br>
+  Sets the style name for the header.
+  </td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+<tr class="">
+<td class="summaryTablePaddingCol"><a name="style:nodeStyleName"></a>&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<span class="signatureLink">nodeStyleName</span>
+</div>
+</td><td class="summaryTableDescription"><span class="label">Type: </span>String<br>
+  Sets the style name for all standard nodes.
+  </td><td class="summaryTableOwnerCol">TreeMap</td>
+</tr>
+</table>
+</div>
+<script type="text/javascript" language="javascript">
+<!--
+showHideInherited();
+--></script>
+<div class="MainContent">
+<a name="propertyDetail"></a>
+<div class="detailSectionHeader">Property detail</div>
+<a name="border"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">border</td><td class="detailHeaderType">property</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var border:IFlexDisplayObject</code><p>
+      The skinnable border.
+      </p></div>
+<a name="branchRenderer"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">branchRenderer</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>branchRenderer:ClassFactory</code>&nbsp;&nbsp;[read-write]<p>
+      The custom branch renderer for the control. You can specify a drop-in,
+      inline, or custom branch renderer. Unlike the renderers used by Tree
+      components, nodes and branches in a TreeMap are quite different visually and
+      functionally. As a result, it's easier to specify and customize seperate
+      renderers for either type.
+         </p><p>The default branch renderer is TreeMap.</p>
+      <span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get branchRenderer():ClassFactory</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set branchRenderer(value:ClassFactory):void</code>
+<br>
+</div>
+<a name="collection"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">collection</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var collection:ICollectionView</code><p>
+   An ICollectionView that represents the data provider.
+   When you set the <code>dataProvider</code> property,
+   Flex wraps the data provider as necessary to 
+   support the ICollectionView interface and 
+   sets this property to the result.
+   The TreeMap class then uses this property to access
+   data in the provider.
+   When you get the <code>dataProvider</code> property, 
+   Flex returns this value.  
+      </p></div>
+<a name="colorField"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">colorField</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>colorField:String</code>&nbsp;&nbsp;[read-write]<p>
+      The name of the field in the data provider items to use as the color.
+      </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get colorField():String</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set colorField(value:String):void</code>
+<br>
+</div>
+<a name="colorFunction"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">colorFunction</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>colorFunction:Function</code>&nbsp;&nbsp;[read-write]<p>
+      A user-supplied function to run on each item to determine its color.
+         </p><p>The color function takes one argument, the item in the data provider.
+   It returns a uint.</p>
+   
+   <blockquote>
+   <code>colorFunction(item:Object):uint</code>
+   </blockquote>
+      <p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get colorFunction():Function</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set colorFunction(value:Function):void</code>
+<br>
+</div>
+<a name="data"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">data</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>data:Object</code>&nbsp;&nbsp;[read-write]<p>
+   Used to render data when the <code>TreeMap</code> is a branch renderer
+   for a parent <code>TreeMap</code>. For most applications, it is
+   recommended that you use the <code>dataProvider</code> property.
+   
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get data():Object</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set data(value:Object):void</code>
+<br>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">
+<a href="TreeMap.html#dataProvider" target="">TreeMap.dataProvider</a>
+</div>
+</div>
+<a name="dataDescriptor"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">dataDescriptor</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>dataDescriptor:ITreeDataDescriptor</code>&nbsp;&nbsp;[read-write]<p>
+   Returns the current ITreeDataDescriptor.
+      </p><p>The default value is <code>DefaultDataDescriptor</code>.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get dataDescriptor():ITreeDataDescriptor</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set dataDescriptor(value:ITreeDataDescriptor):void</code>
+<br>
+</div>
+<a name="dataProvider"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">dataProvider</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>dataProvider:Object</code>&nbsp;&nbsp;[read-write]<p>
+      Set of data to be viewed.
+      This property lets you use most types of objects as data providers.
+   If you set the <code>dataProvider</code> property to an Array, 
+   it will be converted to an ArrayCollection. If you set the property to
+   an XML object, it will be converted into an XMLListCollection with
+   only one item. If you set the property to an XMLList, it will be 
+   converted to an XMLListCollection.  
+   If you set the property to an object that implements the 
+   ICollectionView interface, the object will be used directly.
+      </p><p>As a consequence of the conversions, when you get the 
+   <code>dataProvider</code> property, it will always be
+   an ICollectionView, and therefore not necessarily be the type of object
+   you used to set the property.
+   This behavor is important to understand if you want to modify the data 
+   in the data provider: changes to the original data may not be detected, 
+   but changes to the ICollectionView object that you get back from the 
+   <code>dataProvider</code> property will be detected.</p>
+      
+      <p>The default value is <code>null</code>.</p>
+<p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get dataProvider():Object</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set dataProvider(value:Object):void</code>
+<br>
+<p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">mx.collections.ICollectionView</div>
+</div>
+<a name="header"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">header</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public var header:<a href="treeMapClasses/TreeMapHeader.html">TreeMapHeader</a></code><p>
+   The header. Contains a label. Works like the Accordion's header.
+   </p><p>
+<span class="label">See also</span>
+</p>
+<div class="seeAlso">mx.containers.Accordion</div>
+</div>
+<a name="headerToolTip"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">headerToolTip</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>headerToolTip:String</code>&nbsp;&nbsp;[read-write]<p>
+   A <code>TreeMap</code> may display a tooltip on its header.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get headerToolTip():String</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set headerToolTip(value:String):void</code>
+<br>
+</div>
+<a name="label"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">label</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>label:String</code>&nbsp;&nbsp;[read-write]<p>
+   A <code>TreeMap</code> may display a label in its header.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get label():String</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set label(value:String):void</code>
+<br>
+</div>
+<a name="labelField"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">labelField</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>labelField:String</code>&nbsp;&nbsp;[read-write]<p>
+      The name of the field in the data provider items to display as the label
+      of the data renderer. As a special case, if the nodes are <code>TreeMap</code>
+      components, this function applies to the TreeMap label.
+      </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get labelField():String</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set labelField(value:String):void</code>
+<br>
+</div>
+<a name="labelFunction"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">labelFunction</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>labelFunction:Function</code>&nbsp;&nbsp;[read-write]<p>
+      A user-supplied function to run on each item to determine its label.
+         </p><p>The label function takes one argument, the item in the data provider.
+   It returns a String.
+   <blockquote>
+   <code>labelFunction(item:Object):String</code>
+   </blockquote></p>
+      <p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get labelFunction():Function</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set labelFunction(value:Function):void</code>
+<br>
+</div>
+<a name="layoutStrategy"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">layoutStrategy</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>layoutStrategy:<a href="treeMapClasses/ITreeMapLayoutStrategy.html">ITreeMapLayoutStrategy</a></code>&nbsp;&nbsp;[read-write]<p>
+      The custom layout algorithm for the control.
+         </p><p>The default alogrithm is Squarify.</p>
+      <span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get layoutStrategy():<a href="treeMapClasses/ITreeMapLayoutStrategy.html">ITreeMapLayoutStrategy</a></code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set layoutStrategy(value:<a href="treeMapClasses/ITreeMapLayoutStrategy.html">ITreeMapLayoutStrategy</a>):void</code>
+<br>
+</div>
+<a name="maximumDepth"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">maximumDepth</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>maximumDepth:int</code>&nbsp;&nbsp;[read-write]<p>
+   If value is >= 0, the treemap will only render branches to a specific depth.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get maximumDepth():int</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set maximumDepth(value:int):void</code>
+<br>
+</div>
+<a name="nodeRenderer"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">nodeRenderer</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>nodeRenderer:ClassFactory</code>&nbsp;&nbsp;[read-write]<p>
+      The custom node renderer for the control.
+      You can specify a drop-in, inline, or custom node renderer.
+         </p><p>The default node renderer is TreeMapNodeRenderer.</p>
+      <span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get nodeRenderer():ClassFactory</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set nodeRenderer(value:ClassFactory):void</code>
+<br>
+</div>
+<a name="selectable"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">selectable</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>selectable:Boolean</code>&nbsp;&nbsp;[read-write]<p>
+      Indicates if the node's within the TreeMap can be selected by the user.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get selectable():Boolean</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set selectable(value:Boolean):void</code>
+<br>
+</div>
+<a name="selected"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">selected</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>selected:Boolean</code>&nbsp;&nbsp;[read-write]<p>
+      If this TreeMap is a renderer for a parent TreeMap,
+      it may be the selected node.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get selected():Boolean</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set selected(value:Boolean):void</code>
+<br>
+</div>
+<a name="selectedItem"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">selectedItem</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>selectedItem:Object</code>&nbsp;&nbsp;[read-write]<p>
+   The data for the currently selected node. May be the data for
+   a grandchild or deeper ancestor.
+   </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get selectedItem():Object</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set selectedItem(value:Object):void</code>
+<br>
+</div>
+<a name="toolTipField"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">toolTipField</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>toolTipField:String</code>&nbsp;&nbsp;[read-write]<p>
+      The name of the field in the data provider items to display as the ToolTip
+      of the data renderer.
+      </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get toolTipField():String</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set toolTipField(value:String):void</code>
+<br>
+</div>
+<a name="toolTipFunction"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">toolTipFunction</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>toolTipFunction:Function</code>&nbsp;&nbsp;[read-write]<p>
+      A user-supplied function to run on each item to determine its ToolTip.
+         </p><p>The tooltip function takes one argument, the item in the data provider.
+   It returns a String.
+   <blockquote>
+   <code>toolTipFunction(item:Object):String</code>
+   </blockquote></p>
+      <p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get toolTipFunction():Function</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set toolTipFunction(value:Function):void</code>
+<br>
+</div>
+<a name="weightField"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">weightField</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>weightField:String</code>&nbsp;&nbsp;[read-write]<p>
+      The name of the field in the data provider items to use in weight calculations.
+      </p><p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get weightField():String</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set weightField(value:String):void</code>
+<br>
+</div>
+<a name="weightFunction"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">weightFunction</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>weightFunction:Function</code>&nbsp;&nbsp;[read-write]<p>
+      A user-supplied function to run on each item to determine its weight.
+         </p><p>The weight function takes one arguments, the item in the data provider.
+   It returns a Number.
+   <blockquote>
+   <code>weightFunction(item:Object):Number</code>
+   </blockquote></p>
+      <p>This property can be used as the source for data binding.</p>
+<span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get weightFunction():Function</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set weightFunction(value:Function):void</code>
+<br>
+</div>
+<a name="zoomed"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomed</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var zoomed:Boolean = false</code>
+</div>
+<a name="zoomedNode"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomedNode</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected var zoomedNode:<a href="treeMapClasses/ITreeMapNodeRenderer.html">ITreeMapNodeRenderer</a></code><p>
+   The node that is currently zoomed. Null if none are zoomed.
+   </p></div>
+<a name="zoomOutType"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">zoomOutType</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>zoomOutType:String</code>&nbsp;&nbsp;[read-write]<p>
+   Determines the way that zoom out actions work. Values are defined by the
+   constants in the <code>TreeMapZoomOutType</code> class.
+   </p><span class="label">Implementation</span>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function get zoomOutType():String</code>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;public function set zoomOutType(value:String):void</code>
+<br>
+</div>
+<a name="constructorDetail"></a>
+<div class="detailSectionHeader">Constructor detail</div>
+<a name="TreeMap()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">TreeMap</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">constructor</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function TreeMap()</code><p>
+   Constructor.
+   </p></div>
+<a name="methodDetail"></a>
+<div class="detailSectionHeader">Method detail</div>
+<a name="containsItem()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">containsItem</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>protected function containsItem(item:Object, data:Object = null):Boolean</code><p>
+      Searches the data provider for the specified item.
+      
+      </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">item</span>:Object</code> &mdash;  this item to search for within the data provider
+      </td>
+</tr>
+<tr>
+<td class="paramSpacer">&nbsp;</td>
+</tr>
+<tr>
+<td width="20px"></td><td><code><span class="label">data</span>:Object</code> (default = <code>null</code>)<code></code> &mdash;  the current recursive position within the data provider
+      </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Boolean</code></td>
+</tr>
+</table>
+</div>
+<a name="itemToColor()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">itemToColor</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function itemToColor(item:Object):uint</code><p>
+   Determines the color value for an item from the data provider.
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">item</span>:Object</code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>uint</code></td>
+</tr>
+</table>
+</div>
+<a name="itemToLabel()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">itemToLabel</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function itemToLabel(item:Object):String</code><p>
+   Determines the label text for an item from the data provider.
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">item</span>:Object</code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>String</code></td>
+</tr>
+</table>
+</div>
+<a name="itemToRenderer()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">itemToRenderer</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function itemToRenderer(data:Object):<a href="treeMapClasses/ITreeMapNodeRenderer.html">ITreeMapNodeRenderer</a></code><p>
+      Returns the node renderer that displays specific data.
+      
+      </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">data</span>:Object</code> &mdash;    the data for which to find a matching node renderer
+      </td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code><a href="treeMapClasses/ITreeMapNodeRenderer.html">ITreeMapNodeRenderer</a></code> &mdash; 
+                            the node renderer that matches the data
+      
+                        
+                     </td>
+</tr>
+</table>
+</div>
+<a name="itemToToolTip()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">itemToToolTip</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function itemToToolTip(item:Object):String</code><p>
+   Determines the tooltip text for an item from the data provider.
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">item</span>:Object</code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>String</code></td>
+</tr>
+</table>
+</div>
+<a name="itemToWeight()"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">itemToWeight</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<code>public function itemToWeight(item:Object):Number</code><p>
+   Determines the weight value for an item from the data provider.
+   </p><span class="label">Parameters</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20px"></td><td><code><span class="label">item</span>:Object</code></td>
+</tr>
+</table>
+<p></p>
+<span class="label">Returns</span>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="20"></td><td><code>Number</code></td>
+</tr>
+</table>
+</div>
+<div class="detailSectionHeader">Event detail</div>
+<a name="event:change"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">change</td><td class="detailHeaderType">event&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href=""><code>flash.events.Event</code></a>
+<br>
+<p></p><p>
+  Dispatched when the <code>selectedIndex</code> or <code>selectedItem</code> property
+  changes as a result of user interaction.
+    </p></div>
+<a name="event:nodeClick"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">nodeClick</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href=""><code>com.joshtynjala.events.TreeMapEvent</code></a>
+<br>
+<p></p><p>
+  Dispatched when the user clicks on an node in the control.
+    </p></div>
+<a name="event:nodeDoubleClick"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">nodeDoubleClick</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href=""><code>com.joshtynjala.events.TreeMapEvent</code></a>
+<br>
+<p></p><p>
+  Dispatched when the user double-clicks on an node in the control.
+    </p></div>
+<a name="event:nodeRollOut"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">nodeRollOut</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href=""><code>com.joshtynjala.events.TreeMapEvent</code></a>
+<br>
+<p></p><p>
+  Dispatched when the user rolls the mouse pointer out of an node in the control.
+    </p></div>
+<a name="event:nodeRollOver"></a>
+<table cellspacing="0" cellpadding="0" class="detailHeader">
+<tr>
+<td class="detailHeaderName">nodeRollOver</td><td class="detailHeaderType">event&nbsp;</td><td class="detailHeaderRule">&nbsp;</td>
+</tr>
+</table>
+<div class="detailBody">
+<span class="label">Event object type: </span><a href=""><code>com.joshtynjala.events.TreeMapEvent</code></a>
+<br>
+<p></p><p>
+  Dispatched when the user rolls the mouse pointer over an node in the control.
+    </p></div>
+<br>
+<br>
+<hr>
+<br>
+<p></p>
+<center class="copyright"> 
+</center>
+</div>
+</body>
+</html>
+<!-- -->

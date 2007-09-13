@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<project name="Flex TreeMap" default="build-all" basedir=".">
 
-<!-- Ant Build for TreeMap.swc -->
-
-<project name="TreeMap" default="compile" basedir=".">
+	<property file="./build.properties"/>
 	
-	<target name="compile">
-	    <exec executable="compc">
-		<arg line="--source-path source"/>
-		<arg line="--output deploy/TreeMap.swc"/>
-		<arg line="--include-classes com.joshtynjala.controls.TreeMap 
-com.joshtynjala.controls.TreeMapZoomOutType com.joshtynjala.controls.treeMapClasses.ITreeMapBranchRenderer com.joshtynjala.controls.treeMapClasses.ITreeMapLayoutStrategy com.joshtynjala.controls.treeMapClasses.ITreeMapNodeRenderer com.joshtynjala.controls.treeMapClasses.SliceAndDice com.joshtynjala.controls.treeMapClasses.Squarify com.joshtynjala.controls.treeMapClasses.treemap_internal com.joshtynjala.controls.treeMapClasses.TreeMapHeader com.joshtynjala.controls.treeMapClasses.TreeMapNodeRenderer com.joshtynjala.events.TreeMapEvent com.joshtynjala.skins.halo.TreeMapHeaderSkin com.joshtynjala.skins.halo.TreeMapNodeSkin"/>
-		<arg line="--namespace http://www.joshtynjala.com/2006/mxml manifest.xml"/>
-		<arg line="--include-namespaces http://www.joshtynjala.com/2006/mxml"/>
+	<target name="build-all" depends="properties,build-lib,build-docs"/>
+	
+	<target name="properties">
+		<fail unless="asdoc">The "asdoc" property must be set in build.properties.</fail>
+		<fail unless="compc">The "compc" property must be set in build.properties.</fail>
+		<fail unless="mxmlc">The "mxmlc" property must be set in build.properties.</fail>
+	</target>
+	
+	<target name="build-lib">
+	    <exec executable="${compc}" dir="${basedir}" failonerror="true">
+			<arg line="--namespace http://www.flextoolbox.com/2006/mxml manifest.xml"/>
+			<arg line="--source-path '${source.dir}'"/>
+			<arg line="--include-namespaces http://www.flextoolbox.com/2006/mxml"/>
+			<arg line="--output '${build.dir}/${library.name}.swc'"/>
 	    </exec>
+	</target>
+	
+	<target name="build-docs">
+		<exec executable="${asdoc}" dir="${basedir}" failonerror="true">
+			<arg line="--doc-sources '${source.dir}'"/>
+			<arg line="--output '${docs.dir}'"/>
+		</exec>
+	</target>
+	
+	<target name="build-examples">
+	</target>
+	
+	<target name="package">
 	</target>
 	
 </project>

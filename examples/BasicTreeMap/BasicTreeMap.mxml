@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:zx="http://www.joshtynjala.com/2006/mxml"
+	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml"
 	layout="vertical">
 	
 	<!-- A TreeMap component displaying some sample data. The label value
 		comes from the "name" attribute in the XML and the weight value
 		comes from the "value" attribute. -->
 		
-	<zx:TreeMap id="map" width="100%" height="100%"
+	<toolbox:TreeMap id="map" width="100%" height="100%"
 			dataProvider="{sampleData}"
 			labelField="@name"
 			weightField="@value"/>

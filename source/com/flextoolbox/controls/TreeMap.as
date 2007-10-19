@@ -70,30 +70,30 @@ package com.flextoolbox.controls
 	/**
 	 * Dispatched when the user rolls the mouse pointer over an node in the control.
 	 *
-	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OVER
+	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_ROLL_OVER
 	 */
-	[Event(name="nodeRollOver", type="com.joshtynjala.events.TreeMapEvent")]
+	[Event(name="nodeRollOver", type="com.flextoolbox.events.TreeMapEvent")]
 	
 	/**
 	 * Dispatched when the user rolls the mouse pointer out of an node in the control.
 	 *
-	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_ROLL_OUT
+	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_ROLL_OUT
 	 */
-	[Event(name="nodeRollOut", type="com.joshtynjala.events.TreeMapEvent")]
+	[Event(name="nodeRollOut", type="com.flextoolbox.events.TreeMapEvent")]
 	
 	/**
 	 * Dispatched when the user clicks on an node in the control.
 	 *
-	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_CLICK
+	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_CLICK
 	 */
-	[Event(name="nodeClick", type="com.joshtynjala.events.TreeMapEvent")]
+	[Event(name="nodeClick", type="com.flextoolbox.events.TreeMapEvent")]
 	
 	/**
 	 * Dispatched when the user double-clicks on an node in the control.
 	 *
-	 * @eventType com.joshtynjala.events.TreeMapEvent.NODE_DOUBLE_CLICK
+	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_DOUBLE_CLICK
 	 */
-	[Event(name="nodeDoubleClick", type="com.joshtynjala.events.TreeMapEvent")]
+	[Event(name="nodeDoubleClick", type="com.flextoolbox.events.TreeMapEvent")]
 	
 	//--------------------------------------
 	//  Styles

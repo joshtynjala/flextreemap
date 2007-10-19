@@ -1713,6 +1713,8 @@ package com.flextoolbox.controls
 			{
 				this.selectedItem = renderer.data;
 			}
+			var click:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_CLICK, false, false, renderer);
+			this.dispatchEvent(click);
 		}
 		
 		/**

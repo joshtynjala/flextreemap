@@ -580,6 +580,8 @@ package com.flextoolbox.controls
 	    	if(this._layoutStrategy != strategy)
 	    	{
 	    		this._layoutStrategy = strategy;
+				this._nodesNeedRedraw = true;
+				this.invalidateProperties();
 		    	this.invalidateDisplayList();
 		    }
 	    }
@@ -660,6 +662,33 @@ package com.flextoolbox.controls
 	//-- Weight
 	
 		private var _cachedWeights:Dictionary;
+	
+		/**
+		 * @private
+		 * Storage for the deriveBranchWeightFromLeaves property.
+		 */
+		private var _deriveBranchWeightFromLeaves:Boolean = true;
+	
+		[Bindable]
+		/**
+		 * If true, the weight value of a branch will be the sum of its children.
+		 * If false, a branch's weight value is derived from the <code>weightField</code> or <code>weightFunction</code>.
+		 */
+		public function get deriveBranchWeightFromLeaves():Boolean
+		{
+			return this._deriveBranchWeightFromLeaves;
+		}
+		
+		public function set deriveBranchWeightFromLeaves(value:Boolean):void
+		{
+			if(this._deriveBranchWeightFromLeaves != value)
+			{
+				this._deriveBranchWeightFromLeaves = value;
+				this._nodesNeedRedraw = true;
+				this.invalidateProperties();
+				this.invalidateDisplayList();
+			}
+		}
 	
 		/**
 		 * @private
@@ -1185,6 +1214,18 @@ package com.flextoolbox.controls
 			var weight:Number = this._cachedWeights[item];
 			if(isNaN(weight))
 			{
+				if(this.dataDescriptor.isBranch(item))
+				{
+					weight = 0;
+					var iterator:IViewCursor = this.dataDescriptor.getChildren(item).createCursor();
+					while(!iterator.afterLast)
+					{
+						weight += this.itemToWeight(iterator.current);
+						iterator.moveNext();
+					}
+					return weight;
+				}
+				
 				if(this.weightFunction != null)
 				{
 					weight = this.weightFunction(item);

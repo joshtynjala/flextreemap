@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml"
+	layout="horizontal">
+
+	<mx:VBox width="200">
+		<mx:Label color="0xffffff" fontSize="16" text="Layout Strategy"/>
+		<mx:RadioButtonGroup id="layoutStrategy" change="treeMap.layoutStrategy = new layoutStrategy.selectedValue();"/>
+		<mx:RadioButton groupName="layoutStrategy" label="Squarify" value="{Squarify}" selected="true"/>
+		<mx:RadioButton groupName="layoutStrategy" label="Slice-and-Dice" value="{SliceAndDice}"/>
+	</mx:VBox>
+	
+	<toolbox:TreeMap id="treeMap" width="400" height="300"
+		dataProvider="{marketData}" labelField="@name" weightField="@value"/>
+	
+	<mx:XMLList id="marketData" xmlns="">
+		<sector name="Technology">
+			<company name="WidgetCorp" value="42000000"/>
+			<company name="Sprocket Systems" value="21000000"/>
+			<company name="Gizmodyne" value="105000000"/>
+			<company name="GadgetSoft" value="12000000"/>
+		</sector>
+		<sector name="Financial">
+			<company name="Parker-Hayes" value="45500000"/>
+			<company name="G.A. Harvard" value="128000000"/>
+			<company name="P. Royal Trust" value="87000000"/>
+			<company name="Houndsworth Bank" value="19000000"/>
+		</sector>
+		<sector name="Energy">
+			<company name="Axxom Monopocorp" value="32000000"/>
+			<company name="RP Petrol" value="75000000"/>
+			<company name="Lexaco" value="39000000"/>
+		</sector>
+		<sector name="Communication">
+			<company name="Richtel Networks" value="24000000"/>
+			<company name="TC&amp;I" value="96000000"/>
+			<company name="Norizon" value="14000000"/>
+		</sector>
+	</mx:XMLList>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.flextoolbox.controls.treeMapClasses.*;
+		]]>
+	</mx:Script>
+	
+</mx:Application>

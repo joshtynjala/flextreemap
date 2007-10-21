@@ -3,7 +3,7 @@
 
 	<property file="./build.properties"/>
 	
-	<target name="build-all" depends="properties,build-lib,build-docs"/>
+	<target name="build-all" depends="properties,build-lib,build-docs,build-examples"/>
 	
 	<target name="properties">
 		<fail unless="asdoc">The "asdoc" property must be set in build.properties.</fail>
@@ -15,6 +15,7 @@
 	    <exec executable="${compc}" dir="${basedir}" failonerror="true">
 			<arg line="--namespace http://www.flextoolbox.com/2006/mxml manifest.xml"/>
 			<arg line="--source-path '${source.dir}'"/>
+			<arg line="--include-classes+=com.flextoolbox.controls.treeMapClasses.SliceAndDice"/>
 			<arg line="--include-namespaces http://www.flextoolbox.com/2006/mxml"/>
 			<arg line="--output '${build.dir}/${library.name}.swc'"/>
 	    </exec>
@@ -28,6 +29,15 @@
 	</target>
 	
 	<target name="build-examples">
+		<exec executable="${mxmlc}" dir="${basedir}/examples/GettingStarted" failonerror="true">
+			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
+			<arg line="GettingStarted.mxml"/>
+		</exec>
+		
+		<exec executable="${mxmlc}" dir="${basedir}/examples/LayoutModes" failonerror="true">
+			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
+			<arg line="LayoutModes.mxml"/>
+		</exec>
 	</target>
 	
 	<target name="package">

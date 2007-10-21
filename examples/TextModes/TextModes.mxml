@@ -37,12 +37,12 @@
 		   value accepted by the autoFitText style.
 	-->
 
-	<mx:VBox width="200">
-		<mx:Label color="0xffffff" fontSize="16" text="Text Mode"/>
+	<mx:VBox width="250">
+		<mx:Label color="0xffffff" fontSize="16" text="Using the autoFitText Style"/>
 		<mx:RadioButtonGroup id="textMode" change="treeMap.setStyle('nodeStyleName', textMode.selectedValue);"/>
-		<mx:RadioButton groupName="textMode" label="None" value="autoFitNone" selected="true"/>
-		<mx:RadioButton groupName="textMode" label="Full" value="autoFitFull"/>
-		<mx:RadioButton groupName="textMode" label="Partial" value="autoFitPartial"/>
+		<mx:RadioButton groupName="textMode" label="none" value="autoFitNone" selected="true"/>
+		<mx:RadioButton groupName="textMode" label="full" value="autoFitFull"/>
+		<mx:RadioButton groupName="textMode" label="partial" value="autoFitPartial"/>
 	</mx:VBox>
 	
 	<toolbox:TreeMap id="treeMap" width="400" height="300" nodeStyleName="autoFitNone"

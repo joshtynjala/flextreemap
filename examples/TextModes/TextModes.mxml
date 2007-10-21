@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright (c) 2007 Josh Tynjala
+	
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to 
+	deal in the Software without restriction, including without limitation the
+	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+	sell copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+	
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+	
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+	IN THE SOFTWARE.
+-->
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml"
+	layout="horizontal">
+
+	<!--
+		Important Notes:
+		
+		1. Renderers can use a style called autoFitText to change label font
+		   sizes dynamically. By default, the labels are displayed using
+		   the standard fontSize style, but special autoFitText values may
+		   change this behavior.
+		
+		2. See comments below in the <mx:Style> element for explanations of each
+		   value accepted by the autoFitText style.
+	-->
+
+	<mx:VBox width="200">
+		<mx:Label color="0xffffff" fontSize="16" text="Text Mode"/>
+		<mx:RadioButtonGroup id="textMode" change="treeMap.setStyle('nodeStyleName', textMode.selectedValue);"/>
+		<mx:RadioButton groupName="textMode" label="None" value="autoFitNone" selected="true"/>
+		<mx:RadioButton groupName="textMode" label="Full" value="autoFitFull"/>
+		<mx:RadioButton groupName="textMode" label="Partial" value="autoFitPartial"/>
+	</mx:VBox>
+	
+	<toolbox:TreeMap id="treeMap" width="400" height="300" nodeStyleName="autoFitNone"
+		dataProvider="{marketData}" labelField="@name" weightField="@value"/>
+	
+	<mx:XMLList id="marketData" xmlns="">
+		<sector name="Technology">
+			<company name="WidgetCorp" value="42000000"/>
+			<company name="Sprocket Systems" value="21000000"/>
+			<company name="Gizmodyne" value="105000000"/>
+			<company name="GadgetSoft" value="12000000"/>
+		</sector>
+		<sector name="Financial">
+			<company name="Parker-Hayes" value="45500000"/>
+			<company name="G.A. Harvard" value="128000000"/>
+			<company name="P. Royal Trust" value="87000000"/>
+			<company name="Houndsworth Bank" value="19000000"/>
+		</sector>
+		<sector name="Energy">
+			<company name="Axxom Monopocorp" value="32000000"/>
+			<company name="RP Petrol" value="75000000"/>
+			<company name="Lexaco" value="39000000"/>
+		</sector>
+		<sector name="Communication">
+			<company name="Richtel Networks" value="24000000"/>
+			<company name="TCI" value="96000000"/>
+			<company name="Norizon" value="14000000"/>
+		</sector>
+	</mx:XMLList>
+	
+	<mx:Style>
+		.autoFitNone
+		{
+			/* When autoFitText is "none", the font size on leaves alway matches
+			   the fontSize style */
+			   
+			autoFitText: "none";
+			fontSize: 10;
+		}
+		
+		.autoFitFull
+		{
+			/* When autoFitText is "full", the font size on leaves increases to
+			   fill as much space as possible. Words may be broken onto multiple
+			   lines within the renderer */
+			   
+			autoFitText: "full";
+			fontSize: 6;
+		}
+		
+		.autoFitPartial
+		{
+			/* When autoFitText is "partial", the font size of leaves increases
+			   to fill empty space in the renderer, but it stops if a word will
+			   be broken onto multiple lines. The fontSize style is used as a
+			   minimum size, and words that break at this size will remain
+			   broken. Decrease fontSize to set a lower minimum if this isn't
+			   the desired behavior. */
+			    
+			autoFitText: "partial";
+			fontSize: 6;
+		}
+	</mx:Style>
+	
+</mx:Application>

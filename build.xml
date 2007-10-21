@@ -38,6 +38,11 @@
 			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
 			<arg line="LayoutModes.mxml"/>
 		</exec>
+		
+		<exec executable="${mxmlc}" dir="${basedir}/examples/TextModes" failonerror="true">
+			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
+			<arg line="TextModes.mxml"/>
+		</exec>
 	</target>
 	
 	<target name="package">

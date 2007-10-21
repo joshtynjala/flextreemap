@@ -112,17 +112,17 @@ package com.flextoolbox.controls
 	/**
 	 * Sets the style name for the header.
 	 */
-	[Style(name="headerStyleName", type="String")]
+	[Style(name="headerStyleName", type="String", inherit="yes")]
 	
 	/**
 	 * Sets the style name for all standard nodes.
 	 */
-	[Style(name="nodeStyleName", type="String")]
+	[Style(name="nodeStyleName", type="String", inherit="yes")]
 	
 	/**
 	 * Sets the style name for all branches.
 	 */
-	[Style(name="branchStyleName", type="String")]
+	[Style(name="branchStyleName", type="String", inherit="yes")]
 	
 	/**
 	 * A treemap is a space-constrained visualization of hierarchical

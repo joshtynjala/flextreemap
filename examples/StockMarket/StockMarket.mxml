@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml"
+	layout="vertical"
+	initialize="calculateMaxAbsoluteChange();">
+
+	<toolbox:TreeMap id="treeMap" width="400" height="300"
+		dataProvider="{marketData}" labelField="@name" weightField="@marketCap"
+		colorFunction="{itemToColor}" toolTipFunction="{itemToToolTip}"/>
+	
+	<mx:CurrencyFormatter id="formatter"/>
+	
+	<mx:XMLList id="marketData" xmlns="">
+		<sector name="Technology">
+			<company name="WidgetCorp" marketCap="4200000000" value="42.01" change="-2.03"/>
+			<company name="Sprocket Systems" marketCap="2100000000" value="24.87" change="4.45"/>
+			<company name="Gizmodyne" marketCap="10500000000" value="106.52" change="1.01"/>
+			<company name="GadgetSoft" marketCap="1200000000" value="12.98" change="-0.82"/>
+		</sector>
+		<sector name="Financial">
+			<company name="Parker-Hayes" marketCap="4550000000" value="36.74" change="3.56"/>
+			<company name="G.A. Harvard" marketCap="12800000000" value="21.61" change="-1.71"/>
+			<company name="P. Royal Trust" marketCap="8700000000" value="25.22" change="2.09"/>
+			<company name="Houndsworth Bank" marketCap="1900000000" value="33.71" change="0.2"/>
+		</sector>
+		<sector name="Energy">
+			<company name="Axxom Monopocorp" marketCap="3200000000" value="36.18" change="5.46"/>
+			<company name="RP Petrol" marketCap="7500000000" value="26.74" change="-3.25"/>
+			<company name="Lexaco" marketCap="3900000000" value="15.96" change="-2.08"/>
+		</sector>
+		<sector name="Communication">
+			<company name="Richtel Networks" marketCap="2400000000" value="34.93" change="-1.94"/>
+			<company name="TCI" marketCap="9600000000" value="45.82" change="0.22"/>
+			<company name="Norizon" marketCap="1400000000" value="27.46" change="1.68"/>
+		</sector>
+	</mx:XMLList>
+	
+	<mx:Script>
+		<![CDATA[
+		
+			/*
+				This app displays the "change" value using red for negative values,
+				green for positive values, and black for zero.
+			*/
+		
+			private const MIN_COLOR:uint = 0xcc0000;
+			private const ZERO_COLOR:uint = 0;
+			private const MAX_COLOR:uint = 0x00cc00;
+			
+			private var _maxAbsoluteChange:Number;
+			
+			/**
+			 * Takes the absolute value of each change value and determines the maximum.
+			 */
+			private function calculateMaxAbsoluteChange():void
+			{
+				var companies:XMLList = this.marketData..company;
+				this._maxAbsoluteChange = 0;
+				for each(var company:XML in companies)
+				{
+					var change:Number = Number(company.@change);
+					this._maxAbsoluteChange = Math.max(this._maxAbsoluteChange, Math.abs(change));
+				}
+			}
+			
+			/**
+			 * For each item, determines the background color.
+			 */
+			private function itemToColor(item:Object):uint
+			{
+				var change:Number = Number(item.@change);
+				if(change < 0)
+				{
+					return this.blendColors(MIN_COLOR, ZERO_COLOR, Math.abs(change) / this._maxAbsoluteChange);
+				}
+				else if(change > 0)
+				{
+					return this.blendColors(ZERO_COLOR, MAX_COLOR, 1 - (Math.abs(change) / this._maxAbsoluteChange));
+				}
+				return ZERO_COLOR;
+			}
+			
+			/**
+			 * Determines the blended color between two separate colors using a range from 0 to 1.
+			 */
+			private function blendColors(color1:uint, color2:uint, percent:Number = 0.5):uint
+			{
+				var remaining:Number = 1 - percent;
+				
+				var red1:uint = (color1 >> 16) & 0xff;
+				var green1:uint = (color1 >> 8) & 0xff;
+				var blue1:uint = color1 & 0xff;
+				
+				var red2:uint = (color2 >> 16) & 0xff;
+				var green2:uint = (color2 >> 8) & 0xff;
+				var blue2:uint = color2 & 0xff;
+				 
+				color1 = ((red1 * percent) << 16) + ((green1 * percent) << 8) + blue1 * percent;
+				color2 = ((red2 * remaining) << 16) + ((green2 * remaining) << 8) + blue2 * remaining;
+	
+				return color1 + color2;
+	
+			}
+			
+			/**
+			 * For each item, determines the tooltip text.
+			 */
+			private function itemToToolTip(item:Object):String
+			{
+				//one tooltip for branches and one for leaves
+				if(this.treeMap.dataDescriptor.isBranch(item))
+				{
+					return null;
+				}
+				var capInBillions:Number = Number(item.@marketCap) / 1000000000;
+				return "Value: " + this.formatter.format(item.@value) + "\n" +
+					"Change: " + item.@change + "%\n" +
+					"Market Cap: $" + capInBillions + "B";
+			}
+		]]>
+	</mx:Script>
+</mx:Application>

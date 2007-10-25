@@ -3,52 +3,48 @@
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml"
 	layout="vertical">
-	
-	<!-- A TreeMap component displaying some sample data. The label value
-		comes from the "name" attribute in the XML and the weight value
-		comes from the "value" attribute. This TreeMap has selectable nodes. -->
-		
-	<toolbox:TreeMap id="map" width="100%" height="100%"
-			label="Video Games"
-			dataProvider="{sampleData}"
-			labelField="@name"
-			weightField="@value"
-			selectable="true"/>
 			
 	<!-- To demonstrate selection, display the selected node in a label.
 		Click on a node to display the text. -->
 	
 	<mx:Label text="{'Selected Node: ' + map.selectedItem.@name}" fontSize="14" color="#ffffff"/>
 	
+	<!-- A TreeMap component displaying some sample data. The label value
+		comes from the "name" attribute in the XML and the weight value
+		comes from the "value" attribute. This TreeMap has selectable nodes. -->
+		
+	<toolbox:TreeMap id="map" width="400" height="300"
+			dataProvider="{marketData}"
+			labelField="@name"
+			weightField="@value"
+			selectable="true"/>
+	
 	<!-- Some XML containing sample data to display in the TreeMap component. 
 		It contains built-in label and weight values. -->
-		
-	<mx:XML id="sampleData">
-		<branch>
-			<branch name="Nintendo" value="4">
-				<branch name="Consoles" value="2">
-					<leaf name="GameCube" value="1"/>
-					<leaf name="Wii" value="1"/>
-				</branch>
-				<branch name="Handheld" value="2">
-					<leaf name="Game Boy Advance" value="1"/>
-					<leaf name="Nintendo DS" value="1"/>
-				</branch>
-			</branch>
-			<branch name="Sony" value="3">
-				<branch name="Consoles" value="2">
-					<leaf name="PlayStation 2" value="1"/>
-					<leaf name="PlayStation 3" value="1"/>
-				</branch>
-				<branch name="Handheld" value="1">
-					<leaf name="PSP" value="1"/>
-				</branch>
-			</branch>
-			<branch name="Microsoft" value="2">
-				<leaf name="XBOX" value="1"/>
-				<leaf name="XBOX 360" value="1"/>
-			</branch>
-		</branch>
-	</mx:XML>
+
+	<mx:XMLList id="marketData" xmlns="">
+		<sector name="Technology">
+			<company name="WidgetCorp" marketCap="4200000000" value="42.01" change="-2.03"/>
+			<company name="Sprocket Systems" marketCap="2100000000" value="24.87" change="4.45"/>
+			<company name="Gizmodyne" marketCap="10500000000" value="106.52" change="1.01"/>
+			<company name="GadgetSoft" marketCap="1200000000" value="12.98" change="-0.82"/>
+		</sector>
+		<sector name="Financial">
+			<company name="Parker-Hayes" marketCap="4550000000" value="36.74" change="3.56"/>
+			<company name="G.A. Harvard" marketCap="12800000000" value="21.61" change="-1.71"/>
+			<company name="P. Royal Trust" marketCap="8700000000" value="25.22" change="2.09"/>
+			<company name="Houndsworth Bank" marketCap="1900000000" value="33.71" change="0.2"/>
+		</sector>
+		<sector name="Energy">
+			<company name="Axxom Monopocorp" marketCap="3200000000" value="36.18" change="5.46"/>
+			<company name="RP Petrol" marketCap="7500000000" value="26.74" change="-3.25"/>
+			<company name="Lexaco" marketCap="3900000000" value="15.96" change="-2.08"/>
+		</sector>
+		<sector name="Communication">
+			<company name="Richtel Networks" marketCap="2400000000" value="34.93" change="-1.94"/>
+			<company name="TCI" marketCap="9600000000" value="45.82" change="0.22"/>
+			<company name="Norizon" marketCap="1400000000" value="27.46" change="1.68"/>
+		</sector>
+	</mx:XMLList>
 	
 </mx:Application>

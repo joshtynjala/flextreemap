@@ -13,7 +13,7 @@
 			
 		<mx:Tree id="tree" width="100%" height="100%"
 			selectable="false"
-			dataProvider="{sampleData}"
+			dataProvider="{marketData}"
 			labelField="@name"/>
 			
 		
@@ -24,7 +24,7 @@
 			
 		<toolbox:TreeMap id="map" width="100%" height="100%"
 			styleName="TopLevel"
-			dataProvider="{sampleData}"
+			dataProvider="{marketData}"
 			labelField="@name"
 			weightFunction="{getItemWeight}"/>
 			
@@ -33,32 +33,31 @@
 	<!-- An XMLList of sample data to display in both the Tree and TreeMap
 		components. -->
 		
-	<mx:XMLList id="sampleData" xmlns="">
-		<branch name="Nintendo">
-			<branch name="Consoles">
-				<leaf name="GameCube" value="1"/>
-				<leaf name="Wii" value="1"/>
-			</branch>
-			<branch name="Handheld">
-				<leaf name="Game Boy Advance" value="1"/>
-				<leaf name="Nintendo DS" value="1"/>
-			</branch>
-		</branch>
-		<branch name="Sony">
-			<branch name="Consoles">
-				<leaf name="PlayStation 2" value="1"/>
-				<leaf name="PlayStation 3" value="1"/>
-			</branch>
-			<branch name="Handheld">
-				<leaf name="PSP" value="1"/>
-			</branch>
-		</branch>
-		<branch name="Microsoft">
-			<leaf name="XBOX" value="1"/>
-			<leaf name="XBOX 360" value="1"/>
-		</branch>
+	<mx:XMLList id="marketData" xmlns="">
+		<sector name="Technology">
+			<company name="WidgetCorp" marketCap="4200000000" value="42.01" change="-2.03"/>
+			<company name="Sprocket Systems" marketCap="2100000000" value="24.87" change="4.45"/>
+			<company name="Gizmodyne" marketCap="10500000000" value="106.52" change="1.01"/>
+			<company name="GadgetSoft" marketCap="1200000000" value="12.98" change="-0.82"/>
+		</sector>
+		<sector name="Financial">
+			<company name="Parker-Hayes" marketCap="4550000000" value="36.74" change="3.56"/>
+			<company name="G.A. Harvard" marketCap="12800000000" value="21.61" change="-1.71"/>
+			<company name="P. Royal Trust" marketCap="8700000000" value="25.22" change="2.09"/>
+			<company name="Houndsworth Bank" marketCap="1900000000" value="33.71" change="0.2"/>
+		</sector>
+		<sector name="Energy">
+			<company name="Axxom Monopocorp" marketCap="3200000000" value="36.18" change="5.46"/>
+			<company name="RP Petrol" marketCap="7500000000" value="26.74" change="-3.25"/>
+			<company name="Lexaco" marketCap="3900000000" value="15.96" change="-2.08"/>
+		</sector>
+		<sector name="Communication">
+			<company name="Richtel Networks" marketCap="2400000000" value="34.93" change="-1.94"/>
+			<company name="TCI" marketCap="9600000000" value="45.82" change="0.22"/>
+			<company name="Norizon" marketCap="1400000000" value="27.46" change="1.68"/>
+		</sector>
 	</mx:XMLList>
-
+	
 	<mx:Style>
 		.TopLevel
 		{
@@ -91,9 +90,10 @@
 			 */
 			private function expandTreeItems():void
 			{
-				for(var i:int = 0; i < sampleData.length(); i++)
+				var itemCount:int = this.marketData.length();
+				for(var i:int = 0; i < itemCount; i++)
 				{
-					var item:Object = sampleData[i];
+					var item:Object = marketData[i];
 					
 					// data descriptors provide a useful way to differentiate
 					// branches and regular items.
@@ -105,34 +105,11 @@
 			}
 			
 			/**
-			 * Determine the weight of a particular node in the treemap.
-			 * Note: this is probably the most common way to determine node
-			 * weights. More advanced solutions may exist that will produce
-			 * optimized results.
+			 * Determine the weight of a particular item in the treemap.
 			 */
 			private function getItemWeight(item:Object):Number
 			{
-				var weight:Number = 0;
-				
-				if(this.map.dataDescriptor.isBranch(item))
-				{
-					// if the current node is a branch, the weight is determined
-					// by the sum if the weights of its child nodes.
-					
-					var elements:XMLList = item.elements();
-					for(var i:int = 0; i < elements.length(); i++)
-					{
-						var temp:Number = this.getItemWeight(elements[i]);
-						weight += temp;
-					}
-				}
-				else
-				{
-					// if the current node is not a branch, the weight is
-					// determined by the "value" attribute.
-					weight = item.@value;
-				}
-				return weight;
+				return item.@marketCap;
 			}
 		]]>
 	</mx:Script>

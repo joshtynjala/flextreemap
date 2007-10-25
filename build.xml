@@ -43,6 +43,21 @@
 			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
 			<arg line="TextModes.mxml"/>
 		</exec>
+		
+		<exec executable="${mxmlc}" dir="${basedir}/examples/TreeComparison" failonerror="true">
+			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
+			<arg line="TreeComparison.mxml"/>
+		</exec>
+		
+		<exec executable="${mxmlc}" dir="${basedir}/examples/SelectableNodes" failonerror="true">
+			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
+			<arg line="SelectableNodes.mxml"/>
+		</exec>
+		
+		<exec executable="${mxmlc}" dir="${basedir}/examples/StockMarket" failonerror="true">
+			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
+			<arg line="StockMarket.mxml"/>
+		</exec>
 	</target>
 	
 	<target name="package">

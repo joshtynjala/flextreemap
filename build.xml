@@ -3,13 +3,7 @@
 
 	<property file="./build.properties"/>
 	
-	<target name="build-all" depends="properties,build-lib,build-docs,build-examples"/>
-	
-	<target name="properties">
-		<fail unless="asdoc">The "asdoc" property must be set in build.properties.</fail>
-		<fail unless="compc">The "compc" property must be set in build.properties.</fail>
-		<fail unless="mxmlc">The "mxmlc" property must be set in build.properties.</fail>
-	</target>
+	<target name="build-all" depends="build-lib,build-docs,build-examples"/>
 	
 	<target name="build-lib">
 	    <exec executable="${compc}" dir="${basedir}" failonerror="true">
@@ -17,50 +11,43 @@
 			<arg line="--source-path '${source.dir}'"/>
 			<arg line="--include-classes+=com.flextoolbox.controls.treeMapClasses.SliceAndDice"/>
 			<arg line="--include-namespaces http://www.flextoolbox.com/2006/mxml"/>
-			<arg line="--output '${build.dir}/${library.name}.swc'"/>
+			<arg line="--output '${build.dir}/${library.shortName}.swc'"/>
 	    </exec>
 	</target>
 	
 	<target name="build-docs">
 		<exec executable="${asdoc}" dir="${basedir}" failonerror="true">
 			<arg line="--doc-sources '${source.dir}'"/>
+			<arg line="--main-title '${library.name} by Josh Tynjala'"/>
+			<arg line="--window-title '${library.name} by Josh Tynjala'"/>
+			<arg line="--footer 'Copyright 2007 Josh Tynjala'"/>
 			<arg line="--output '${docs.dir}'"/>
 		</exec>
 	</target>
 	
 	<target name="build-examples">
-		<exec executable="${mxmlc}" dir="${basedir}/examples/GettingStarted" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
-			<arg line="GettingStarted.mxml"/>
-		</exec>
-		
-		<exec executable="${mxmlc}" dir="${basedir}/examples/LayoutModes" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
-			<arg line="LayoutModes.mxml"/>
-		</exec>
-		
-		<exec executable="${mxmlc}" dir="${basedir}/examples/TextModes" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
-			<arg line="TextModes.mxml"/>
-		</exec>
-		
-		<exec executable="${mxmlc}" dir="${basedir}/examples/TreeComparison" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
-			<arg line="TreeComparison.mxml"/>
-		</exec>
-		
-		<exec executable="${mxmlc}" dir="${basedir}/examples/SelectableNodes" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
-			<arg line="SelectableNodes.mxml"/>
-		</exec>
-		
-		<exec executable="${mxmlc}" dir="${basedir}/examples/StockMarket" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.name}.swc'"/>
-			<arg line="StockMarket.mxml"/>
-		</exec>
+		<ant antfile="examples/GettingStarted/build.xml" target="build"/>
+		<ant antfile="examples/LayoutModes/build.xml" target="build"/>
+		<ant antfile="examples/TextModes/build.xml" target="build"/>
+		<ant antfile="examples/TreeComparison/build.xml" target="build"/>
+		<ant antfile="examples/SelectableNodes/build.xml" target="build"/>
+		<ant antfile="examples/StockMarket/build.xml" target="build"/>
 	</target>
 	
 	<target name="package">
+		<tstamp>
+			<format property="date.today" pattern="MMddyyyy"/>
+		</tstamp>
+	
+		<mkdir dir="${output.dir}"/>
+	
+		<zip destfile="${output.dir}/${library.shortName}${date.today}.zip">
+			<zipfileset dir="${source.dir}" prefix="source"/>
+			<zipfileset dir="${docs.dir}" prefix="documentation"/>
+			<zipfileset dir="${examples.dir}" prefix="examples" excludes="**/build.xml"/>
+			<zipfileset dir="${build.dir}" prefix="build"/>
+			<zipfileset dir="." includes="license.txt,readme.txt"/>
+		</zip>
 	</target>
 	
 </project>

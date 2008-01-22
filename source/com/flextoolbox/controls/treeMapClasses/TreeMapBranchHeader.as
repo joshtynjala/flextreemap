@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2007 Josh Tynjala
+//  Copyright (c) 2008 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -24,9 +24,6 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import mx.containers.Accordion;
 	import mx.controls.Button;
 	import mx.core.Container;
@@ -37,25 +34,28 @@ package com.flextoolbox.controls.treeMapClasses
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.ISimpleStyleClient;
 	import mx.styles.StyleManager;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import com.flextoolbox.controls.TreeMap;
-	import com.flextoolbox.skins.halo.TreeMapHeaderSkin;
+	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
+	import mx.core.UIComponent;
 	
 	use namespace mx_internal;
 	
 	[AccessibilityClass(implementation="mx.accessibility.AccordionHeaderAccImpl")]
 	
 	/**
-	 * The TreeMapHeader class defines the appearance of the header buttons
-	 * of an TreeMap.
+	 * The TreeMapBranchHeader class defines the appearance of the header buttons
+	 * of the branches in a TreeMap.
 	 * You use the <code>getHeaderAt()</code> method of the TreeMap class to get a reference
-	 * to an individual TreeMapHeader object.
+	 * to an individual TreeMapBranchHeader object.
 	 * 
 	 * <p>Note: The majority of this comes from the class <code>mx.containers.accordionClasses.AccordionHeader</code>,
 	 * from the source code provided with the Flex 2 SDK.</p>
-	 *
-	 * @see com.joshtynjala.controls.TreeMap
 	 */
-	public class TreeMapHeader extends Button implements IDataRenderer
+	public class TreeMapBranchHeader extends Button implements IDataRenderer
 	{
 	
     //----------------------------------
@@ -77,7 +77,7 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		private static function initializeStyles():void
 		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapHeader");
+			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapBranchHeader");
 			
 			if(!selector)
 			{
@@ -86,23 +86,21 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			selector.defaultFactory = function():void
 			{
-				//this.fillAlphas = [1.0, 1.0];
+				this.fillAlphas = [1.0, 1.0];
 				this.paddingLeft = 5;
 				this.paddingRight = 5;
-				this.upSkin = TreeMapHeaderSkin;
-				this.downSkin = TreeMapHeaderSkin;
-				this.overSkin = TreeMapHeaderSkin;
-				this.disabledSkin = TreeMapHeaderSkin;
-				this.selectedUpSkin = TreeMapHeaderSkin;
-				this.selectedDownSkin = TreeMapHeaderSkin;
-				this.selectedOverSkin = TreeMapHeaderSkin;
-				this.selectedDisabledSkin = TreeMapHeaderSkin;
+				this.upSkin = TreeMapBranchHeaderSkin;
+				this.downSkin = TreeMapBranchHeaderSkin;
+				this.overSkin = TreeMapBranchHeaderSkin;
+				this.disabledSkin = TreeMapBranchHeaderSkin;
+				this.selectedUpSkin = TreeMapBranchHeaderSkin;
+				this.selectedDownSkin = TreeMapBranchHeaderSkin;
+				this.selectedOverSkin = TreeMapBranchHeaderSkin;
+				this.selectedDisabledSkin = TreeMapBranchHeaderSkin;
 			}
 			
-			StyleManager.setStyleDeclaration("TreeMapHeader", selector, false);
+			StyleManager.setStyleDeclaration("TreeMapBranchHeader", selector, false);
 		}
-		
-		//initialize the default styles
 		initializeStyles();
 	
     //----------------------------------
@@ -112,7 +110,7 @@ package com.flextoolbox.controls.treeMapClasses
 		/**
 		 * Constructor.
 		 */
-		public function TreeMapHeader()
+		public function TreeMapBranchHeader()
 		{
 			super();
 	
@@ -180,8 +178,8 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		override protected function initializeAccessibility():void
 		{
-			if (TreeMapHeader.createAccessibilityImplementation != null)
-				TreeMapHeader.createAccessibilityImplementation(this);
+			if (TreeMapBranchHeader.createAccessibilityImplementation != null)
+				TreeMapBranchHeader.createAccessibilityImplementation(this);
 		}
 	
 		/**
@@ -198,14 +196,18 @@ package com.flextoolbox.controls.treeMapClasses
 			// are ignored. Force them in here.
 			var styleDecl:CSSStyleDeclaration = StyleManager.getStyleDeclaration(className);
 			
-			if (styleDecl)
+			if(styleDecl)
 			{
 				var value:Number = styleDecl.getStyle("paddingLeft");
-				if (!isNaN(value))
-					setStyle("paddingLeft", value);
+				if(!isNaN(value))
+				{
+					this.setStyle("paddingLeft", value);
+				}
 				value = styleDecl.getStyle("paddingRight");
-				if (!isNaN(value))
-					setStyle("paddingRight", value);
+				if(!isNaN(value))
+				{
+					this.setStyle("paddingRight", value);
+				}
 			}
 		}
 		
@@ -275,10 +277,10 @@ package com.flextoolbox.controls.treeMapClasses
 			// by a pixel when layed out. In order for the border to be
 			// completely drawn on rollover, we need to set our index
 			// here to bring this header to the front.
-			var treemap:TreeMap = TreeMap(parent);
-			if (treemap.enabled)
+			var branch:UIComponent = UIComponent(this.parent);
+			if (branch.enabled)
 			{
-				treemap.setChildIndex(this, treemap.numChildren - 1);
+				branch.setChildIndex(this, branch.numChildren - 1);
 			}
 		}
 		

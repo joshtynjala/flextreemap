@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2007 Josh Tynjala
+//  Copyright (c) 2008 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -24,6 +24,64 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	//Internal namespace used for the TreeMap component
-	public namespace treemap_internal = "http://www.flextoolbox.com/2006/treemap/internal";
+	import com.flextoolbox.controls.TreeMap;
+
+	/**
+	 * The data passed to drop-in TreeMap leaf renderers.
+	 * 
+	 * @author Josh Tynjala
+	 */
+	public class TreeMapLeafData extends BaseTreeMapData
+	{
+		
+	//--------------------------------------
+	//  Constructor
+	//--------------------------------------
+	
+		public function TreeMapLeafData(owner:TreeMap)
+		{
+			super(owner);
+		}
+		
+	//--------------------------------------
+	//  Properties
+	//--------------------------------------
+		
+		private var _label:String = "";
+		
+		public function get label():String
+		{
+			return this._label;
+		}
+		
+		public function set label(value:String):void
+		{
+			this._label = value;
+		}
+		
+		private var _color:uint = 0x000000;
+		
+		public function get color():uint
+		{
+			return this._color;
+		}
+		
+		public function set color(value:uint):void
+		{
+			this._color = value;
+		}
+		
+		private var _dataTip:String = "";
+		
+		public function get dataTip():String
+		{
+			return this._dataTip;
+		}
+		
+		public function set dataTip(value:String):void
+		{
+			this._dataTip = value;
+		}
+		
+	}
 }

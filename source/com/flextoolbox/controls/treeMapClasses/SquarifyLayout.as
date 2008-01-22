@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2007 Josh Tynjala
+//  Copyright (c) 2008 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -24,28 +24,16 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.getTimer;
-	import flash.utils.Dictionary;
 	import mx.collections.ICollectionView;
+	import mx.collections.IViewCursor;
+	import flash.utils.Dictionary;
+	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
 	import mx.collections.SortField;
-	import mx.collections.IViewCursor;
-	import mx.collections.CursorBookmark;
-	import com.flextoolbox.controls.TreeMap;
-	import com.flextoolbox.controls.treeMapClasses.treemap_internal;
-
-	use namespace treemap_internal;
-
-	/**
-	 * Lays out <code>TreeMap</code> nodes using the Squarified subdivision alogrithm.
-	 * Generates excellent aspect ratios, but doesn't preserve the original
-	 * ordering of the data set. Node positions have medium stability.
-	 * 
-	 * @see zeuslabs.visualization.treemaps.TreeMap
-	 */
-	public class Squarify implements ITreeMapLayoutStrategy
+	import flash.geom.Point;
+	
+	public class SquarifyLayout implements ITreeMapLayoutStrategy
 	{
 		
 	//--------------------------------------
@@ -55,19 +43,13 @@ package com.flextoolbox.controls.treeMapClasses
 		/**
 		 * Constructor.
 		 */
-		public function Squarify()
+		public function SquarifyLayout()
 		{
 		}
 		
 	//--------------------------------------
 	//  Properties
 	//--------------------------------------
-	
-		/**
-		 * @private
-		 * Storage for the treemap whose nodes are being laid out.
-		 */
-		private var _target:TreeMap;
 		
 		/**
 		 * @private
@@ -98,29 +80,18 @@ package com.flextoolbox.controls.treeMapClasses
 		 * Iterator for the target's data provider.
 		 */
 		private var _dataIterator:IViewCursor;
-		
-		/**
-		 * @private
-		 * At the beginning of a layout update, store the weights as calculated by the
-		 * target TreeMap. This provides a huge performance boost because we won't need
-		 * to calculate these values many times.
-		 */
-		private var _savedWeights:Dictionary;
-		
+				
 	//--------------------------------------
 	//  Public Methods
 	//--------------------------------------
 		
 		/**
-		 * @copy com.joshtynjala.controls.treeMapClasses.ITreeMapLayoutStrategy#updateLayout
+		 * @copy com.flextoolbox.controls.treeMapClasses.ITreeMapLayoutStrategy#updateLayout
 		 */
-		public function updateLayout(treeMap:TreeMap):void
+		public function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
 		{
-			this._target = treeMap;
-			if(!this._target) return;
-			
-			this._dataProvider = this._target.dataProvider as ICollectionView;
-			if(this._dataProvider.length == 0) return;
+			if(branchData.itemCount == 0) return;
+			this._dataProvider = new ArrayCollection(branchData.itemsToArray());
 			
 			var weightSum:Number = this.saveWeightsAndGetTotalSum(this._dataProvider);
 			
@@ -133,15 +104,14 @@ package com.flextoolbox.controls.treeMapClasses
 			this._dataProvider.refresh();
 			
 			//the starting bounds are based on the map's calculated content area
-			var mapBounds:Rectangle = this._target.contentBounds.clone();
-			this._longerSide = Math.max(mapBounds.width, mapBounds.height);
-			this._shorterSide = Math.min(mapBounds.width, mapBounds.height);
+			this._longerSide = Math.max(bounds.width, bounds.height);
+			this._shorterSide = Math.min(bounds.width, bounds.height);
 			
 			this._numDrawnNodes = 0;
 			this._dataIterator = this._dataProvider.createCursor();
 			if(!this._dataIterator.afterLast)
 			{
-				this.squarify([this._dataIterator.current], weightSum, mapBounds);
+				this.squarify([this._dataIterator.current], weightSum, bounds.clone());
 			}
 			
 			this._dataProvider.sort = null;
@@ -160,13 +130,11 @@ package com.flextoolbox.controls.treeMapClasses
 		private function saveWeightsAndGetTotalSum(data:ICollectionView):Number
 		{
 			var sum:Number = 0;
-			this._savedWeights = new Dictionary();
 			var iterator:IViewCursor = data.createCursor();
 			do
 			{
-				var currentData:Object = iterator.current;
-				var weight:Number = this._target.itemToWeight(currentData);
-				this._savedWeights[currentData] = weight;
+				var currentData:TreeMapItemLayoutData = iterator.current;
+				var weight:Number = currentData.weight;
 				sum += weight;
 			}
 			while(iterator.moveNext());
@@ -185,10 +153,10 @@ package com.flextoolbox.controls.treeMapClasses
 			if(this._dataIterator.moveNext())
 			{
 				var dataWithExtraNode:Array = dataInCurrentRow.concat();
-				var temp:Object = this._dataIterator.current;
+				var temp:TreeMapItemLayoutData = TreeMapItemLayoutData(this._dataIterator.current);
 				dataWithExtraNode.push(temp);
 				
-				var extraWeight:Number = this._savedWeights[this._dataIterator.current];
+				var extraWeight:Number = temp.weight;
 				
 				if(this.aspectRatio(dataInCurrentRow, sumOfCurrentRow, sumOfRemaining) 
 					>= this.aspectRatio(dataWithExtraNode, sumOfCurrentRow + extraWeight, sumOfRemaining))
@@ -236,13 +204,15 @@ package com.flextoolbox.controls.treeMapClasses
 				return Math.max(value / lengthOfLongerSide, lengthOfLongerSide / value);
 			}
 			
-			var weight:Number = this._savedWeights[dataInRow[0]];
+			var layoutData:TreeMapItemLayoutData = TreeMapItemLayoutData(dataInRow[0]);
+			var weight:Number = layoutData.weight;
 			var minValue:Number = weight;
 			var maxValue:Number = weight;
 			var rowCount:int = dataInRow.length;
 			for(var i:int = 1; i < rowCount; i++)
 			{
-				weight = this._savedWeights[dataInRow[i]];
+				layoutData = TreeMapItemLayoutData(dataInRow[i]);
+				weight = layoutData.weight;
 				minValue = Math.min(minValue, weight);
 				maxValue = Math.max(maxValue, weight);
 			}
@@ -263,10 +233,8 @@ package com.flextoolbox.controls.treeMapClasses
 			var rowCount:int = dataInRow.length;
 			for(var i:int = 0; i < rowCount; i++)
 			{	
-				var currentData:Object = dataInRow[i];
-				var currentNode:ITreeMapNodeRenderer = this._target.itemToRenderer(currentData);
-				if(!currentNode) continue;
-				var currentWeight:Number = this._savedWeights[currentData];
+				var currentData:TreeMapItemLayoutData = TreeMapItemLayoutData(dataInRow[i]);
+				var currentWeight:Number = currentData.weight;
 				
 				var ratio:Number = currentWeight / sumOfRow;
 				//if all nodes in a row have a weight of zero, give them the same area
@@ -281,17 +249,18 @@ package com.flextoolbox.controls.treeMapClasses
 				var position:Point;
 				if(mapBounds.width > mapBounds.height)
 				{
-					currentNode.setActualSize(Math.max(0, lengthOfLongerSide), Math.max(0, lengthOfShorterSide));
-					currentNode.x = mapBounds.x;
-					currentNode.y = mapBounds.y + currentDistance;
+					currentData.x = mapBounds.x;
+					currentData.y = mapBounds.y + currentDistance;
+					currentData.width = Math.max(0, lengthOfLongerSide);
+					currentData.height = Math.max(0, lengthOfShorterSide);
 				}
 				else
 				{
-					currentNode.setActualSize(Math.max(0, lengthOfShorterSide), Math.max(0, lengthOfLongerSide));
-					currentNode.x = mapBounds.x + currentDistance;
-					currentNode.y = mapBounds.y;
+					currentData.x = mapBounds.x + currentDistance;
+					currentData.y = mapBounds.y;
+					currentData.width = Math.max(0, lengthOfShorterSide);
+					currentData.height = Math.max(0, lengthOfLongerSide);
 				}
-					
 				currentDistance += lengthOfShorterSide;
 				this._numDrawnNodes++;
 			}
@@ -348,9 +317,8 @@ package com.flextoolbox.controls.treeMapClasses
 			var qCount:int = q.length;
 			for(var i:int = 0; i < qCount; i++)
 			{
-				var currentItem:Object = q[i] as Object;
-				var weight:Number = this._savedWeights[currentItem];
-				sum += weight;
+				var currentItem:TreeMapItemLayoutData = TreeMapItemLayoutData(q[i]);
+				sum += currentItem.weight;
 			}
 			return sum;
 		}
@@ -359,7 +327,7 @@ package com.flextoolbox.controls.treeMapClasses
 		 * @private
 		 * Compares the weights from two items in the TreeMap's data provider.
 		 */
-		private function compareWeights(a:Object, b:Object, fields:Array = null):int
+		private function compareWeights(a:TreeMapItemLayoutData, b:TreeMapItemLayoutData, fields:Array = null):int
 		{
 			if(a == null && b == null)
 				return 0;
@@ -368,12 +336,13 @@ package com.flextoolbox.controls.treeMapClasses
 			if(b == null)
 				return -1;
                  
-			var weightA:Number = this._savedWeights[a];
-			var weightB:Number = this._savedWeights[b];
+			var weightA:Number = a.weight;
+			var weightB:Number = b.weight;
 
 			if(weightA < weightB) return -1;
 			if(weightA > weightB) return 1;
 			return 0;
 		}
+		
 	}
 }

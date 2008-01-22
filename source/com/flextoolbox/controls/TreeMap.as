@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2007 Josh Tynjala
+//  Copyright (c) 2008 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -24,36 +24,25 @@
 
 package com.flextoolbox.controls
 {
-	import flash.utils.*;
-	import flash.xml.XMLNode;
-	import flash.geom.Rectangle;
-	import flash.display.DisplayObject;
-	import flash.events.MouseEvent;
-	import flash.events.Event;
-	import mx.core.UIComponent;
-	import mx.core.ClassFactory;
-	import mx.core.UITextField;
-	import mx.core.IFlexDisplayObject;
-	import mx.controls.treeClasses.ITreeDataDescriptor;
-	import mx.controls.treeClasses.DefaultDataDescriptor;
-	import mx.events.CollectionEvent;
-	import mx.events.CollectionEventKind;
-	import mx.collections.ICollectionView;
-	import mx.collections.ArrayCollection;
-	import mx.collections.XMLListCollection;
-	import mx.collections.IViewCursor;
-	import mx.states.State;
-	import mx.styles.ISimpleStyleClient;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.StyleManager;
-	import mx.skins.RectangularBorder;
-	import mx.skins.halo.HaloBorder;
-	import mx.utils.UIDUtil;
-	import com.flextoolbox.controls.treeMapClasses.treemap_internal;
-	import com.flextoolbox.events.TreeMapEvent;
 	import com.flextoolbox.controls.treeMapClasses.*;
-
-	use namespace treemap_internal;
+	import com.flextoolbox.events.TreeMapEvent;
+	
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.utils.Dictionary;
+	import flash.xml.XMLNode;
+	
+	import mx.collections.ArrayCollection;
+	import mx.collections.ICollectionView;
+	import mx.collections.IViewCursor;
+	import mx.collections.XMLListCollection;
+	import mx.controls.treeClasses.DefaultDataDescriptor;
+	import mx.controls.treeClasses.ITreeDataDescriptor;
+	import mx.core.ClassFactory;
+	import mx.core.IFactory;
+	import mx.core.UIComponent;
+	import mx.events.CollectionEvent;
+	import mx.utils.UIDUtil;
 
 	//--------------------------------------
 	//  Events
@@ -68,76 +57,48 @@ package com.flextoolbox.controls
 	[Event(name="change", type="flash.events.Event")]
 	
 	/**
-	 * Dispatched when the user rolls the mouse pointer over an node in the control.
+	 * Dispatched when the user rolls the mouse pointer over a leaf item in the control.
 	 *
-	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_ROLL_OVER
+	 * @eventType com.flextoolbox.events.TreeMapEvent.LEAF_ROLL_OVER
 	 */
-	[Event(name="nodeRollOver", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="leafRollOver", type="com.flextoolbox.events.TreeMapEvent")]
 	
 	/**
-	 * Dispatched when the user rolls the mouse pointer out of an node in the control.
+	 * Dispatched when the user rolls the mouse pointer out of a leaf item in the control.
 	 *
-	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_ROLL_OUT
+	 * @eventType com.flextoolbox.events.TreeMapEvent.LEAF_ROLL_OUT
 	 */
-	[Event(name="nodeRollOut", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="leafRollOut", type="com.flextoolbox.events.TreeMapEvent")]
 	
 	/**
-	 * Dispatched when the user clicks on an node in the control.
+	 * Dispatched when the user clicks on a leaf item in the control.
 	 *
-	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_CLICK
+	 * @eventType com.flextoolbox.events.TreeMapEvent.LEAF_CLICK
 	 */
-	[Event(name="nodeClick", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="leafClick", type="com.flextoolbox.events.TreeMapEvent")]
 	
 	/**
-	 * Dispatched when the user double-clicks on an node in the control.
+	 * Dispatched when the user double-clicks on a leaf item in the control.
 	 *
-	 * @eventType com.flextoolbox.events.TreeMapEvent.NODE_DOUBLE_CLICK
+	 * @eventType com.flextoolbox.events.TreeMapEvent.LEAF_DOUBLE_CLICK
 	 */
-	[Event(name="nodeDoubleClick", type="com.flextoolbox.events.TreeMapEvent")]
-	
-	//--------------------------------------
-	//  Styles
-	//--------------------------------------
-	
-	/**
-	 * The border skin of the component.
-	 */
-	[Style(name="borderSkin", type="Class")]
-	
-	/**
-	 * The style name for the border skin.
-	 */
-	[Style(name="borderStyle", type="String")]
-	
-	/**
-	 * Sets the style name for the header.
-	 */
-	[Style(name="headerStyleName", type="String", inherit="yes")]
-	
-	/**
-	 * Sets the style name for all standard nodes.
-	 */
-	[Style(name="nodeStyleName", type="String", inherit="yes")]
-	
-	/**
-	 * Sets the style name for all branches.
-	 */
-	[Style(name="branchStyleName", type="String", inherit="yes")]
-	
+	[Event(name="leafDoubleClick", type="com.flextoolbox.events.TreeMapEvent")]
+
 	/**
 	 * A treemap is a space-constrained visualization of hierarchical
 	 * structures. It is very effective in showing attributes of leaf nodes
 	 * using size and color coding.
 	 * 
 	 * @author Josh Tynjala
+	 * @see http://code.google.com/p/flex2treemap/
 	 * @see http://en.wikipedia.org/wiki/Treemapping
 	 * @see http://www.cs.umd.edu/hcil/treemap-history/
 	 */
-	public class TreeMap extends UIComponent implements ITreeMapBranchRenderer
+	public class TreeMap extends UIComponent
 	{
 		
 	//--------------------------------------
-	//  Class Variables
+	//  Static Properties
 	//--------------------------------------
 		
 		/**
@@ -152,363 +113,93 @@ package com.flextoolbox.controls
 		 */
 		private static const DEFAULT_MEASURED_HEIGHT:Number = 200;
 		
-    //----------------------------------
-	//  Class Methods
-    //----------------------------------
-    
-		/**
-		 * @private
-		 */
-		private static function initializeStyles():void
-		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMap");
-			
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			
-			selector.defaultFactory = function():void
-			{
-				this.backgroundColor = 0xffffff;
-				this.backgroundAlpha = 1.0;
-				
-				this.paddingLeft = 0;
-				this.paddingRight = 0;
-				this.paddingTop = 0;
-				this.paddingBottom = 0;
-				
-				this.borderSkin = HaloBorder;
-				this.borderStyle = "solid";
-				this.borderColor = 0xaaaaaa;
-				this.borderThickness = 1;
-				
-				this.fontSize = 10;
-				this.fontWeight = "bold";
-				this.textAlign = "left";
-			}
-			
-			StyleManager.setStyleDeclaration("TreeMap", selector, false);
-		}
+	//--------------------------------------
+	//  Static Methods
+	//--------------------------------------
 		
-		//initialize the default styles
+		public static function initializeStyles():void
+		{
+			
+		}
 		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor
 	//--------------------------------------
 	
-		/**
-		 * Constructor.
-		 */
 		public function TreeMap()
 		{
-			super()
-			this.doubleClickEnabled = true;
+			super();
 		}
 		
 	//--------------------------------------
 	//  Properties
 	//--------------------------------------
-	    
-	    /**
-	     * The skinnable border.
-	     */
-		protected var border:IFlexDisplayObject;
-		
-		/**
-		 * The header. Contains a label. Works like the Accordion's header.
-		 * @see mx.containers.Accordion
-		 */
-		public var header:TreeMapHeader;
-		
-		/**
-		 * The node that is currently zoomed. Null if none are zoomed.
-		 */
-		protected var zoomedNode:ITreeMapNodeRenderer;
-		
-		protected var zoomed:Boolean = false;
-		
+	
 		/**
 		 * @private
-		 * Storage for the zoomOutType property.
+		 * Flag indicating if renderers need to be refreshed.
 		 */
-		private var _zoomOutType:String = TreeMapZoomOutType.PREVIOUS;
-		
-		/**
-		 * Determines the way that zoom out actions work. Values are defined by the
-		 * constants in the <code>TreeMapZoomOutType</code> class.
-		 */
-		public function get zoomOutType():String
+		private var _renderersNeedRefresh:Boolean = false;
+	
+		private var _dataProvider:ICollectionView = new ArrayCollection();
+	
+		public function get dataProvider():Object
 		{
-			return this._zoomOutType;
+			return this._dataProvider;
 		}
 		
-		/**
-		 * @private
-		 */
-		public function set zoomOutType(value:String):void
-		{
-			this._zoomOutType = value;
-		}
-		
-		/**
-		 * @private
-		 * If true, and the zoomOutType property is set to <code>TreeMapZoomOutType.PREVIOUS</code>,
-		 * zoom out operations will stop at this TreeMap.
-		 */
-		private var _stopZoomOut:Boolean = false;
-		
-		/**
-		 * @private
-		 * Stores UIDs for the data stored in each renderer that is a direct child of
-		 * this TreeMap.
-		 */
-		private var _dataUIDs:Array = [];
-		
-		/**
-		 * @private
-		 * Nodes may be accessed by the layout classes.
-		 */
-		treemap_internal var nodes:Array = [];
-		
-		/**
-		 * @private
-		 * Caches previously-used node renderers to minmize display list manipulation.
-		 */
-		private var _freeNodeRenderers:Array = [];
-		
-		/**
-		 * @private
-		 * Caches previously-used branch renderers to minmize display list manipulation.
-		 */
-		private var _freeBranchRenderers:Array = [];
-		
-		/**
-		 * @private
-		 * Bounds are calculated from the padding styles and docked header size.
-		 */
-		treemap_internal var contentBounds:Rectangle = new Rectangle();
-				
-		/**
-		 * @private
-		 * Flag to indicate if the nodes need to be redrawn.
-		 */
-		private var _nodesNeedRedraw:Boolean = false;
-	    
-	    /**
-	     * @private
-	     * Storage for the node renderer factory.
-	     */
-	    private var _nodeRenderer:ClassFactory = new ClassFactory(TreeMapNodeRenderer);
-	
-	    /**
-	     * The custom node renderer for the control.
-	     * You can specify a drop-in, inline, or custom node renderer.
-	     *
-		 * <p>The default node renderer is TreeMapNodeRenderer.</p>
-	     */
-	    public function get nodeRenderer():ClassFactory
-	    {
-	        return _nodeRenderer;
-	    }
-	
-	    /**
-		 * @private
-		 */
-	    public function set nodeRenderer(value:ClassFactory):void
-	    {
-	    	if(this._nodeRenderer != value)
-	    	{
-				this._nodeRenderer = value;
-	
-				var freeRenderersCount:int = this._freeNodeRenderers.length
-				for(var i:int = 0; i < freeRenderersCount; i++)
-				{
-					var node:ITreeMapNodeRenderer = this._freeNodeRenderers.pop() as ITreeMapNodeRenderer;
-					this.removeChild(node as DisplayObject);
-				}
-	
-		    	this._nodesNeedRedraw = true;
-				this.invalidateProperties();
-				this.invalidateDisplayList();	
-	    	}
-	    }
-	
-		/**
-		 * @private
-		 * Storage for the branch renderer factory.
-		 */
-		private var _branchRenderer:ClassFactory = new ClassFactory(TreeMap);
-		
-	    /**
-	     * The custom branch renderer for the control. You can specify a drop-in,
-	     * inline, or custom branch renderer. Unlike the renderers used by Tree
-	     * components, nodes and branches in a TreeMap are quite different visually and
-	     * functionally. As a result, it's easier to specify and customize seperate
-	     * renderers for either type.
-	     *
-		 * <p>The default branch renderer is TreeMap.</p>
-	     */
-	    public function get branchRenderer():ClassFactory
-	    {
-	        return this._branchRenderer;
-	    }
-	
-	    /**
-		 * @private
-		 */
-	    public function set branchRenderer(value:ClassFactory):void
-	    {
-	    	if(this._branchRenderer != value)
-	    	{
-				this._branchRenderer = value;
-	
-				var freeRenderersCount:int = this._freeBranchRenderers.length;
-				for(var i:int = 0; i < freeRenderersCount; i++)
-				{
-					var node:ITreeMapBranchRenderer = this._freeBranchRenderers.pop() as ITreeMapBranchRenderer;
-					this.removeChild(node as DisplayObject);
-				}
-	
-				this.invalidateProperties();
-				this.invalidateDisplayList();
-	    	}
-	    }
-	    
-	    /**
-	     * @private
-	     * Storage for the original data set by the user.
-	     */
-		private var _data:Object;
-	
-		/**
-		 * Used to render data when the <code>TreeMap</code> is a branch renderer
-		 * for a parent <code>TreeMap</code>. For most applications, it is
-		 * recommended that you use the <code>dataProvider</code> property.
-		 * 
-		 * @see TreeMap#dataProvider
-		 */
-		public function get data():Object
-		{
-			return this._data;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set data(value:Object):void
-		{
-			this.dataProvider = value;
-		}
-	    
-		/**
-		 * An ICollectionView that represents the data provider.
-		 * When you set the <code>dataProvider</code> property,
-		 * Flex wraps the data provider as necessary to 
-		 * support the ICollectionView interface and 
-		 * sets this property to the result.
-		 * The TreeMap class then uses this property to access
-		 * data in the provider.
-		 * When you get the <code>dataProvider</code> property, 
-		 * Flex returns this value.  
-	     */
-		protected var collection:ICollectionView = new ArrayCollection();
-		
-		/**
-		 * @private
-		 * Flag that is set when the collection of data displayed by the TreeMap
-		 * component changes.
-		 */
-		private var _collectionChangedFlag:Boolean = false;
-		
-		[Bindable("collectionChange")]
-		/**
-	     * Set of data to be viewed.
-	     * This property lets you use most types of objects as data providers.
-		 * If you set the <code>dataProvider</code> property to an Array, 
-		 * it will be converted to an ArrayCollection. If you set the property to
-		 * an XML object, it will be converted into an XMLListCollection with
-		 * only one item. If you set the property to an XMLList, it will be 
-		 * converted to an XMLListCollection.  
-		 * If you set the property to an object that implements the 
-		 * ICollectionView interface, the object will be used directly.
-		 *
-		 * <p>As a consequence of the conversions, when you get the 
-		 * <code>dataProvider</code> property, it will always be
-		 * an ICollectionView, and therefore not necessarily be the type of object
-		 * you used to set the property.
-		 * This behavor is important to understand if you want to modify the data 
-		 * in the data provider: changes to the original data may not be detected, 
-		 * but changes to the ICollectionView object that you get back from the 
-		 * <code>dataProvider</code> property will be detected.</p>
-	     * 
-	     * @default null
-	     * @see mx.collections.ICollectionView
-	     */
-	    public function get dataProvider():Object
-	    {
-	        return collection;
-	    }
-	
-	    /**
-		 * @private
-		 */
 		public function set dataProvider(value:Object):void
-	    {
-	        if(collection)
+		{
+			if(this._dataProvider)
 	        {
-	        	collection.removeEventListener(CollectionEvent.COLLECTION_CHANGE, collectionChangeHandler);
+	        	this._dataProvider.removeEventListener(CollectionEvent.COLLECTION_CHANGE, collectionChangeHandler);
 	        }
 	
-			//handle strings and xml
+			//handle strings and xml variants
 	    	if(typeof(value) == "string")
+	    	{
 	        	value = new XML(value);
+	     	}
 	        else if(value is XMLNode)
+	        {
 				value = new XML(XMLNode(value).toString());
+	        }
 			else if(value is XMLList)
+			{
 				value = new XMLListCollection(value as XMLList);
-				
-			//save the data
-			this._data = value;
+			}
 			
 			if(value is XML)
 			{
-				collection = new XMLListCollection(value.elements());
+				this._dataProvider = new XMLListCollection(value.elements());
 			}
 			//if already a collection dont make new one
 	        else if(value is ICollectionView)
 	        {
-	            collection = ICollectionView(value);
+	            this._dataProvider = ICollectionView(value);
 	        }
 	        else if(value is Array)
 	        {
-	            collection = new ArrayCollection(value as Array);
+	            this._dataProvider = new ArrayCollection(value as Array);
 	        }
 			//all other types get wrapped in an ArrayCollection
 			else if(value is Object)
 			{
 				// convert to an array containing this one item
-				var temp:Array = [];
-	       		temp.push(value);
-	    		collection = new ArrayCollection(temp);
+	    		this._dataProvider = new ArrayCollection( [value] );
 	  		}
 	  		else
 	  		{
-	  			collection = new ArrayCollection();
+	  			this._dataProvider = new ArrayCollection();
 	  		}
 	
-	        this.collection.addEventListener(CollectionEvent.COLLECTION_CHANGE, collectionChangeHandler, false, 0, true);
-	
-			var event:CollectionEvent = new CollectionEvent(CollectionEvent.COLLECTION_CHANGE);
-			event.kind = CollectionEventKind.RESET;
-	        this.collectionChangeHandler(event);
-	        this.dispatchEvent(event);
-	
-		    this._nodesNeedRedraw = true;
+	        this._dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, collectionChangeHandler, false, 0, true);
+	        
+	        this._renderersNeedRefresh = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
-	    }
+		}
 		
 		/**
 		 * @private
@@ -523,7 +214,7 @@ package com.flextoolbox.controls
 		 */
 		public function get dataDescriptor():ITreeDataDescriptor
 		{
-			return ITreeDataDescriptor(this._dataDescriptor);
+			return this._dataDescriptor;
 		}
 
 		/**
@@ -551,16 +242,18 @@ package com.flextoolbox.controls
 			if(this._dataDescriptor != value)
 			{
 				this._dataDescriptor = value;
+	        	this._renderersNeedRefresh = true;
 				this.invalidateProperties();
 				this.invalidateDisplayList();
 			}
 		}
 		
+		
 		/**
 		 * @private
 		 * Storage for the strategy used for layout of nodes and branches.
 		 */
-		private var _layoutStrategy:ITreeMapLayoutStrategy = new Squarify();
+		private var _layoutStrategy:ITreeMapLayoutStrategy = new SquarifyLayout();
 	    
 	    /**
 	     * The custom layout algorithm for the control.
@@ -580,115 +273,137 @@ package com.flextoolbox.controls
 	    	if(this._layoutStrategy != strategy)
 	    	{
 	    		this._layoutStrategy = strategy;
-				this._nodesNeedRedraw = true;
-				this.invalidateProperties();
 		    	this.invalidateDisplayList();
 		    }
 	    }
-		
-		/**
+	    
+	    /**
+	     * @private
+	     * Storage for the leafRenderer property.
+	     */
+	    private var _leafRenderer:IFactory = new ClassFactory(LiteTreeMapLeafRenderer);
+	
+		protected var leafRendererChanged:Boolean = false;
+	
+	    /**
+	     * The custom leaf renderer for the control.
+	     * You can specify a drop-in, inline, or custom leaf renderer.
+	     *
+		 * <p>The default node renderer is TODO.</p>
+	     */
+	    public function get leafRenderer():IFactory
+	    {
+	        return _leafRenderer;
+	    }
+	
+	    /**
 		 * @private
-		 * Storage for the label's text.
 		 */
-		private var _labelText:String;
-		
-		/**
-		 * @private
-		 * Indicates if the label has been set by the user.
-		 */
-		private var _labelPropertySet:Boolean = false;
-		
-		/**
-		 * A <code>TreeMap</code> may display a label in its header.
-		 */
-		public function get label():String
-		{
-			return this._labelText;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set label(value:String):void
-		{
-			//if the label is set by the user, we will ignore the labelField and labelFunction
-			if(value) this._labelPropertySet = true;
-			else this._labelPropertySet = false;
-			
-			if(this._labelText != value)
-			{
-				this._labelText = value;
+	    public function set leafRenderer(value:IFactory):void
+	    {
+	    	if(this._leafRenderer != value)
+	    	{
+				this._leafRenderer = value;
+		    	this.leafRendererChanged = true;
+	       		this._renderersNeedRefresh = true;
 				this.invalidateProperties();
-			}
-		}
-		
+				this.invalidateDisplayList();	
+	    	}
+	    }
+	
 		/**
 		 * @private
-		 * Storage for the header's tooltip text.
+		 * Storage for the branchRenderer property.
 		 */
-		private var _headerToolTip:String;
+		private var _branchRenderer:IFactory = new ClassFactory(TreeMapBranchRenderer);
 		
-		/**
+		protected var branchRendererChanged:Boolean = false;
+		
+	    /**
+	     * The custom branch renderer for the control. You can specify a drop-in,
+	     * inline, or custom branch renderer. Unlike the renderers used by Tree
+	     * components, nodes and branches in a TreeMap are quite different visually and
+	     * functionally. As a result, it's easier to specify and customize seperate
+	     * renderers for either type.
+	     *
+		 * <p>The default branch renderer is TreeMapBranchRenderer.</p>
+	     */
+	    public function get branchRenderer():IFactory
+	    {
+	        return this._branchRenderer;
+	    }
+	
+	    /**
 		 * @private
-		 * Indicates if the tooltip has been set by the user.
 		 */
-		private var _toolTipPropertySet:Boolean = false;
-		
-		/**
-		 * A <code>TreeMap</code> may display a tooltip on its header.
-		 */
-		public function get headerToolTip():String
-		{
-			return this._headerToolTip;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set headerToolTip(value:String):void
-		{
-			//if the tooltip is set by the user, we will ignore the toolTipField and toolTipFunction
-			if(value) this._toolTipPropertySet = true;
-			else this._toolTipPropertySet = false;
-			
-			if(this._headerToolTip != value)
-			{
-				this._headerToolTip = value;
+	    public function set branchRenderer(value:IFactory):void
+	    {
+	    	if(this._branchRenderer != value)
+	    	{
+				this._branchRenderer = value;
+				this.branchRendererChanged = true;
+	        	this._renderersNeedRefresh = true;
 				this.invalidateProperties();
-			}
-		}
+				this.invalidateDisplayList();
+	    	}
+	    }
 		
+	    /**
+		 * @private
+		 * The branch renderer for the root branch.
+		 */
+		protected var rootBranchRenderer:ITreeMapBranchRenderer;
+		
+	    /**
+		 * @private
+		 * The complete collection of item renderers, including branches and
+		 * leaves. Not every item in the collection may have a renderer.
+		 */
+		protected var itemRenderers:Array = [];
+		
+	    /**
+		 * @private
+		 * The complete collection of leaf renderers. Not every leaf in the
+		 * data provider may have a renderer.
+		 */
+		protected var leafRenderers:Array = [];
+		
+	    /**
+		 * @private
+		 * The complete collection of leaf renderers. Not every branch in the
+		 * data provider may have a renderer.
+		 */
+		protected var branchRenderers:Array = [];
+		
+		/**
+		 * @private
+		 */
+		private var _leafRendererCache:Array;
+		
+		/**
+		 * @private
+		 */
+		private var _branchRendererCache:Array;
+		
+		/**
+		 * @private
+		 * Hash to covert from a UID to the renderer for an item.
+		 */
+		private var _uidToItemRenderer:Dictionary;
+		
+		/**
+		 * @private
+		 * Hash to convert from the raw data to the TreeMapData.
+		 */
+		private var _itemToTreeMapData:Dictionary;
 	    
 	//-- Weight
 	
-		private var _cachedWeights:Dictionary;
-	
 		/**
 		 * @private
-		 * Storage for the deriveBranchWeightFromLeaves property.
+		 * A cache of weights for every item in the dataProvider. Performance boost.
 		 */
-		private var _deriveBranchWeightFromLeaves:Boolean = true;
-	
-		[Bindable]
-		/**
-		 * If true, the weight value of a branch will be the sum of its children.
-		 * If false, a branch's weight value is derived from the <code>weightField</code> or <code>weightFunction</code>.
-		 */
-		public function get deriveBranchWeightFromLeaves():Boolean
-		{
-			return this._deriveBranchWeightFromLeaves;
-		}
-		
-		public function set deriveBranchWeightFromLeaves(value:Boolean):void
-		{
-			if(this._deriveBranchWeightFromLeaves != value)
-			{
-				this._deriveBranchWeightFromLeaves = value;
-				this._nodesNeedRedraw = true;
-				this.invalidateProperties();
-				this.invalidateDisplayList();
-			}
-		}
+		private var _cachedWeights:Dictionary;
 	
 		/**
 		 * @private
@@ -712,6 +427,7 @@ package com.flextoolbox.controls
 	    	if(this._weightField != value)
 	    	{
 		    	this._weightField = value;
+	      		this._renderersNeedRefresh = true;
 		    	this.invalidateProperties();
 		    	this.invalidateDisplayList();
 		    }
@@ -744,9 +460,10 @@ package com.flextoolbox.controls
 	    public function set weightFunction(value:Function):void
 	    {
 		    this._weightFunction = value;
+	      	this._renderersNeedRefresh = true;
 		    this.invalidateProperties();
 		    this.invalidateDisplayList();
-	    	this.dispatchEvent(new Event("colorFunctionChanged"));
+	    	this.dispatchEvent(new Event("weightFunctionChanged"));
 	    }
 	    
 	//-- Color
@@ -774,7 +491,7 @@ package com.flextoolbox.controls
 	    	if(this._colorField != value)
 	    	{
 		    	this._colorField = value;
-		    	this._nodesNeedRedraw = true;
+	      		this._renderersNeedRefresh = true;
 		    	this.invalidateProperties();
 			}
 	    }
@@ -807,7 +524,7 @@ package com.flextoolbox.controls
 	    public function set colorFunction(value:Function):void
 	    {
 			this._colorFunction = value;
-			this._nodesNeedRedraw = true;
+	      	this._renderersNeedRefresh = true;
 			this.invalidateProperties();
 	    	this.dispatchEvent(new Event("colorFunctionChanged"));
 	    }
@@ -839,7 +556,7 @@ package com.flextoolbox.controls
 	    	if(this._labelField != value)
 	    	{
 		    	this._labelField = value;
-		    	this._nodesNeedRedraw = true;
+	      		this._renderersNeedRefresh = true;
 		    	this.invalidateProperties();
 		    }
 	    }
@@ -871,7 +588,7 @@ package com.flextoolbox.controls
 	    public function set labelFunction(value:Function):void
 	    {
 			this._labelFunction = value;
-			this._nodesNeedRedraw = true;
+	      	this._renderersNeedRefresh = true;
 			this.invalidateProperties();
 	    	this.dispatchEvent(new Event("labelFunctionChanged"));
 	    }
@@ -880,64 +597,63 @@ package com.flextoolbox.controls
 	    
 		/**
 		 * @private
-		 * Storage for the field used to calculate a node's tooltip.
+		 * Storage for the field used to calculate a node's datatip.
 		 */
-		private var _toolTipField:String = "toolTip";
+		private var _dataTipField:String = "toolTip";
 		
 	    [Bindable]
 	    /**
-	     * The name of the field in the data provider items to display as the ToolTip
+	     * The name of the field in the data provider items to display as the datatip
 	     * of the data renderer.
 	     */
-	    public function get toolTipField():String
+	    public function get dataTipField():String
 	    {
-	    	return this._toolTipField;
+	    	return this._dataTipField;
 	    }
 		
 	    /**
 		 * @private
 		 */
-	    public function set toolTipField(value:String):void
+	    public function set dataTipField(value:String):void
 	    {
-	    	if(this._toolTipField != value)
+	    	if(this._dataTipField != value)
 	    	{
-				this._toolTipField = value;
-				this._nodesNeedRedraw = true;
+				this._dataTipField = value;
+	      		this._renderersNeedRefresh = true;
 				this.invalidateProperties();
 			}
 	    }
 	    
 		/**
 		 * @private
-		 * Storage for the function used to calculate a node's tooltip.
+		 * Storage for the function used to calculate a node's datatip.
 		 */
-		private var _toolTipFunction:Function;
+		private var _dataTipFunction:Function;
 		
-		[Bindable("toolTipFunctionChanged")]
+		[Bindable("dataTipFunctionChanged")]
 	    /**
-	     * A user-supplied function to run on each item to determine its ToolTip.
+	     * A user-supplied function to run on each item to determine its datatip.
 	     *
-		 * <p>The tooltip function takes one argument, the item in the data provider.
+		 * <p>The datatip function takes one argument, the item in the data provider.
 		 * It returns a String.
 		 * <blockquote>
-		 * <code>toolTipFunction(item:Object):String</code>
+		 * <code>dataTipFunction(item:Object):String</code>
 		 * </blockquote></p>
 	     */
-	    public function get toolTipFunction():Function
+	    public function get dataTipFunction():Function
 	    {
-	    	return this._toolTipFunction;
+	    	return this._dataTipFunction;
 	    }
 	    
 	    /**
 		 * @private
 		 */
-	    public function set toolTipFunction(value:Function):void
+	    public function set dataTipFunction(value:Function):void
 	    {
-			this._toolTipFunction = value;
-		    this._nodesNeedRedraw = true;
+			this._dataTipFunction = value;
+	      	this._renderersNeedRefresh = true;
 	    	this.invalidateProperties();
-	    	
-	    	this.dispatchEvent(new Event("toolTipFunctionChanged"));
+	    	this.dispatchEvent(new Event("dataTipFunctionChanged"));
 	    }
 		
 	//-- Selection
@@ -968,67 +684,89 @@ package com.flextoolbox.controls
 				this.invalidateProperties();
 			}
 		}
-	
-		/**
-		 * @private
-		 * Storage for the selected property.
-		 */
-		private var _selected:Boolean = false;
-		
-	    /**
-	     * If this TreeMap is a renderer for a parent TreeMap,
-	     * it may be the selected node.
-		 */
-		public function get selected():Boolean
-		{
-			return this._selected;
-		}
-		
-	    /**
-		 * @private
-		 */
-		public function set selected(value:Boolean):void
-		{
-			if(this._selected != value)
-			{
-				this._selected = value;
-				if(!this._selected)
-				{
-					this._selectedItem = null;
-					this._directChildSelectedItem = null;
-				}
-				this.invalidateProperties();
-			}
-		}
 		
 		/**
 		 * @private
-		 * Stores the item that is currently selected.
+		 * Storage for the selectedItem property.
 		 */
 		private var _selectedItem:Object;
-		private var _directChildSelectedItem:Object;
 		
 		[Bindable("change")]
 		/**
-		 * The data for the currently selected node. May be the data for
-		 * a grandchild or deeper ancestor.
+		 * The currently selected item.
 		 */
 		public function get selectedItem():Object
 		{
 			return this._selectedItem;
 		}
 		
-	    /**
+		/**
 		 * @private
 		 */
-		public function set selectedItem(item:Object):void
+		public function set selectedItem(value:Object):void
 		{
-			if(this._selectedItem != item)
+			if(this._selectedItem != value)
 			{
-				this._selectedItem = item;
+				this._selectedItem = value;
 				this.invalidateProperties();
 				this.dispatchEvent(new Event(Event.CHANGE));
 			}
+		}
+		
+	//-- ZOOMING
+		
+		/**
+		 * @private
+		 * The branches that are currently zoomed. Null if none are zoomed.
+		 */
+		private var _zoomedBranches:Array = [];
+		
+		/**
+		 * The currently zoomed branch.
+		 */
+		public function get zoomedBranch():Object
+		{
+			if(this._zoomedBranches.length > 0)
+			{
+				return this._zoomedBranches[this._zoomedBranches.length - 1];
+			}
+			return null;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set zoomedBranch(value:Object):void
+		{
+			if(value)
+			{
+				this._zoomedBranches = [value];
+			}
+			else this._zoomedBranches = [];
+			this.invalidateProperties();
+		}
+		
+		/**
+		 * @private
+		 * Storage for the zoomOutType property.
+		 */
+		private var _zoomOutType:String = TreeMapZoomOutType.PREVIOUS;
+		
+		/**
+		 * Determines the way that zoom out actions work. Values are defined by the
+		 * constants in the <code>TreeMapZoomOutType</code> class.
+		 */
+		public function get zoomOutType():String
+		{
+			return this._zoomOutType;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set zoomOutType(value:String):void
+		{
+			this._zoomOutType = value;
 		}
 		
 		/**
@@ -1056,110 +794,15 @@ package com.flextoolbox.controls
 				this.invalidateProperties();
 			}
 		}
-		
+	
 	//--------------------------------------
 	//  Public Methods
 	//--------------------------------------
 	
 		/**
-		 * @private
-		 * Creates the zoomedIn state.
-		 */
-		override public function initialize():void
-		{
-			super.initialize();
-			
-			var zoomedIn:State = new State();
-			zoomedIn.name = "zoomedIn";
-			this.states.push(zoomedIn)
-		}
-	
-		/**
-		 * @private
-		 */
-		override public function styleChanged(styleProp:String):void
-		{
-			var allStyles:Boolean = !styleProp || styleProp == "styleName";
-			
-			super.styleChanged(styleProp);
-			
-			if(allStyles || styleProp == "borderSkin")
-			{
-				if(this.border)
-				{
-					this.removeChild(this.border as DisplayObject);
-				}
-				
-				var borderSkin:Class = this.getStyle("borderSkin");
-				if(borderSkin)
-				{
-					this.border = new borderSkin();
-					if(this.border is ISimpleStyleClient)
-					{
-						(this.border as ISimpleStyleClient).styleName = this;
-					}
-					this.addChildAt(this.border as DisplayObject, 0);
-				}
-			}
-			
-			if(allStyles || styleProp == "headerStyleName")
-			{
-				if(this.header)
-				{
-					var headerStyleName:String = this.getStyle("headerStyleName");
-					if(headerStyleName)
-					{
-						var headerStyleDecl:CSSStyleDeclaration = 
-							StyleManager.getStyleDeclaration("." + headerStyleName);
-						if(headerStyleDecl)
-						{
-							this.header.styleDeclaration = headerStyleDecl;
-							this.header.regenerateStyleCache(true);
-							this.header.styleChanged(null);
-						}
-					}
-				}
-			}
-			
-			if(allStyles || styleProp == "nodeStyleName")
-			{
-				var nodeStyleName:String = this.getStyle("nodeStyleName");
-				var nodeCount:int = this.nodes.length;
-				for(var i:int = 0; i < nodeCount; i++)
-				{
-					var currentNode:ITreeMapNodeRenderer = this.nodes[i] as ITreeMapNodeRenderer;
-					
-					//The style nodeStyleName doesn't apply to branches
-					if(currentNode is ITreeMapBranchRenderer)
-					{
-						continue;
-					}
-					
-					if(currentNode is ISimpleStyleClient)
-					{
-						(currentNode as ISimpleStyleClient).styleName = nodeStyleName;
-					}
-				}
-			}
-			
-			if(allStyles || styleProp == "branchStyleName")
-			{
-				var branchStyleName:String = this.getStyle("branchStyleName");
-				for(i = 0; i < this.nodes.length; i++)
-				{
-					var currentBranch:ITreeMapBranchRenderer = this.nodes[i] as ITreeMapBranchRenderer;
-					
-					//no need to check for null because null can't be an ISimpleStyleClient
-					if(currentBranch is ISimpleStyleClient)
-					{
-						(currentBranch as ISimpleStyleClient).styleName = branchStyleName;
-					}
-				}
-			}
-		}
-	
-		/**
 		 * Determines the label text for an item from the data provider.
+		 * If no label is specfied, returns the result of the item's
+		 * toString() method. If item is null, returns an empty string.
 		 */
 		public function itemToLabel(item:Object):String
 		{
@@ -1167,31 +810,33 @@ package com.flextoolbox.controls
 			{
 				return this.labelFunction(item);
 			}
-			else if(item.hasOwnProperty(this.labelField))
+			else if(item && item.hasOwnProperty(this.labelField))
 			{
 				return item[this.labelField];
 			}
-			return null;
+			return item ? item.toString() : "";
 		}
 	
 		/**
-		 * Determines the tooltip text for an item from the data provider.
+		 * Determines the datatip text for an item from the data provider.
+		 * If no datatip is specified, returns an empty string.
 		 */
-		public function itemToToolTip(item:Object):String
+		public function itemToDataTip(item:Object):String
 		{
-			if(this.toolTipFunction != null)
+			if(this.dataTipFunction != null)
 			{
-				return this.toolTipFunction(item);
+				return this.dataTipFunction(item);
 			}
-			else if(item.hasOwnProperty(this.toolTipField))
+			else if(item.hasOwnProperty(this.dataTipField))
 			{
-				return item[this.toolTipField];
+				return item[this.dataTipField];
 			}
-			return null;
+			return "";
 		}
 	
 		/**
 		 * Determines the color value for an item from the data provider.
+		 * If color not available, returns black (0x000000).
 		 */
 		public function itemToColor(item:Object):uint
 		{
@@ -1214,10 +859,10 @@ package com.flextoolbox.controls
 			var weight:Number = this._cachedWeights[item];
 			if(isNaN(weight))
 			{
-				if(this.dataDescriptor.isBranch(item))
+				if(item is ICollectionView)
 				{
 					weight = 0;
-					var iterator:IViewCursor = this.dataDescriptor.getChildren(item).createCursor();
+					var iterator:IViewCursor = ICollectionView(item).createCursor();
 					while(!iterator.afterLast)
 					{
 						weight += this.itemToWeight(iterator.current);
@@ -1230,7 +875,7 @@ package com.flextoolbox.controls
 				{
 					weight = this.weightFunction(item);
 				}
-				else if(item.hasOwnProperty(this.weightField))
+				else if(item && item.hasOwnProperty(this.weightField))
 				{
 					weight = item[this.weightField];
 				}
@@ -1240,99 +885,75 @@ package com.flextoolbox.controls
 		}
 	    
 	    /**
-	     * Returns the node renderer that displays specific data.
+	     * Returns the item renderer that displays specific data.
 	     * 
-	     * @param data				the data for which to find a matching node renderer
-	     * @return					the node renderer that matches the data
+	     * @param item				the data for which to find a matching item renderer
+	     * @return					the item renderer that matches the data
 	     */
-	    public function itemToRenderer(data:Object):ITreeMapNodeRenderer
+	    public function itemToItemRenderer(item:Object):ITreeMapItemRenderer
 	    {
-	    	var index:int = this._dataUIDs.indexOf(UIDUtil.getUID(data));
-	    	if(index >= 0)
-	    	{
-	    		return this.nodes[index] as ITreeMapNodeRenderer;
-	    	}
-	    	return null;
+	    	return this._uidToItemRenderer[UIDUtil.getUID(item)];
 	    }
-		
+	
+		/**
+		 * @private
+		 * 
+	     * Returns the TreeMapData object that matches an item from the data
+	     * provider.
+	     * 
+	     * @param item				the data for which to find a matching TreeMapData
+	     * @return					the TreeMapData object for the item
+		 */
+		protected function itemToTreeMapData(item:Object):BaseTreeMapData
+		{
+			return this._itemToTreeMapData[item];
+		}
+	
 	//--------------------------------------
 	//  Protected Methods
 	//--------------------------------------
-	
+		
 		/**
 		 * @private
-		 */
-		override protected function createChildren():void
-		{
-			super.createChildren();
-			
-			if(!this.border)
-			{
-				var borderSkin:Class = this.getStyle("borderSkin");
-				if(borderSkin)
-				{
-					this.border = new borderSkin();
-					if(this.border is ISimpleStyleClient)
-					{
-						(this.border as ISimpleStyleClient).styleName = this;
-					}
-					this.addChildAt(this.border as DisplayObject, 0);
-				}
-			}
-			
-			if(!this.header)
-			{
-				this.header = new TreeMapHeader();
-				this.addChild(this.header);
-			}
-			
-			this.header.styleName = this;
-			var headerStyleName:String = this.getStyle("headerStyleName");
-			if(headerStyleName)
-			{
-				var headerStyleDecl:CSSStyleDeclaration = 
-					StyleManager.getStyleDeclaration("." + headerStyleName);
-				if(headerStyleDecl)
-				{
-					this.header.styleDeclaration = headerStyleDecl;
-					this.header.regenerateStyleCache(true);
-					this.header.styleChanged(null);
-				}
-			}
-			this.header.visible = false;
-			this.header.addEventListener(MouseEvent.CLICK, headerClickHandler, false, 0, true);
-		}
-	
-		/**
-		 * @private
-		 * Create the renderers.
 		 */
 		override protected function commitProperties():void
 		{
 			super.commitProperties();
 			
-			this._cachedWeights = new Dictionary(true);
-			
-			this.commitHeaderProperties();
-			this.commitNodesAndBranches();
-
-			//move the header to the top child index
-			this.setChildIndex(this.header, this.numChildren - 1);
-				
-			//unless, of course, we have a zoomed node. that should be on top.
-			if(this.zoomedNode)
+			if(this._renderersNeedRefresh)
 			{
-				this.setChildIndex(this.zoomedNode as DisplayObject, this.numChildren - 1);
+				this.createCache();
+				
+				this._cachedWeights = new Dictionary(true);
+				if(this._dataProvider && this._dataProvider.length > 0)
+				{
+					var mainTreeMapData:TreeMapBranchData = new TreeMapBranchData(this);
+					mainTreeMapData.weight = this.itemToWeight(this._dataProvider);
+					mainTreeMapData.layoutStrategy = this.layoutStrategy;
+					mainTreeMapData.showLabel = false;
+					this.rootBranchRenderer = this.getBranchRenderer();
+					this.rootBranchRenderer.data = this.dataProvider;
+					if(this.rootBranchRenderer is IDropInTreeMapItemRenderer)
+					{
+						IDropInTreeMapItemRenderer(this.rootBranchRenderer).treeMapData = mainTreeMapData;
+					}
+					var uid:String = UIDUtil.getUID(this.dataProvider);
+					this._uidToItemRenderer[uid] = this.rootBranchRenderer;
+					this._itemToTreeMapData[this.dataProvider] = mainTreeMapData;
+					this.setChildIndex(UIComponent(this.rootBranchRenderer), 0);
+					this.commitBranch(this._dataProvider, mainTreeMapData);
+				}
+				
+				this.clearCache();
+				this._renderersNeedRefresh = false;
 			}
 			
-		    this._nodesNeedRedraw = false;
-			this._collectionChangedFlag = false;
+			this.commitZoom();
+			this.commitSelection();
 		}
-	
+		
 		/**
 		 * @private
-		 * Treemaps measure as the default size. The user or parent container
-		 * will resize as needed.
 		 */
 		override protected function measure():void
 		{
@@ -1341,546 +962,404 @@ package com.flextoolbox.controls
 			this.measuredWidth = DEFAULT_MEASURED_WIDTH;
 			this.measuredHeight = DEFAULT_MEASURED_HEIGHT;
 		}
-	
+		
 		/**
 		 * @private
-		 * The layout strategy handles redrawing the nodes.
 		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
-			if(this.border)
+			if(this.rootBranchRenderer)
 			{
-				this.border.setActualSize(unscaledWidth, unscaledHeight);
-			}
-			
-			this.updateBackground();
-			this.updateHeader();
-			
-			if(this.maximumDepth != 0)
-			{
-				this._layoutStrategy.updateLayout(this);
-			}
-			
-			if(this.zoomedNode)
-			{
-				this.zoomedNode.move(0, 0);
-				this.zoomedNode.setActualSize(unscaledWidth, unscaledHeight);
+				this.rootBranchRenderer.setActualSize(unscaledWidth, unscaledHeight);
 			}
 		}
 		
 		/**
 		 * @private
+		 * Creates caches to reuse leaf and branch renderers.
 		 */
-		protected function requestZoom():void
+		protected function createCache():void
 		{
-			this.zoomed = !this.zoomed;
-			var zoomEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_REQUEST_ZOOM, false, false, this);
-			this.dispatchEvent(zoomEvent);
+			this._uidToItemRenderer = new Dictionary(true);
+			this._itemToTreeMapData = new Dictionary(true);
+			this.itemRenderers = [];
+			
+			if(!this.leafRendererChanged)
+			{
+				//reuse leaf renderers if the factory hasn't changed.
+				this._leafRendererCache = this.leafRenderers.concat();
+			}
+			this.leafRenderers = [];
+			
+			if(!this.branchRendererChanged)
+			{
+				this.rootBranchRenderer = null;
+				//reuse branch renderers if the factory hasn't changed.
+				this._branchRendererCache = this.branchRenderers.concat();
+			}
+			this.branchRenderers = [];
 		}
-	    
-	    /**
-	     * Searches the data provider for the specified item.
-	     * 
-	     * @param item		this item to search for within the data provider
-	     * @param data		the current recursive position within the data provider
-	     */
-	    protected function containsItem(item:Object, data:Object = null):Boolean
-	    {
-	    	if(!data) data = this.data;
-	    	
-	    	var children:ICollectionView = this.dataDescriptor.getChildren(data);
-	    	if(children.contains(item)) return true;
-	    	
-	    	var iterator:IViewCursor = children.createCursor();
-	    	while(!iterator.afterLast)
-	    	{
-	    		var currentItem:Object = iterator.current;
-	    		if(this.dataDescriptor.isBranch(currentItem) && this.containsItem(item, currentItem))
-	    		{
-	    			return true;
-	    		}
-	    		iterator.moveNext();
-	    	}
-	    	
-	    	return false;
-	    }
 		
-	//--------------------------------------
-	//  Private Methods
-	//--------------------------------------
+		/**
+		 * @private
+		 * Updates a branch.
+		 */
+		protected function commitBranch(children:ICollectionView, branchData:TreeMapBranchData):void
+		{
+			var iterator:IViewCursor = children.createCursor();
+			while(!iterator.afterLast)
+			{
+				var item:Object = iterator.current;
+				var renderer:ITreeMapItemRenderer;
+				var treeMapData:BaseTreeMapData;
+				if(this.dataDescriptor.isBranch(item))
+				{
+					var childBranchData:TreeMapBranchData = new TreeMapBranchData(this);
+					childBranchData.layoutStrategy = this.layoutStrategy;
+					childBranchData.label = this.itemToLabel(item);
+					treeMapData = childBranchData;
+					var branchChildren:ICollectionView = this.dataDescriptor.getChildren(item);
+					renderer = this.getBranchRenderer();
+					renderer.data = item;
+					this.commitBranch(branchChildren, childBranchData);
+				}
+				else
+				{
+					var leafData:TreeMapLeafData = new TreeMapLeafData(this);
+					leafData.color = this.itemToColor(item);
+					leafData.label = this.itemToLabel(item);
+					treeMapData = leafData;
+					renderer = this.getLeafRenderer();
+					renderer.data = item;
+				}
+				var uid:String = UIDUtil.getUID(item);
+				this._uidToItemRenderer[uid] = renderer;
+				treeMapData.uid = uid;
+				treeMapData.weight = this.itemToWeight(item);
+				if(renderer is IDropInTreeMapItemRenderer)
+				{
+					IDropInTreeMapItemRenderer(renderer).treeMapData = treeMapData;
+				}
+				this._itemToTreeMapData[item] = treeMapData;
+				
+				var layoutData:TreeMapItemLayoutData = new TreeMapItemLayoutData(item);
+				layoutData.weight = treeMapData.weight;
+				branchData.addItem(layoutData);
+				iterator.moveNext();
+			}
+		}
 	
 		/**
 		 * @private
+		 * Gets either a cached leaf or a new instance of the leaf renderer.
 		 */
-		private function commitHeaderProperties():void
+		protected function getLeafRenderer():ITreeMapLeafRenderer
 		{
-			if(!this._labelPropertySet && this.parent is ITreeMapBranchRenderer)
+			var renderer:ITreeMapLeafRenderer;
+			if(this._leafRendererCache.length > 0)
 			{
-				this._labelText = this.itemToLabel(this.data);
+				renderer = ITreeMapLeafRenderer(this._leafRendererCache.shift());
+			}
+			else
+			{
+				renderer = ITreeMapLeafRenderer(this.leafRenderer.newInstance());
+				renderer.addEventListener(MouseEvent.CLICK, leafClickHandler, false, 0, true);
+				renderer.addEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler, false, 0, true);
+				renderer.addEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler, false, 0, true);
+				renderer.addEventListener(MouseEvent.ROLL_OUT, leafRollOutHandler, false, 0, true);
+				this.addChild(UIComponent(renderer));
 			}
 			
-			if(this._labelText)
-			{
-				this.header.label = this._labelText;
-			}
-			
-			if(!this._toolTipPropertySet && this.parent is ITreeMapBranchRenderer)
-			{
-				this._headerToolTip = this.itemToToolTip(this.data);
-			}
-			
-			if(this._headerToolTip)
-			{
-				this.header.toolTip = this._headerToolTip;
-			}
-			
-			this.header.selected = this.selectable && (this.selected || !(this.parent is ITreeMapBranchRenderer) && this._selectedItem != null);
-			this.header.visible = this.header.label.length > 0;
+			this.setChildIndex(UIComponent(renderer), this.itemRenderers.length);
+			this.leafRenderers.push(renderer);
+			this.itemRenderers.push(renderer);
+			return renderer;
 		}
 		
 		/**
 		 * @private
-		 * Iterate through the collection and add or remove nodes and branches as needed.
+		 * Gets either a cached branch or a new instance of the branch renderer.
 		 */
-		private function commitNodesAndBranches():void
+		protected function getBranchRenderer():ITreeMapBranchRenderer
 		{
-			this._dataUIDs = [];
-				
-			var collectionIterator:IViewCursor = this.collection.createCursor();
-			var nodeCount:int = 0;
-			if(!collectionIterator.afterLast)
+			var renderer:ITreeMapBranchRenderer;
+			if(this._branchRendererCache.length > 0)
 			{
-				var nodeStyleName:String = this.getStyle("nodeStyleName");
-				var branchStyleName:String = this.getStyle("branchStyleName");
-				do
+				renderer = ITreeMapBranchRenderer(this._branchRendererCache.shift());
+			}
+			else
+			{
+				renderer = ITreeMapBranchRenderer(this.branchRenderer.newInstance());
+				renderer.addEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler, false, 0, true);
+				this.addChild(UIComponent(renderer));
+			}
+			
+			this.setChildIndex(UIComponent(renderer), this.itemRenderers.length);
+			this.branchRenderers.push(renderer);
+			this.itemRenderers.push(renderer);
+			return renderer;
+		}
+		
+		/**
+		 * @private
+		 * If any renderers are left in the caches, remove them.
+		 */
+		protected function clearCache():void
+		{
+			//remove branches from cache
+			var itemCount:int = this._branchRendererCache.length;
+			for(var i:int = 0; i < itemCount; i++)
+			{
+				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._branchRendererCache.pop());
+				renderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
+				this.removeChild(UIComponent(renderer));
+			}
+			
+			//remove leaves from cache
+			itemCount = this._leafRendererCache.length;
+			for(i = 0; i < itemCount; i++)
+			{
+				renderer = ITreeMapItemRenderer(this._leafRendererCache.pop());
+				renderer.removeEventListener(MouseEvent.CLICK, leafClickHandler);
+				renderer.removeEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler);
+				renderer.removeEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler);
+				renderer.removeEventListener(MouseEvent.ROLL_OUT, leafRollOutHandler);
+				this.removeChild(UIComponent(renderer));
+			}
+		}
+		
+		/**
+		 * @private
+		 * Handles the display of the zoomed renderer.
+		 */
+		protected function commitZoom():void
+		{
+			if(!this.zoomedBranch) return;
+			
+			this.updateDepthsForZoomedBranch(this.zoomedBranch);
+		}
+		
+		/**
+		 * @private
+		 * Puts a branch and all of its children at the highest depths
+		 * so that they may be zoomed.
+		 */
+		protected function updateDepthsForZoomedBranch(branch:Object):void
+		{
+			var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(branch);
+			this.setChildIndex(UIComponent(renderer), this.numChildren - 1);
+			
+			var branchData:TreeMapBranchData = TreeMapBranchData(this.itemToTreeMapData(branch));
+			var childCount:int = branchData.itemCount;
+			for(var i:int = 0; i < childCount; i++)
+			{
+				var child:Object = branchData.getItemAt(i).item;
+				if(this.dataDescriptor.isBranch(child))
 				{
-					//get the current data and the current node. The node may not exist!
-					var currentData:Object = collectionIterator.current;
-					var currentNode:ITreeMapNodeRenderer = this.nodes[nodeCount];
-					
-					if(this.maximumDepth == 0)
-					{
-						if(currentNode) this.removeNodeOrBranch(currentNode);
-					}
-					else if(this.dataDescriptor.isBranch(currentData))
-					{
-						currentNode = this.updateBranch(currentNode, currentData);
-						currentNode.styleName = branchStyleName;
-					}
-					else
-					{
-						currentNode = this.updateNode(currentNode, currentData);
-						currentNode.styleName = nodeStyleName;
-					}
-					
-					if(currentNode)
-					{
-						currentNode.data = currentData;
-						if(currentNode is IDropInTreeMapNodeRenderer)
-						{
-							currentNode.treeMapData = this.generateTreeMapData(currentData);
-						}
-						//generate a UID for the node's data so that we can get the node based on its data.
-						this._dataUIDs.push(UIDUtil.getUID(currentData));
-						
-						if(currentNode is ITreeMapBranchRenderer)
-						{
-							var branch:ITreeMapBranchRenderer = currentNode as ITreeMapBranchRenderer;
-							if(this.selectable && branch.containsItem(this.selectedItem))
-							{
-								branch.selected = true;
-								branch.selectedItem = this.selectedItem
-							}
-							else branch.selected = false;
-						}
-						else currentNode.selected = this.selectable && this.selectedItem == currentNode.data;
-						nodeCount++;
-					}
-					
-					
+					this.updateDepthsForZoomedBranch(child);
 				}
-				while(collectionIterator.moveNext());
-			}
-			//remove extra nodes if we have more nodes than there is items in the collection
-			if(this.nodes.length > nodeCount)
-			{
-				var difference:int = this.nodes.length - nodeCount;
-				for(var i:int = 0; i < difference; i++)
+				else
 				{
-					var lastNode:ITreeMapNodeRenderer = this.nodes[this.nodes.length - 1];
-					this.removeNodeOrBranch(lastNode);
-				}
+					renderer = this.itemToItemRenderer(child);
+					this.setChildIndex(UIComponent(renderer), this.numChildren - 1);
+				} 
 			}
 		}
 		
 		/**
 		 * @private
+		 * Sets the correct renderer to the selected state and removes selection
+		 * from any others.
 		 */
-		private function updateBranch(node:ITreeMapNodeRenderer, data:Object):ITreeMapBranchRenderer
-		{
-			//make sure we're using the branch renderer
-			if(!(node is this._branchRenderer.generator))
+		protected function commitSelection():void
+		{	
+			var itemRendererCount:int = this.itemRenderers.length;
+			for(var i:int = 0; i < itemRendererCount; i++)
 			{
-				var index:int = this.nodes.length;
-				if(node) index = this.removeNodeOrBranch(node);
-				node = this.addBranch(index);
-			}
-			
-			var branch:ITreeMapBranchRenderer = node as ITreeMapBranchRenderer;
-			branch.labelField = this.labelField;
-			branch.labelFunction = this.labelFunction;
-			branch.toolTipField = this.toolTipField;
-			branch.toolTipFunction = this.toolTipFunction;
-			branch.weightField = this.weightField;
-			branch.weightFunction = this.weightFunction;
-			branch.colorField = this.colorField;
-			branch.colorFunction = this.colorFunction;
+				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this.itemRenderers[i]);
+				renderer.selected = this.selectable && renderer.data == this._selectedItem;
 				
-			branch.nodeRenderer = this.nodeRenderer;
-			branch.branchRenderer = this.branchRenderer;
-				
-			branch.layoutStrategy = this.layoutStrategy;
-			branch.dataDescriptor = this.dataDescriptor;
-			branch.selectable = this.selectable;
-			branch.zoomOutType = this.zoomOutType;
-			
-			if(this.maximumDepth < 0 || this.zoomedNode == branch)
-			{
-				branch.maximumDepth = this.maximumDepth;
+				if(!renderer.selected && renderer is ITreeMapBranchRenderer)
+				{
+					renderer.selected = this.selectable && this.branchContainsChild(renderer.data, this._selectedItem);
+				} 
 			}
-			else branch.maximumDepth = this.maximumDepth - 1;
-			
-			return branch;
-		}
-		
-		private function updateNode(node:ITreeMapNodeRenderer, data:Object):ITreeMapNodeRenderer
-		{
-			if(!(node is this._nodeRenderer.generator))
-			{
-				var index:int = this.nodes.length;
-				if(node) index = this.removeNodeOrBranch(node);
-				node = this.addNode(index);
-			}
-			
-			if(this._nodesNeedRedraw)
-			{
-				(node as UIComponent).invalidateProperties();
-				(node as UIComponent).invalidateDisplayList();
-			}
-			
-			return node;
 		}
 		
 		/**
 		 * @private
-		 * Removes a node from the active listing and holds it in a cache for later use.
-		 * @param nodeToRemove			an ITreeMapNodeRenderer to save in the pool
+		 * Refreshes the view if the dataProvider changes.
 		 */
-		private function removeNodeOrBranch(nodeToRemove:ITreeMapNodeRenderer):int
+		protected function collectionChangeHandler(event:CollectionEvent):void
 		{
-	        DisplayObject(nodeToRemove).visible = false;
-	        var index:int = this.nodes.indexOf(nodeToRemove);
-			this.nodes.splice(index, 1);
-	        
-			if(nodeToRemove is ITreeMapBranchRenderer)
-			{
-				nodeToRemove.removeEventListener(TreeMapEvent.NODE_CLICK, childMapNodeClick);
-				nodeToRemove.removeEventListener(TreeMapEvent.NODE_DOUBLE_CLICK, childMapNodeDoubleClick);
-				nodeToRemove.removeEventListener(TreeMapEvent.NODE_ROLL_OVER, childMapNodeRollOver);
-				nodeToRemove.removeEventListener(TreeMapEvent.NODE_ROLL_OUT, childMapNodeRollOut);	
-				nodeToRemove.removeEventListener(TreeMapEvent.NODE_REQUEST_ZOOM, childMapNodeZoom);
-				nodeToRemove.removeEventListener(Event.CHANGE, childMapSelectedNodeChange);
-				(nodeToRemove as ITreeMapBranchRenderer).selectedItem = null;
-		        this._freeBranchRenderers.push(nodeToRemove);
-			}
-			else
-			{
-				nodeToRemove.removeEventListener(MouseEvent.CLICK, nodeClickHandler);
-				nodeToRemove.removeEventListener(MouseEvent.DOUBLE_CLICK, nodeDoubleClickHandler);
-				nodeToRemove.removeEventListener(MouseEvent.ROLL_OVER, nodeRollOverHandler);
-				nodeToRemove.removeEventListener(MouseEvent.ROLL_OUT, nodeRollOutHandler);
-		        this._freeNodeRenderers.push(nodeToRemove);
-			}
-			return index;
-		}
-		
-		private function addNode(index:int):ITreeMapNodeRenderer
-		{
-			var nodeToAdd:ITreeMapNodeRenderer;
-			if(this._freeNodeRenderers.length > 0)
-			{
-				nodeToAdd = this._freeNodeRenderers.shift();
-		        DisplayObject(nodeToAdd).visible = true;
-			}
-			else
-			{
-				nodeToAdd = this._nodeRenderer.newInstance();
-				this.addChild(nodeToAdd as DisplayObject);
-			}
-			
-			nodeToAdd.addEventListener(MouseEvent.CLICK, nodeClickHandler, false, 0, true);
-			nodeToAdd.addEventListener(MouseEvent.DOUBLE_CLICK, nodeDoubleClickHandler, false, 0, true);
-			nodeToAdd.addEventListener(MouseEvent.ROLL_OVER, nodeRollOverHandler, false, 0, true);
-			nodeToAdd.addEventListener(MouseEvent.ROLL_OUT, nodeRollOutHandler, false, 0, true);
-			this.nodes.splice(index, 0, nodeToAdd);
-			
-			return nodeToAdd;
-		}
-		
-		private function addBranch(index:int):ITreeMapBranchRenderer
-		{
-			var branchToAdd:ITreeMapBranchRenderer;
-			if(this._freeBranchRenderers.length > 0)
-			{
-				branchToAdd = this._freeBranchRenderers.shift();
-		        DisplayObject(branchToAdd).visible = true;
-			}
-			else
-			{
-				branchToAdd = this._branchRenderer.newInstance();
-				this.addChild(branchToAdd as DisplayObject);
-			}
-			
-			branchToAdd.addEventListener(TreeMapEvent.NODE_CLICK, childMapNodeClick, false, 0, true);
-			branchToAdd.addEventListener(TreeMapEvent.NODE_DOUBLE_CLICK, childMapNodeDoubleClick, false, 0, true);
-			branchToAdd.addEventListener(TreeMapEvent.NODE_ROLL_OVER, childMapNodeRollOver, false, 0, true);
-			branchToAdd.addEventListener(TreeMapEvent.NODE_ROLL_OUT, childMapNodeRollOut, false, 0, true);
-			branchToAdd.addEventListener(TreeMapEvent.NODE_REQUEST_ZOOM, childMapNodeZoom, false, 0, true);
-			branchToAdd.addEventListener(Event.CHANGE, childMapSelectedNodeChange, false, 0, true);
-			this.nodes.splice(index, 0, branchToAdd);
-			
-			return branchToAdd;
-		}
-		
-		/**
-		 * @private
-		 */
-		private function generateTreeMapData(data:Object):TreeMapNodeData
-		{
-			var label:String = this.itemToLabel(data);
-			var weight:Number = this.itemToWeight(data);
-			var color:uint = this.itemToColor(data);
-			var toolTip:String = this.itemToToolTip(data);
-			var uid:String = UIDUtil.getUID(data);
-			return new TreeMapNodeData(label, weight, color, toolTip, uid, this);
-		}
-		
-		/**
-		 * @private
-		 * Draws the background.
-		 */
-		private function updateBackground():void
-		{
-			var backgroundColor:uint = this.getStyle("backgroundColor");
-			var backgroundAlpha:Number = this.getStyle("backgroundAlpha");
-			
-			this.graphics.clear();
-			this.graphics.beginFill(backgroundColor, backgroundAlpha);
-			this.graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
-			this.graphics.endFill();
-		}
-		
-		/**
-		 * @private
-		 * Positions and sizes the header.
-		 */
-		private function updateHeader():void
-		{
-			var paddingTop:Number = this.getStyle("paddingTop");
-			var paddingBottom:Number = this.getStyle("paddingBottom");
-			var paddingLeft:Number = this.getStyle("paddingLeft");
-			var paddingRight:Number = this.getStyle("paddingRight");
-			
-			//include the border metrics
-			if(this.border && this.border is RectangularBorder)
-			{
-				var rectBorder:RectangularBorder = this.border as RectangularBorder;
-				paddingLeft += rectBorder.borderMetrics.left;
-				paddingTop += rectBorder.borderMetrics.top;
-				paddingRight += rectBorder.borderMetrics.right;
-				paddingBottom += rectBorder.borderMetrics.bottom;
-			}
-			
-			var headerWidth:Number = this.unscaledWidth;
-			var headerHeight:Number = this.header.getExplicitOrMeasuredHeight();
-			if(this.maximumDepth == 0)
-			{
-				headerHeight = unscaledHeight;// - (paddingTop + paddingBottom);
-			}
-			else
-			{	
-				var minimumContentHeight:Number = 6;
-				headerHeight = Math.min(headerHeight, unscaledHeight - (paddingTop + paddingBottom + minimumContentHeight));
-			}
-			
-			if(this.header.visible)
-			{
-				paddingTop += headerHeight;
-			}
-			
-			this.contentBounds = new Rectangle(paddingLeft, paddingTop,
-				unscaledWidth - (paddingLeft + paddingRight),
-				unscaledHeight - (paddingTop + paddingBottom));
-			
-			this.header.setActualSize(headerWidth, headerHeight);
-		}
-		
-		/**
-		 * @private
-		 * When the collection changes, we need to redraw.
-		 */
-		private function collectionChangeHandler(event:CollectionEvent):void
-		{
-			//we don't care about sorting or filters
-			if(event.kind == CollectionEventKind.REFRESH) return;
-			
-			this._collectionChangedFlag = true;
+			this._renderersNeedRefresh = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
 		}
 		
 		/**
 		 * @private
-		 * Passes the node click event to external listeners.
+		 * Handles the clicking of a leaf. If selection is enabled, updates
+		 * the selectedItem.
 		 */
-		private function nodeClickHandler(event:MouseEvent):void
+		protected function leafClickHandler(event:MouseEvent):void
 		{
-			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(!renderer || renderer is ITreeMapBranchRenderer) return;
+			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
+			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_CLICK, renderer);
+			this.dispatchEvent(leafEvent);
 			
-			if(this.selectable)
+			if(this._selectable)
 			{
-				this.selectedItem = renderer.data;
+				this._selectedItem = renderer.data;
+				this.invalidateProperties();
 			}
-			var click:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_CLICK, false, false, renderer);
-			this.dispatchEvent(click);
 		}
 		
 		/**
 		 * @private
-		 * Passes the node double click event to the outside world.
 		 */
-		private function nodeDoubleClickHandler(event:MouseEvent):void
+		protected function leafDoubleClickHandler(event:MouseEvent):void
 		{
-			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(!renderer || renderer is ITreeMapBranchRenderer) return;
-			var doubleClick:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_DOUBLE_CLICK, false, false, renderer);
-			this.dispatchEvent(doubleClick);
+			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
+			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_DOUBLE_CLICK, renderer);
+			this.dispatchEvent(leafEvent);
 		}
 		
 		/**
 		 * @private
-		 * Passes the node roll over event to the outside world.
 		 */
-		private function nodeRollOverHandler(event:MouseEvent):void
+		protected function leafRollOverHandler(event:MouseEvent):void
 		{
-			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(!renderer || renderer is ITreeMapBranchRenderer) return;
-			var rollOver:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_ROLL_OVER, false, false, renderer);
-			this.dispatchEvent(rollOver);
+			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
+			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_ROLL_OVER, renderer);
+			this.dispatchEvent(leafEvent);
 		}
 		
 		/**
 		 * @private
-		 * Passes the node roll out event to the outside world.
 		 */
-		private function nodeRollOutHandler(event:MouseEvent):void
+		protected function leafRollOutHandler(event:MouseEvent):void
 		{
-			var renderer:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(!renderer || renderer is ITreeMapBranchRenderer) return;
-			var rollOut:TreeMapEvent = new TreeMapEvent(TreeMapEvent.NODE_ROLL_OUT, false, false, renderer);
-			this.dispatchEvent(rollOut);
+			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
+			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_ROLL_OUT, renderer);
+			this.dispatchEvent(leafEvent);
 		}
 		
 		/**
 		 * @private
-		 * We're pretty much bubbling the click event, but it's more restricted.
+		 * Handles a zoom request from a branch.
 		 */
-		private function childMapNodeClick(event:TreeMapEvent):void
+		protected function branchZoomHandler(event:TreeMapEvent):void
 		{
-			this.dispatchEvent(event);
-		}
-		
-		/**
-		 * @private
-		 * We're pretty much bubbling the double click event, but it's more restricted.
-		 */
-		private function childMapNodeDoubleClick(event:TreeMapEvent):void
-		{
-			this.dispatchEvent(event);
-		}
-		
-		/**
-		 * @private
-		 * We're pretty much bubbling the roll over event, but it's more restricted.
-		 */
-		private function childMapNodeRollOver(event:TreeMapEvent):void
-		{
-			this.dispatchEvent(event);
-		}
-		
-		/**
-		 * @private
-		 * We're pretty much bubbling the roll out event, but it's more restricted.
-		 */
-		private function childMapNodeRollOut(event:TreeMapEvent):void
-		{
-			this.dispatchEvent(event);
-		}
-		
-		/**
-		 * @private
-		 * Requests that this TreeMap be zoomed when the header is clicked.
-		 */
-		private function headerClickHandler(event:MouseEvent):void
-		{
-			this.requestZoom();
-		}
-		
-		/**
-		 * @private
-		 * Handles a zoom request from a child treemap.
-		 */
-		private function childMapNodeZoom(event:TreeMapEvent):void
-		{
-			var nodeToZoom:ITreeMapNodeRenderer = event.target as ITreeMapNodeRenderer;
-			if(this.zoomedNode != nodeToZoom) //request to zoom in
+			if(event.target != event.currentTarget) return;
+			var renderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(event.target);
+			
+			var oldZoomedBranch:Object = this.zoomedBranch;
+			
+			//ignore the root renderer
+			if(renderer == this.rootBranchRenderer) return;
+			
+			var branchToZoom:Object = renderer.data;
+			if(this.zoomedBranch != branchToZoom) //zoom in
 			{
-				this.zoomedNode = nodeToZoom;
-				if(!this.zoomed)
+				if(this.zoomOutType == TreeMapZoomOutType.PREVIOUS)
 				{
-					this.requestZoom();
+					this._zoomedBranches.push(branchToZoom);
 				}
-				//if we're already zoomed in
-				else this._stopZoomOut = true;
+				else this._zoomedBranches = [branchToZoom];
 			}
-			else //request to zoom out
+			else //zoom out
 			{
-				this.zoomedNode = null;
-				if(this._zoomOutType == TreeMapZoomOutType.FULL || 
-					(this._zoomOutType == TreeMapZoomOutType.PREVIOUS && !this._stopZoomOut))
+				switch(this.zoomOutType)
 				{
-					this.requestZoom();
-				}
-				this._stopZoomOut = false;
+					case TreeMapZoomOutType.PREVIOUS:
+						this._zoomedBranches.pop();
+						break;
+					case TreeMapZoomOutType.PARENT:
+						var parentBranch:Object = this.getParentBranch(branchToZoom);
+						if(parentBranch)
+						{
+							this._zoomedBranches = [parentBranch];
+							break;
+						}
+					default: //FULL
+						this._zoomedBranches = [];
+						break;
+				}			
 			}
+			
+			if(this.zoomedBranch) //we have a new zoomed branch
+			{
+				if(this.zoomedBranch != this.dataProvider)
+				{
+					parentBranch = this.getParentBranch(this.zoomedBranch);
+					this.itemToItemRenderer(parentBranch).invalidateDisplayList();
+				}
+				else this.rootBranchRenderer.invalidateDisplayList();
+				this.itemToItemRenderer(this.zoomedBranch).invalidateDisplayList();
+			} 
+			else //we need to zoom out
+			{
+				//make sure we aren't getting null or the main data provider
+				while(oldZoomedBranch && oldZoomedBranch != this.dataProvider)
+				{
+					oldZoomedBranch = this.getParentBranch(oldZoomedBranch)
+					this.itemToItemRenderer(oldZoomedBranch).invalidateDisplayList();
+				}
+			}
+				
 			this.invalidateProperties();
 			this.invalidateDisplayList();
 		}
 		
 		/**
 		 * @private
-		 * If the selected node for a child TreeMap changes, select that child.
+		 * Determines the immediate parent branch for a given leaf.
 		 */
-		private function childMapSelectedNodeChange(event:Event):void
+		protected function getParentBranch(item:Object):Object
 		{
-			var selectedBranch:ITreeMapBranchRenderer = event.target as ITreeMapBranchRenderer;
-			if(this.selectable)
+			//use the stored item renderers to find the correct item
+			var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
+			var index:int = this.itemRenderers.indexOf(renderer);
+			for(var i:int = index - 1; i >= 0; i--)
 			{
-				this.selectedItem = selectedBranch.selectedItem;
+				//we know the order in this.itemRenderers, so we can "cheat"
+				var parentRenderer:ITreeMapBranchRenderer = this.itemRenderers[i] as ITreeMapBranchRenderer;
+				if(parentRenderer && this.branchContainsChild(parentRenderer.data, item))
+				{
+					return parentRenderer.data;
+				}
 			}
+			return null;
 		}
+	
+		/**
+		 * @private
+		 * Determines if a branch contains a given leaf.
+		 */
+		protected function branchContainsChild(branch:Object, childToFind:Object):Boolean
+		{
+			//make sure we at least have a branch
+			if(!dataDescriptor.isBranch(branch))
+			{
+				return false;
+			}
+			
+			var treeMapBranchData:TreeMapBranchData = TreeMapBranchData(this.itemToTreeMapData(branch));
+			var itemCount:int = treeMapBranchData.itemCount;
+			for(var i:int = 0; i < itemCount; i++)
+			{
+				var child:Object = treeMapBranchData.getItemAt(i).item;
+				if(child == childToFind) return true;
+				if(this.dataDescriptor.isBranch(child) && this.branchContainsChild(child, childToFind))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	
 	}
 }

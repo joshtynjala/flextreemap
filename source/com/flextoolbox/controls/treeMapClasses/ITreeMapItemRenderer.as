@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2007 Josh Tynjala
+//  Copyright (c) 2008 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -25,30 +25,13 @@
 package com.flextoolbox.controls.treeMapClasses
 {
 	import mx.core.IDataRenderer;
+	import mx.styles.IStyleClient;
 	import mx.core.IUIComponent;
 	import mx.core.IFlexDisplayObject;
 	import flash.events.IEventDispatcher;
-	import mx.styles.IStyleClient;
+	import mx.core.IInvalidating;
 
-	/**
-	 * Dispatched when the <code>data</code> property changes.
-	 *
-	 * <p>When you use a component as an node renderer,
-	 * the <code>data</code> property contains the data to display.
-	 * You can listen for this event and update the component
-	 * when the <code>data</code> property changes.</p>
-	 * 
-	 * @eventType mx.events.FlexEvent.DATA_CHANGE
-	 */
-	[Event(name="dataChange", type="mx.events.FlexEvent")]
-
-	/**
-	 * Defines an interface for nodes that appear inside a <code>TreeMap</code> component.
-	 * 
-	 * @see zeuslabs.visualization.treemaps.TreeMap
-	 */
-	public interface ITreeMapNodeRenderer
-		extends IUIComponent, IEventDispatcher, IDataRenderer, IFlexDisplayObject, IStyleClient
+	public interface ITreeMapItemRenderer extends IDataRenderer, IUIComponent, IEventDispatcher, IFlexDisplayObject, IStyleClient, IInvalidating
 	{
 		function get selected():Boolean;
 		function set selected(value:Boolean):void;

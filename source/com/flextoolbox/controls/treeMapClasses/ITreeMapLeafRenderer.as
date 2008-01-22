@@ -24,24 +24,8 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import com.flextoolbox.controls.treeMapClasses.TreeMapBranchData;
-	import flash.geom.Rectangle;
-		
-	/**
-	 * Designed to allow easy switching between treemap layout algorithms. 
-	 * Several algorithms have been developed for treemaps and this interface
-	 * may be extended to allow new layout methods.
-	 */
-	public interface ITreeMapLayoutStrategy
+	public interface ITreeMapLeafRenderer extends ITreeMapItemRenderer
 	{
 		
-	//--------------------------------------
-	//  Methods
-	//--------------------------------------
-	
-		/**
-		 * Updates the size and positions of a TreeMap branch's renderers.
-		 */
-		function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
 	}
 }

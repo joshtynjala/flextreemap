@@ -9,18 +9,19 @@
 	    <exec executable="${compc}" dir="${basedir}" failonerror="true">
 			<arg line="--namespace http://www.flextoolbox.com/2006/mxml manifest.xml"/>
 			<arg line="--source-path '${source.dir}'"/>
-			<arg line="--include-classes+=com.flextoolbox.controls.treeMapClasses.SliceAndDice"/>
 			<arg line="--include-namespaces http://www.flextoolbox.com/2006/mxml"/>
+			<arg line="--external-library-path+='${flexsdk.lib.dir}'"/>
 			<arg line="--output '${build.dir}/${library.shortName}.swc'"/>
 	    </exec>
 	</target>
 	
 	<target name="build-docs">
 		<exec executable="${asdoc}" dir="${basedir}" failonerror="true">
+			<arg line="--source-path '${source.dir}'"/>
 			<arg line="--doc-sources '${source.dir}'"/>
 			<arg line="--main-title '${library.name} by Josh Tynjala'"/>
 			<arg line="--window-title '${library.name} by Josh Tynjala'"/>
-			<arg line="--footer 'Copyright 2007 Josh Tynjala'"/>
+			<arg line="--footer 'Copyright 2008 Josh Tynjala'"/>
 			<arg line="--output '${docs.dir}'"/>
 		</exec>
 	</target>

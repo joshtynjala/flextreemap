@@ -24,24 +24,30 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import com.flextoolbox.controls.treeMapClasses.TreeMapBranchData;
-	import flash.geom.Rectangle;
-		
 	/**
-	 * Designed to allow easy switching between treemap layout algorithms. 
-	 * Several algorithms have been developed for treemaps and this interface
-	 * may be extended to allow new layout methods.
+	 * Defines constants for a TreeMap's <code>zoomOutType</code> property.
+	 * 
+	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
-	public interface ITreeMapLayoutStrategy
+	public class TreeMapZoomOutType
 	{
-		
-	//--------------------------------------
-	//  Methods
-	//--------------------------------------
-	
 		/**
-		 * Updates the size and positions of a TreeMap branch's renderers.
+		 * If a treemap's <code>zoomOutType</code> property is set to "full",
+		 * zoom out actions will force the treemap to zoom out completely.
 		 */
-		function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
+		public static const FULL:String = "full";
+		
+		/**
+		 * If a treemap's <code>zoomOutType</code> property is set to "previous",
+		 * zoom out actions will stop at the previously zoomed in branch if it exists.
+		 */
+		public static const PREVIOUS:String = "previous";
+		
+		/**
+		 * If a treemap's <code>zoomOutType</code> property is set to "parent",
+		 * zoom out actions will stop at the parent branch if it exists.
+		 */
+		public static const PARENT:String = "parent";
 	}
 }

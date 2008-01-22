@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2007 Josh Tynjala
+//  Copyright (c) 2008 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -22,29 +22,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.flextoolbox.controls
+package com.flextoolbox.controls.treeMapClasses
 {
-	/**
-	 * Defines constants for different behaviors a TreeMap may follow when zooming out.
-	 */
-	public class TreeMapZoomOutType
+	public interface IDropInTreeMapItemRenderer
 	{
-		/**
-		 * If a treemap's <code>zoomOutType</code> property is set to "full",
-		 * zoom out actions will force the treemap to zoom out completely.
-		 */
-		public static const FULL:String = "full";
-		
-		/**
-		 * If a treemap's <code>zoomOutType</code> property is set to "previous",
-		 * zoom out actions will stop at the previously zoomed in branch if it exists.
-		 */
-		public static const PREVIOUS:String = "previous";
-		
-		/**
-		 * If a treemap's <code>zoomOutType</code> property is set to "parent",
-		 * zoom out actions will stop at the parent branch if it exists.
-		 */
-		public static const PARENT:String = "parent";
+		function get treeMapData():BaseTreeMapData;
+		function set treeMapData(value:BaseTreeMapData):void;
 	}
 }

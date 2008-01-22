@@ -24,24 +24,96 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import com.flextoolbox.controls.treeMapClasses.TreeMapBranchData;
-	import flash.geom.Rectangle;
-		
 	/**
-	 * Designed to allow easy switching between treemap layout algorithms. 
-	 * Several algorithms have been developed for treemaps and this interface
-	 * may be extended to allow new layout methods.
+	 * 
+	 * @author Josh Tynjala
 	 */
-	public interface ITreeMapLayoutStrategy
+	public class TreeMapItemLayoutData
 	{
+	
+	//--------------------------------------
+	//  Constructor
+	//--------------------------------------
+		
+		public function TreeMapItemLayoutData(item:Object)
+		{
+			this.item = item;			
+		}
 		
 	//--------------------------------------
-	//  Methods
+	//  Properties
 	//--------------------------------------
 	
-		/**
-		 * Updates the size and positions of a TreeMap branch's renderers.
-		 */
-		function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
+		private var _item:Object;
+		
+		public function get item():Object
+		{
+			return this._item;
+		}
+		
+		public function set item(value:Object):void
+		{
+			this._item = value;
+		}
+	
+		private var _x:Number = 0;
+		
+		public function get x():Number
+		{
+			return this._x;
+		}
+		
+		public function set x(value:Number):void
+		{
+			this._x = value;
+		}
+		
+		private var _y:Number = 0;
+		
+		public function get y():Number
+		{
+			return this._y;
+		}
+		
+		public function set y(value:Number):void
+		{
+			this._y = value;
+		}
+		
+		private var _width:Number = 0;
+		
+		public function get width():Number
+		{
+			return this._width;
+		}
+		
+		public function set width(value:Number):void
+		{
+			this._width = value;
+		}
+		
+		private var _height:Number = 0;
+		
+		public function get height():Number
+		{
+			return this._height;
+		}
+		
+		public function set height(value:Number):void
+		{
+			this._height = value;
+		}
+		
+		private var _weight:Number = 0;
+		
+		public function get weight():Number
+		{
+			return this._weight;
+		}
+		
+		public function set weight(value:Number):void
+		{
+			this._weight = value;
+		}
 	}
 }

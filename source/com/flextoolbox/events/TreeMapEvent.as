@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2007 Josh Tynjala
+//  Copyright (c) 2008 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -25,11 +25,12 @@
 package com.flextoolbox.events
 {
 	import flash.events.Event;
-	import com.flextoolbox.controls.treeMapClasses.ITreeMapNodeRenderer;
+	import com.flextoolbox.controls.treeMapClasses.ITreeMapItemRenderer;
 
 	/**
-	 * The TreeMapEvent class represents events associated with nodes of the
-	 * <code>TreeMap</code> control.
+	 * The TreeMapEvent class represents events associated with items of the <code>TreeMap</code> control.
+	 * 
+	 * @author Josh Tynjala
 	 */
 	public class TreeMapEvent extends Event
 	{
@@ -39,29 +40,29 @@ package com.flextoolbox.events
 	//--------------------------------------
 	
 		/**
-		 * Dispatched when the user clicks on a node in the TreeMap component.
+		 * Dispatched when the user clicks on a leaf item in the TreeMap component.
 		 */
-		public static const NODE_CLICK:String = "nodeClick";
+		public static const LEAF_CLICK:String = "leafClick";
 		
 		/**
-		 * Dispatched when the user double clicks on a node in the TreeMap component.
+		 * Dispatched when the user double clicks on a leaf item in the TreeMap component.
 		 */
-		public static const NODE_DOUBLE_CLICK:String = "nodeDoubleClick";
+		public static const LEAF_DOUBLE_CLICK:String = "leafDoubleClick";
 		
 		/**
-		 * Dispatched when the user rolls over a node in the TreeMap component.
+		 * Dispatched when the user rolls over a leaf item in the TreeMap component.
 		 */
-		public static const NODE_ROLL_OVER:String = "nodeRollOver";
+		public static const LEAF_ROLL_OVER:String = "leafRollOver";
 		
 		/**
-		 * Dispatched when the user rolls out of a node in the TreeMap component.
+		 * Dispatched when the user rolls out of a leaf item in the TreeMap component.
 		 */
-		public static const NODE_ROLL_OUT:String = "nodeRollOut";
-	
+		public static const LEAF_ROLL_OUT:String = "leafRollOut";
+		
 		/**
-		 * Dispatched when a node should be zoomed in the TreeMap compoennt.
+		 * Dispatched when the user zooms a branch item in the TreeMap component.
 		 */
-		public static const NODE_REQUEST_ZOOM:String = "nodeRequestZoom";
+		public static const BRANCH_ZOOM:String = "branchZoom";
 	
 	//--------------------------------------
 	//  Constructor
@@ -70,36 +71,36 @@ package com.flextoolbox.events
 		/**
 		 * Constructor.
 		 */
-		public function TreeMapEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, nodeRenderer:ITreeMapNodeRenderer = null)
+		public function TreeMapEvent(type:String, itemRenderer:ITreeMapItemRenderer = null, bubbles:Boolean = false, cancelable:Boolean = false)
 		{
 			super(type, bubbles, cancelable);
-			this.nodeRenderer = nodeRenderer;
+			this.itemRenderer = itemRenderer;
 		}
 		
 	//--------------------------------------
-	//  Member Variables and Properties
+	//  Properties
 	//--------------------------------------
 		
 		/**
 		 * @private
-		 * Storage for the affected node renderer.
+		 * Storage for the affected item renderer.
 		 */
-		private var _nodeRenderer:ITreeMapNodeRenderer;
+		private var _itemRenderer:ITreeMapItemRenderer;
 		
 		/**
-		 * The node renderer where the event occurred.
+		 * The item renderer where the event occurred.
 		 */
-		public function get nodeRenderer():ITreeMapNodeRenderer
+		public function get itemRenderer():ITreeMapItemRenderer
 		{
-			return this._nodeRenderer;
+			return this._itemRenderer;
 		}
 		
 		/**
 		 * @private
 		 */
-		public function set nodeRenderer(renderer:ITreeMapNodeRenderer):void
+		public function set itemRenderer(renderer:ITreeMapItemRenderer):void
 		{
-			this._nodeRenderer = renderer;
+			this._itemRenderer = renderer;
 		}
 		
 	//--------------------------------------
@@ -111,7 +112,7 @@ package com.flextoolbox.events
 		 */
 		override public function clone():Event
 		{
-			return new TreeMapEvent(this.type, this.bubbles, this.cancelable, this.nodeRenderer);
+			return new TreeMapEvent(this.type, this.itemRenderer, this.bubbles, this.cancelable);
 		}
 		
 	}

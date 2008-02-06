@@ -142,6 +142,8 @@ package com.flextoolbox.controls
 		 */
 		private var _renderersNeedRefresh:Boolean = false;
 	
+		private var _discoveredRoot:Object = null;
+	
 		private var _dataProvider:ICollectionView = new ArrayCollection();
 	
 		public function get dataProvider():Object
@@ -859,10 +861,11 @@ package com.flextoolbox.controls
 			var weight:Number = this._cachedWeights[item];
 			if(isNaN(weight))
 			{
-				if(item is ICollectionView)
+				//automatically determine branch weight from sum of children
+				if(this.dataDescriptor.isBranch(item))
 				{
 					weight = 0;
-					var iterator:IViewCursor = ICollectionView(item).createCursor();
+					var iterator:IViewCursor = this.dataDescriptor.getChildren(item).createCursor();
 					while(!iterator.afterLast)
 					{
 						weight += this.itemToWeight(iterator.current);
@@ -925,23 +928,47 @@ package com.flextoolbox.controls
 				this.createCache();
 				
 				this._cachedWeights = new Dictionary(true);
-				if(this._dataProvider && this._dataProvider.length > 0)
+				if(this._dataProvider)
 				{
+					this._discoveredRoot = this.dataProvider;
+					var rootData:ICollectionView = this._dataProvider;
+					
+					//if we only have one item, and it's a branch,
+					//we're safe to make it the root
+					if(rootData.length == 1)
+					{
+						var firstChild:Object = this._dataProvider[0];
+						if(this.dataDescriptor.isBranch(firstChild))
+						{
+							this._discoveredRoot = firstChild;
+							rootData = this.dataDescriptor.getChildren(firstChild);
+						}
+						else firstChild = null;
+					}
+					
 					var mainTreeMapData:TreeMapBranchData = new TreeMapBranchData(this);
-					mainTreeMapData.weight = this.itemToWeight(this._dataProvider);
+					mainTreeMapData.weight = this.itemToWeight(rootData);
 					mainTreeMapData.layoutStrategy = this.layoutStrategy;
-					mainTreeMapData.showLabel = false;
+					if(firstChild)
+					{
+						mainTreeMapData.label = this.itemToLabel(firstChild);
+					}
+					else mainTreeMapData.showLabel = false;
+					mainTreeMapData.closed = this.isDepthClosed(0);
 					this.rootBranchRenderer = this.getBranchRenderer();
-					this.rootBranchRenderer.data = this.dataProvider;
+					this.rootBranchRenderer.data = firstChild ? firstChild : rootData;
 					if(this.rootBranchRenderer is IDropInTreeMapItemRenderer)
 					{
 						IDropInTreeMapItemRenderer(this.rootBranchRenderer).treeMapData = mainTreeMapData;
 					}
-					var uid:String = UIDUtil.getUID(this.dataProvider);
+					var uid:String = firstChild ? UIDUtil.getUID(firstChild) : UIDUtil.getUID(rootData);
 					this._uidToItemRenderer[uid] = this.rootBranchRenderer;
-					this._itemToTreeMapData[this.dataProvider] = mainTreeMapData;
-					this.setChildIndex(UIComponent(this.rootBranchRenderer), 0);
-					this.commitBranch(this._dataProvider, mainTreeMapData);
+					this._itemToTreeMapData[firstChild ? firstChild : rootData] = mainTreeMapData;
+					
+					if(rootData.length > 0)
+					{	
+						this.commitBranch(rootData, mainTreeMapData, 0);
+					}
 				}
 				
 				this.clearCache();
@@ -1006,9 +1033,10 @@ package com.flextoolbox.controls
 		 * @private
 		 * Updates a branch.
 		 */
-		protected function commitBranch(children:ICollectionView, branchData:TreeMapBranchData):void
+		protected function commitBranch(children:ICollectionView, branchData:TreeMapBranchData, depth:int):void
 		{
 			var iterator:IViewCursor = children.createCursor();
+			var closed:Boolean = this.isDepthClosed(depth);
 			while(!iterator.afterLast)
 			{
 				var item:Object = iterator.current;
@@ -1019,11 +1047,12 @@ package com.flextoolbox.controls
 					var childBranchData:TreeMapBranchData = new TreeMapBranchData(this);
 					childBranchData.layoutStrategy = this.layoutStrategy;
 					childBranchData.label = this.itemToLabel(item);
+					childBranchData.closed = closed || this.isDepthClosed(depth + 1);
 					treeMapData = childBranchData;
 					var branchChildren:ICollectionView = this.dataDescriptor.getChildren(item);
 					renderer = this.getBranchRenderer();
 					renderer.data = item;
-					this.commitBranch(branchChildren, childBranchData);
+					this.commitBranch(branchChildren, childBranchData, depth + 1);
 				}
 				else
 				{
@@ -1034,6 +1063,8 @@ package com.flextoolbox.controls
 					renderer = this.getLeafRenderer();
 					renderer.data = item;
 				}
+				renderer.visible = !closed;
+				
 				var uid:String = UIDUtil.getUID(item);
 				this._uidToItemRenderer[uid] = renderer;
 				treeMapData.uid = uid;
@@ -1138,7 +1169,7 @@ package com.flextoolbox.controls
 		{
 			if(!this.zoomedBranch) return;
 			
-			this.updateDepthsForZoomedBranch(this.zoomedBranch);
+			this.updateDepthsForZoomedBranch(this.zoomedBranch, 0);
 		}
 		
 		/**
@@ -1146,26 +1177,42 @@ package com.flextoolbox.controls
 		 * Puts a branch and all of its children at the highest depths
 		 * so that they may be zoomed.
 		 */
-		protected function updateDepthsForZoomedBranch(branch:Object):void
+		protected function updateDepthsForZoomedBranch(branch:Object, depth:int):void
 		{
-			var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(branch);
-			this.setChildIndex(UIComponent(renderer), this.numChildren - 1);
+			var closed:Boolean = this.isDepthClosed(depth);
+			
+			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(this.itemToItemRenderer(branch));
+			this.setChildIndex(UIComponent(branchRenderer), this.numChildren - 1);
 			
 			var branchData:TreeMapBranchData = TreeMapBranchData(this.itemToTreeMapData(branch));
+			branchData.closed = closed;
+			
+			if(branchRenderer is IDropInTreeMapItemRenderer)
+			{
+				//refresh with new closed state
+				IDropInTreeMapItemRenderer(branchRenderer).treeMapData = branchData;
+			}
+			
 			var childCount:int = branchData.itemCount;
 			for(var i:int = 0; i < childCount; i++)
 			{
 				var child:Object = branchData.getItemAt(i).item;
+				var childRenderer:ITreeMapItemRenderer = this.itemToItemRenderer(child);
 				if(this.dataDescriptor.isBranch(child))
 				{
-					this.updateDepthsForZoomedBranch(child);
+					this.updateDepthsForZoomedBranch(child, depth + 1);
 				}
-				else
+				else if(!branchData.closed)
 				{
-					renderer = this.itemToItemRenderer(child);
-					this.setChildIndex(UIComponent(renderer), this.numChildren - 1);
+					this.setChildIndex(UIComponent(childRenderer), this.numChildren - 1);
 				} 
+				childRenderer.visible = !closed;
 			}
+		}
+		
+		protected function isDepthClosed(depth:int):Boolean
+		{
+			return this.maximumDepth >= 0 && depth >= this.maximumDepth;
 		}
 		
 		/**
@@ -1256,10 +1303,10 @@ package com.flextoolbox.controls
 			if(event.target != event.currentTarget) return;
 			var renderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(event.target);
 			
-			var oldZoomedBranch:Object = this.zoomedBranch;
-			
 			//ignore the root renderer
 			if(renderer == this.rootBranchRenderer) return;
+			
+			var oldZoomedBranch:Object = this.zoomedBranch;
 			
 			var branchToZoom:Object = renderer.data;
 			if(this.zoomedBranch != branchToZoom) //zoom in
@@ -1288,11 +1335,13 @@ package com.flextoolbox.controls
 						this._zoomedBranches = [];
 						break;
 				}			
+				//refresh the renderers with the proper depths and closed states
+				this._renderersNeedRefresh = true;
 			}
 			
 			if(this.zoomedBranch) //we have a new zoomed branch
 			{
-				if(this.zoomedBranch != this.dataProvider)
+				if(!this.isRootBranch(this.zoomedBranch))
 				{
 					parentBranch = this.getParentBranch(this.zoomedBranch);
 					this.itemToItemRenderer(parentBranch).invalidateDisplayList();
@@ -1303,15 +1352,24 @@ package com.flextoolbox.controls
 			else //we need to zoom out
 			{
 				//make sure we aren't getting null or the main data provider
-				while(oldZoomedBranch && oldZoomedBranch != this.dataProvider)
+				while(oldZoomedBranch && !isRootBranch(oldZoomedBranch))
 				{
 					oldZoomedBranch = this.getParentBranch(oldZoomedBranch)
 					this.itemToItemRenderer(oldZoomedBranch).invalidateDisplayList();
 				}
 			}
-				
+			
 			this.invalidateProperties();
 			this.invalidateDisplayList();
+		}
+		
+		/**
+		 * @private
+		 * Determines if a particular branch is the root of the TreeMap
+		 */
+		protected function isRootBranch(branch:Object):Boolean
+		{
+			return branch == this._discoveredRoot;
 		}
 		
 		/**

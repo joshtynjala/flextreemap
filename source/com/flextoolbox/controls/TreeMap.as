@@ -136,14 +136,11 @@ package com.flextoolbox.controls
 	//  Properties
 	//--------------------------------------
 	
-		/**
-		 * @private
-		 * Flag indicating if renderers need to be refreshed.
-		 */
-		private var _renderersNeedRefresh:Boolean = false;
-	
 		private var _discoveredRoot:Object = null;
 	
+		protected var dataProviderInvalid:Boolean = false;
+	
+		private var _rootData:ICollectionView;
 		private var _dataProvider:ICollectionView = new ArrayCollection();
 	
 		public function get dataProvider():Object
@@ -197,8 +194,8 @@ package com.flextoolbox.controls
 	  		}
 	
 	        this._dataProvider.addEventListener(CollectionEvent.COLLECTION_CHANGE, collectionChangeHandler, false, 0, true);
+	        this._dataProvider.dispatchEvent(new CollectionEvent(CollectionEvent.COLLECTION_CHANGE));
 	        
-	        this._renderersNeedRefresh = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
 		}
@@ -241,13 +238,9 @@ package com.flextoolbox.controls
 		 */
 		public function set dataDescriptor(value:ITreeDataDescriptor):void
 		{
-			if(this._dataDescriptor != value)
-			{
-				this._dataDescriptor = value;
-	        	this._renderersNeedRefresh = true;
-				this.invalidateProperties();
-				this.invalidateDisplayList();
-			}
+			this._dataDescriptor = value;
+			this.invalidateProperties();
+			this.invalidateDisplayList();
 		}
 		
 		
@@ -272,11 +265,8 @@ package com.flextoolbox.controls
 		 */
 	    public function set layoutStrategy(strategy:ITreeMapLayoutStrategy):void
 	    {
-	    	if(this._layoutStrategy != strategy)
-	    	{
-	    		this._layoutStrategy = strategy;
-		    	this.invalidateDisplayList();
-		    }
+	    	this._layoutStrategy = strategy;
+		    this.invalidateDisplayList();
 	    }
 	    
 	    /**
@@ -303,14 +293,10 @@ package com.flextoolbox.controls
 		 */
 	    public function set leafRenderer(value:IFactory):void
 	    {
-	    	if(this._leafRenderer != value)
-	    	{
-				this._leafRenderer = value;
-		    	this.leafRendererChanged = true;
-	       		this._renderersNeedRefresh = true;
-				this.invalidateProperties();
-				this.invalidateDisplayList();	
-	    	}
+			this._leafRenderer = value;
+	    	this.leafRendererChanged = true;
+			this.invalidateProperties();
+			this.invalidateDisplayList();
 	    }
 	
 		/**
@@ -340,14 +326,10 @@ package com.flextoolbox.controls
 		 */
 	    public function set branchRenderer(value:IFactory):void
 	    {
-	    	if(this._branchRenderer != value)
-	    	{
-				this._branchRenderer = value;
-				this.branchRendererChanged = true;
-	        	this._renderersNeedRefresh = true;
-				this.invalidateProperties();
-				this.invalidateDisplayList();
-	    	}
+			this._branchRenderer = value;
+			this.branchRendererChanged = true;
+			this.invalidateProperties();
+			this.invalidateDisplayList();
 	    }
 		
 	    /**
@@ -380,12 +362,12 @@ package com.flextoolbox.controls
 		/**
 		 * @private
 		 */
-		private var _leafRendererCache:Array;
+		private var _leafRendererCache:Array = [];
 		
 		/**
 		 * @private
 		 */
-		private var _branchRendererCache:Array;
+		private var _branchRendererCache:Array = [];
 		
 		/**
 		 * @private
@@ -412,7 +394,7 @@ package com.flextoolbox.controls
 		 * Storage for the field used to calculate a node's weight.
 		 */
 		private var _weightField:String = "weight";
-		[Bindable]
+		[Bindable("weightFieldChanged")]
 	    /**
 	     * The name of the field in the data provider items to use in weight calculations.
 	     */
@@ -426,13 +408,10 @@ package com.flextoolbox.controls
 		 */
 	    public function set weightField(value:String):void
 	    {
-	    	if(this._weightField != value)
-	    	{
-		    	this._weightField = value;
-	      		this._renderersNeedRefresh = true;
-		    	this.invalidateProperties();
-		    	this.invalidateDisplayList();
-		    }
+	    	this._weightField = value;
+	    	this.invalidateProperties();
+	    	this.invalidateDisplayList();
+	    	this.dispatchEvent(new Event("weightFieldChanged"));
 	    }
 	    
 		/**
@@ -462,7 +441,6 @@ package com.flextoolbox.controls
 	    public function set weightFunction(value:Function):void
 	    {
 		    this._weightFunction = value;
-	      	this._renderersNeedRefresh = true;
 		    this.invalidateProperties();
 		    this.invalidateDisplayList();
 	    	this.dispatchEvent(new Event("weightFunctionChanged"));
@@ -476,7 +454,7 @@ package com.flextoolbox.controls
 		 */
 		private var _colorField:String = "color";
 		
-	    [Bindable]
+	    [Bindable("colorFieldChanged")]
 	    /**
 	     * The name of the field in the data provider items to use as the color.
 	     */
@@ -490,12 +468,9 @@ package com.flextoolbox.controls
 		 */
 	    public function set colorField(value:String):void
 	    {
-	    	if(this._colorField != value)
-	    	{
-		    	this._colorField = value;
-	      		this._renderersNeedRefresh = true;
-		    	this.invalidateProperties();
-			}
+	    	this._colorField = value;
+	    	this.invalidateProperties();
+	    	this.dispatchEvent(new Event("colorFieldChanged"));
 	    }
 	    
 		/**
@@ -526,7 +501,6 @@ package com.flextoolbox.controls
 	    public function set colorFunction(value:Function):void
 	    {
 			this._colorFunction = value;
-	      	this._renderersNeedRefresh = true;
 			this.invalidateProperties();
 	    	this.dispatchEvent(new Event("colorFunctionChanged"));
 	    }
@@ -539,7 +513,7 @@ package com.flextoolbox.controls
 		 */
 		private var _labelField:String = "label";
 		
-	    [Bindable]
+	    [Bindable("labelFieldChanged")]
 	    /**
 	     * The name of the field in the data provider items to display as the label
 	     * of the data renderer. As a special case, if the nodes are <code>TreeMap</code>
@@ -555,12 +529,9 @@ package com.flextoolbox.controls
 		 */
 	    public function set labelField(value:String):void
 	    {
-	    	if(this._labelField != value)
-	    	{
-		    	this._labelField = value;
-	      		this._renderersNeedRefresh = true;
-		    	this.invalidateProperties();
-		    }
+	    	this._labelField = value;
+	    	this.invalidateProperties();
+	    	this.dispatchEvent(new Event("labelFieldChanged"));
 	    }
 	    
 		/**
@@ -590,7 +561,6 @@ package com.flextoolbox.controls
 	    public function set labelFunction(value:Function):void
 	    {
 			this._labelFunction = value;
-	      	this._renderersNeedRefresh = true;
 			this.invalidateProperties();
 	    	this.dispatchEvent(new Event("labelFunctionChanged"));
 	    }
@@ -601,9 +571,9 @@ package com.flextoolbox.controls
 		 * @private
 		 * Storage for the field used to calculate a node's datatip.
 		 */
-		private var _dataTipField:String = "toolTip";
+		private var _dataTipField:String = "dataTip";
 		
-	    [Bindable]
+	    [Bindable("dataTipFieldChanged")]
 	    /**
 	     * The name of the field in the data provider items to display as the datatip
 	     * of the data renderer.
@@ -618,12 +588,9 @@ package com.flextoolbox.controls
 		 */
 	    public function set dataTipField(value:String):void
 	    {
-	    	if(this._dataTipField != value)
-	    	{
-				this._dataTipField = value;
-	      		this._renderersNeedRefresh = true;
-				this.invalidateProperties();
-			}
+			this._dataTipField = value;
+			this.invalidateProperties();
+	    	this.dispatchEvent(new Event("dataTipFieldChanged"));
 	    }
 	    
 		/**
@@ -653,7 +620,6 @@ package com.flextoolbox.controls
 	    public function set dataTipFunction(value:Function):void
 	    {
 			this._dataTipFunction = value;
-	      	this._renderersNeedRefresh = true;
 	    	this.invalidateProperties();
 	    	this.dispatchEvent(new Event("dataTipFunctionChanged"));
 	    }
@@ -680,10 +646,34 @@ package com.flextoolbox.controls
 		 */
 		public function set selectable(value:Boolean):void
 		{
-			if(this._selectable != value)
+			this._selectable = value;
+			this.invalidateProperties();
+		}
+	
+		[Bindable]
+		/**
+		 * @private
+		 * Storage for the branchesSelectable property.
+		 */
+		private var _branchesSelectable:Boolean = false;
+		
+	    /**
+	     * Indicates if the node's within the TreeMap can be selected by the user.
+		 */
+		public function get branchesSelectable():Boolean
+		{
+			return this._branchesSelectable;
+		}
+		
+	    /**
+		 * @private
+		 */
+		public function set branchesSelectable(value:Boolean):void
+		{
+			this._branchesSelectable = value;
+			if(!branchesSelectable && this.dataDescriptor.isBranch(this.selectedItem))
 			{
-				this._selectable = value;
-				this.invalidateProperties();
+				this.selectedItem = null;
 			}
 		}
 		
@@ -707,12 +697,13 @@ package com.flextoolbox.controls
 		 */
 		public function set selectedItem(value:Object):void
 		{
-			if(this._selectedItem != value)
+			this._selectedItem = value;
+			if(!this.branchesSelectable && this.dataDescriptor.isBranch(value))
 			{
-				this._selectedItem = value;
-				this.invalidateProperties();
-				this.dispatchEvent(new Event(Event.CHANGE));
+				this._selectedItem = null;
 			}
+			this.invalidateProperties();
+			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 	//-- ZOOMING
@@ -750,6 +741,29 @@ package com.flextoolbox.controls
 		
 		/**
 		 * @private
+		 * Storage for the zoomEnabled property.
+		 */
+		private var _zoomEnabled:Boolean = true;
+		
+		/**
+		 * TODO: document
+		 */
+		public function get zoomEnabled():Boolean
+		{
+			return this._zoomEnabled;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set zoomEnabled(value:Boolean):void
+		{
+			this._zoomEnabled = value;
+			this.invalidateProperties();
+		}
+		
+		/**
+		 * @private
 		 * Storage for the zoomOutType property.
 		 */
 		private var _zoomOutType:String = TreeMapZoomOutType.PREVIOUS;
@@ -769,6 +783,8 @@ package com.flextoolbox.controls
 		public function set zoomOutType(value:String):void
 		{
 			this._zoomOutType = value;
+			//doesn't immediately affect anything, so we
+			//don't need to invalidate.
 		}
 		
 		/**
@@ -790,11 +806,8 @@ package com.flextoolbox.controls
 		 */
 		public function set maximumDepth(value:int):void
 		{
-			if(this._maximumDepth != value)
-			{
-				this._maximumDepth = value;
-				this.invalidateProperties();
-			}
+			this._maximumDepth = value;
+			this.invalidateProperties();
 		}
 	
 	//--------------------------------------
@@ -802,21 +815,65 @@ package com.flextoolbox.controls
 	//--------------------------------------
 	
 		/**
+		 * Determines the UID for a data provider item.  All items
+		 * in a data provider must either have a unique ID (UID)
+		 * or one will be generated and associated with it.  This
+		 * means that you cannot have an object or scalar value
+		 * appear twice in a data provider.  For example, the following
+		 * data provider is not supported because the value "foo"
+		 * appears twice and the UID for a string is the string itself
+		 *
+		 * <blockquote>
+		 * 		<code>var sampleDP:Array = ["foo", "bar", "foo"]</code>
+		 * </blockquote>
+		 *
+		 * Simple dynamic objects can appear twice if they are two
+		 * separate instances.  The following is supported because
+		 * each of the instances will be given a different UID because
+		 * they are different objects.
+		 *
+		 * <blockquote>
+		 * 		<code>var sampleDP:Array = [{label: "foo"}, {label: "foo"}]</code>
+		 * </blockquote>
+		 *
+		 * Note that the following is not supported because the same instance
+		 * appears twice.
+		 *
+		 * <blockquote>
+		 * 		<code>var foo:Object = {label: "foo"};
+		 * 		sampleDP:Array = [foo, foo];</code>
+		 * </blockquote>
+		 *
+		 * @param item		The data provider item
+		 *
+		 * @return			The UID as a string
+		 */
+		protected function itemToUID(item:Object):String
+		{
+			if(!item)
+			{
+				return "null";
+			}
+			return UIDUtil.getUID(item);
+		}
+		/**
 		 * Determines the label text for an item from the data provider.
 		 * If no label is specfied, returns the result of the item's
 		 * toString() method. If item is null, returns an empty string.
 		 */
 		public function itemToLabel(item:Object):String
 		{
+			if(item === null) return "";
+			
 			if(this.labelFunction != null)
 			{
 				return this.labelFunction(item);
 			}
-			else if(item && item.hasOwnProperty(this.labelField))
+			else if(item.hasOwnProperty(this.labelField))
 			{
 				return item[this.labelField];
 			}
-			return item ? item.toString() : "";
+			return item.toString();
 		}
 	
 		/**
@@ -825,6 +882,8 @@ package com.flextoolbox.controls
 		 */
 		public function itemToDataTip(item:Object):String
 		{
+			if(item === null) return "";
+			
 			if(this.dataTipFunction != null)
 			{
 				return this.dataTipFunction(item);
@@ -833,6 +892,8 @@ package com.flextoolbox.controls
 			{
 				return item[this.dataTipField];
 			}
+			//normally, I'd do toString(), but I think an
+			//empty string makes sense so that there's no dataTip.
 			return "";
 		}
 	
@@ -842,6 +903,8 @@ package com.flextoolbox.controls
 		 */
 		public function itemToColor(item:Object):uint
 		{
+			if(item === null) return 0x000000;
+			
 			if(this.colorFunction != null)
 			{
 				return this.colorFunction(item);
@@ -850,6 +913,7 @@ package com.flextoolbox.controls
 			{
 				return item[this.colorField];
 			}
+			
 			return 0x000000;
 		}
 	
@@ -858,6 +922,8 @@ package com.flextoolbox.controls
 		 */
 		public function itemToWeight(item:Object):Number
 		{
+			if(item === null) return 0;
+			
 			var weight:Number = this._cachedWeights[item];
 			if(isNaN(weight))
 			{
@@ -878,7 +944,7 @@ package com.flextoolbox.controls
 				{
 					weight = this.weightFunction(item);
 				}
-				else if(item && item.hasOwnProperty(this.weightField))
+				else if(item.hasOwnProperty(this.weightField))
 				{
 					weight = item[this.weightField];
 				}
@@ -895,7 +961,8 @@ package com.flextoolbox.controls
 	     */
 	    public function itemToItemRenderer(item:Object):ITreeMapItemRenderer
 	    {
-	    	return this._uidToItemRenderer[UIDUtil.getUID(item)];
+	    	var uid:String = this.itemToUID(item);
+	    	return this._uidToItemRenderer[uid];
 	    }
 	
 		/**
@@ -923,57 +990,20 @@ package com.flextoolbox.controls
 		{
 			super.commitProperties();
 			
-			if(this._renderersNeedRefresh)
+			this._cachedWeights = new Dictionary(true);
+			
+			//if something has changed in the data provider,
+			//we need to update/create/destroy item renderers
+			if(this.dataProviderInvalid)
 			{
+				this._uidToItemRenderer = new Dictionary(true);
 				this.createCache();
-				
-				this._cachedWeights = new Dictionary(true);
-				if(this._dataProvider)
-				{
-					this._discoveredRoot = this.dataProvider;
-					var rootData:ICollectionView = this._dataProvider;
-					
-					//if we only have one item, and it's a branch,
-					//we're safe to make it the root
-					if(rootData.length == 1)
-					{
-						var firstChild:Object = this._dataProvider[0];
-						if(this.dataDescriptor.isBranch(firstChild))
-						{
-							this._discoveredRoot = firstChild;
-							rootData = this.dataDescriptor.getChildren(firstChild);
-						}
-						else firstChild = null;
-					}
-					
-					var mainTreeMapData:TreeMapBranchData = new TreeMapBranchData(this);
-					mainTreeMapData.weight = this.itemToWeight(rootData);
-					mainTreeMapData.layoutStrategy = this.layoutStrategy;
-					if(firstChild)
-					{
-						mainTreeMapData.label = this.itemToLabel(firstChild);
-					}
-					else mainTreeMapData.showLabel = false;
-					mainTreeMapData.closed = this.isDepthClosed(0);
-					this.rootBranchRenderer = this.getBranchRenderer();
-					this.rootBranchRenderer.data = firstChild ? firstChild : rootData;
-					if(this.rootBranchRenderer is IDropInTreeMapItemRenderer)
-					{
-						IDropInTreeMapItemRenderer(this.rootBranchRenderer).treeMapData = mainTreeMapData;
-					}
-					var uid:String = firstChild ? UIDUtil.getUID(firstChild) : UIDUtil.getUID(rootData);
-					this._uidToItemRenderer[uid] = this.rootBranchRenderer;
-					this._itemToTreeMapData[firstChild ? firstChild : rootData] = mainTreeMapData;
-					
-					if(rootData.length > 0)
-					{	
-						this.commitBranch(rootData, mainTreeMapData, 0);
-					}
-				}
-				
+				this.refreshRenderers();
 				this.clearCache();
-				this._renderersNeedRefresh = false;
+				this.dataProviderInvalid = false;
 			}
+			
+			this.commitRootDropInBranchData();
 			
 			this.commitZoom();
 			this.commitSelection();
@@ -1009,8 +1039,6 @@ package com.flextoolbox.controls
 		 */
 		protected function createCache():void
 		{
-			this._uidToItemRenderer = new Dictionary(true);
-			this._itemToTreeMapData = new Dictionary(true);
 			this.itemRenderers = [];
 			
 			if(!this.leafRendererChanged)
@@ -1022,25 +1050,122 @@ package com.flextoolbox.controls
 			
 			if(!this.branchRendererChanged)
 			{
-				this.rootBranchRenderer = null;
 				//reuse branch renderers if the factory hasn't changed.
 				this._branchRendererCache = this.branchRenderers.concat();
 			}
+			this.rootBranchRenderer = null;
 			this.branchRenderers = [];
 		}
 		
 		/**
 		 * @private
-		 * Updates a branch.
+		 * Creates/updates the renderers and populates with new data.
 		 */
-		protected function commitBranch(children:ICollectionView, branchData:TreeMapBranchData, depth:int):void
+		protected function refreshRenderers():void
+		{
+			if(!this.dataProvider)
+			{
+				return;
+			}
+			
+			this._discoveredRoot = this.dataProvider;
+			this._rootData = ICollectionView(this.dataProvider);
+			
+			//if we have only one item, and that item is a branch,
+			//we're safe to make it the root
+			if(this._rootData.length == 1)
+			{
+				var firstChild:Object = this._dataProvider[0];
+				if(this.dataDescriptor.isBranch(firstChild))
+				{
+					this._discoveredRoot = firstChild;
+					this._rootData = this.dataDescriptor.getChildren(firstChild);
+				}
+				else firstChild = null;
+			}
+			
+			this.rootBranchRenderer = this.getBranchRenderer();
+			this.commitBranchChildren(this._rootData, 0);
+			
+			this.rootBranchRenderer.data = this._rootData;
+			var uid:String = this.itemToUID(this._rootData);
+			this._uidToItemRenderer[uid] = this.rootBranchRenderer;
+		}
+		
+		/**
+		 * @private
+		 * Creates the child renderers of a branch and updates their data.
+		 */
+		protected function commitBranchChildren(children:ICollectionView, depth:int):void
+		{
+			var iterator:IViewCursor = children.createCursor();
+			while(!iterator.afterLast)
+			{
+				var item:Object = iterator.current;
+				var childRenderer:ITreeMapItemRenderer;
+				var treeMapData:BaseTreeMapData;
+				if(this.dataDescriptor.isBranch(item))
+				{
+					childRenderer = this.getBranchRenderer();
+					
+					var branchChildren:ICollectionView = this.dataDescriptor.getChildren(item);
+					this.commitBranchChildren(branchChildren, depth + 1);
+				}
+				else
+				{
+					childRenderer = this.getLeafRenderer();
+				}
+				
+				var uid:String = this.itemToUID(item);
+				this._uidToItemRenderer[uid] = childRenderer;
+				childRenderer.data = item;
+				
+				iterator.moveNext();
+			}
+		}
+	
+		protected function commitRootDropInBranchData():void
+		{
+			this._itemToTreeMapData = new Dictionary(true);
+			
+			var branchData:TreeMapBranchData = new TreeMapBranchData(this);
+			branchData.weight = this.itemToWeight(this._rootData);
+			branchData.layoutStrategy = this.layoutStrategy;
+			if(this._discoveredRoot != this._rootData)
+			{
+				//show a label only if we have a proper root
+				branchData.label = this.itemToLabel(this._discoveredRoot);
+				branchData.showLabel = true;
+			}
+			else
+			{
+				branchData.label = "";
+				branchData.showLabel = false;
+			}
+			branchData.closed = this.isDepthClosed(0);
+			branchData.zoomEnabled = false;
+			
+			branchData.uid = this.itemToUID(this._rootData);
+			this._itemToTreeMapData[this._rootData] = branchData;
+			
+			if(this.rootBranchRenderer is IDropInTreeMapItemRenderer)
+			{
+				IDropInTreeMapItemRenderer(this.rootBranchRenderer).treeMapData = branchData;
+			}
+			
+			this.commitDropInBranchData(branchData, this._rootData, 0);
+		}
+	
+		protected function commitDropInBranchData(branchData:TreeMapBranchData, children:ICollectionView, depth:int):void
 		{
 			var iterator:IViewCursor = children.createCursor();
 			var closed:Boolean = this.isDepthClosed(depth);
 			while(!iterator.afterLast)
 			{
 				var item:Object = iterator.current;
-				var renderer:ITreeMapItemRenderer;
+				var uid:String = this.itemToUID(item);
+				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._uidToItemRenderer[uid]);
+				
 				var treeMapData:BaseTreeMapData;
 				if(this.dataDescriptor.isBranch(item))
 				{
@@ -1048,11 +1173,11 @@ package com.flextoolbox.controls
 					childBranchData.layoutStrategy = this.layoutStrategy;
 					childBranchData.label = this.itemToLabel(item);
 					childBranchData.closed = closed || this.isDepthClosed(depth + 1);
+					childBranchData.zoomEnabled = this.zoomEnabled;
 					treeMapData = childBranchData;
-					var branchChildren:ICollectionView = this.dataDescriptor.getChildren(item);
-					renderer = this.getBranchRenderer();
-					renderer.data = item;
-					this.commitBranch(branchChildren, childBranchData, depth + 1);
+					
+					var childBranchChildren:ICollectionView = this.dataDescriptor.getChildren(item);
+					this.commitDropInBranchData(childBranchData, childBranchChildren, depth + 1);
 				}
 				else
 				{
@@ -1060,13 +1185,7 @@ package com.flextoolbox.controls
 					leafData.color = this.itemToColor(item);
 					leafData.label = this.itemToLabel(item);
 					treeMapData = leafData;
-					renderer = this.getLeafRenderer();
-					renderer.data = item;
 				}
-				renderer.visible = !closed;
-				
-				var uid:String = UIDUtil.getUID(item);
-				this._uidToItemRenderer[uid] = renderer;
 				treeMapData.uid = uid;
 				treeMapData.weight = this.itemToWeight(item);
 				if(renderer is IDropInTreeMapItemRenderer)
@@ -1078,6 +1197,7 @@ package com.flextoolbox.controls
 				var layoutData:TreeMapItemLayoutData = new TreeMapItemLayoutData(item);
 				layoutData.weight = treeMapData.weight;
 				branchData.addItem(layoutData);
+				
 				iterator.moveNext();
 			}
 		}
@@ -1124,6 +1244,7 @@ package com.flextoolbox.controls
 			{
 				renderer = ITreeMapBranchRenderer(this.branchRenderer.newInstance());
 				renderer.addEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler, false, 0, true);
+				renderer.addEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler, false, 0, true);
 				this.addChild(UIComponent(renderer));
 			}
 			
@@ -1145,6 +1266,7 @@ package com.flextoolbox.controls
 			{
 				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._branchRendererCache.pop());
 				renderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
+				renderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
 				this.removeChild(UIComponent(renderer));
 			}
 			
@@ -1168,7 +1290,6 @@ package com.flextoolbox.controls
 		protected function commitZoom():void
 		{
 			if(!this.zoomedBranch) return;
-			
 			this.updateDepthsForZoomedBranch(this.zoomedBranch, 0);
 		}
 		
@@ -1186,6 +1307,7 @@ package com.flextoolbox.controls
 			
 			var branchData:TreeMapBranchData = TreeMapBranchData(this.itemToTreeMapData(branch));
 			branchData.closed = closed;
+			branchData.zoomed = true;
 			
 			if(branchRenderer is IDropInTreeMapItemRenderer)
 			{
@@ -1237,11 +1359,71 @@ package com.flextoolbox.controls
 		
 		/**
 		 * @private
+		 * Determines if a particular branch is the root of the TreeMap
+		 */
+		protected function isRootBranch(branch:Object):Boolean
+		{
+			return branch == this._rootData;
+		}
+		
+		/**
+		 * @private
+		 * Determines the immediate parent branch for a given leaf.
+		 */
+		protected function getParentBranch(item:Object):Object
+		{
+			//use the stored item renderers to find the correct item
+			var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
+			var index:int = this.itemRenderers.indexOf(renderer);
+			for(var i:int = index - 1; i >= 0; i--)
+			{
+				//we know the order in this.itemRenderers, so we can "cheat"
+				var parentRenderer:ITreeMapBranchRenderer = this.itemRenderers[i] as ITreeMapBranchRenderer;
+				if(parentRenderer && this.branchContainsChild(parentRenderer.data, item))
+				{
+					return parentRenderer.data;
+				}
+			}
+			return null;
+		}
+	
+		/**
+		 * @private
+		 * Determines if a branch contains a given leaf.
+		 */
+		protected function branchContainsChild(branch:Object, childToFind:Object):Boolean
+		{
+			//make sure we at least have a branch
+			if(!dataDescriptor.isBranch(branch))
+			{
+				return false;
+			}
+			
+			var treeMapBranchData:TreeMapBranchData = TreeMapBranchData(this.itemToTreeMapData(branch));
+			var itemCount:int = treeMapBranchData.itemCount;
+			for(var i:int = 0; i < itemCount; i++)
+			{
+				var child:Object = treeMapBranchData.getItemAt(i).item;
+				if(child == childToFind) return true;
+				if(this.dataDescriptor.isBranch(child) && this.branchContainsChild(child, childToFind))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		
+	//--------------------------------------
+	//  Protected Event Handlers
+	//--------------------------------------
+		
+		/**
+		 * @private
 		 * Refreshes the view if the dataProvider changes.
 		 */
 		protected function collectionChangeHandler(event:CollectionEvent):void
 		{
-			this._renderersNeedRefresh = true;
+			this.dataProviderInvalid = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
 		}
@@ -1261,6 +1443,7 @@ package com.flextoolbox.controls
 			{
 				this._selectedItem = renderer.data;
 				this.invalidateProperties();
+				this.invalidateDisplayList();
 			}
 		}
 		
@@ -1334,9 +1517,7 @@ package com.flextoolbox.controls
 					default: //FULL
 						this._zoomedBranches = [];
 						break;
-				}			
-				//refresh the renderers with the proper depths and closed states
-				this._renderersNeedRefresh = true;
+				}
 			}
 			
 			if(this.zoomedBranch) //we have a new zoomed branch
@@ -1360,64 +1541,18 @@ package com.flextoolbox.controls
 			}
 			
 			this.invalidateProperties();
-			this.invalidateDisplayList();
-		}
-		
-		/**
-		 * @private
-		 * Determines if a particular branch is the root of the TreeMap
-		 */
-		protected function isRootBranch(branch:Object):Boolean
-		{
-			return branch == this._discoveredRoot;
-		}
-		
-		/**
-		 * @private
-		 * Determines the immediate parent branch for a given leaf.
-		 */
-		protected function getParentBranch(item:Object):Object
-		{
-			//use the stored item renderers to find the correct item
-			var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
-			var index:int = this.itemRenderers.indexOf(renderer);
-			for(var i:int = index - 1; i >= 0; i--)
-			{
-				//we know the order in this.itemRenderers, so we can "cheat"
-				var parentRenderer:ITreeMapBranchRenderer = this.itemRenderers[i] as ITreeMapBranchRenderer;
-				if(parentRenderer && this.branchContainsChild(parentRenderer.data, item))
-				{
-					return parentRenderer.data;
-				}
-			}
-			return null;
 		}
 	
 		/**
 		 * @private
-		 * Determines if a branch contains a given leaf.
+		 * Handles a selection request from a branch.
 		 */
-		protected function branchContainsChild(branch:Object, childToFind:Object):Boolean
+		protected function branchSelectHandler(event:TreeMapEvent):void
 		{
-			//make sure we at least have a branch
-			if(!dataDescriptor.isBranch(branch))
+			if(this.branchesSelectable)
 			{
-				return false;
+				this.selectedItem = ITreeMapBranchRenderer(event.target).data;
 			}
-			
-			var treeMapBranchData:TreeMapBranchData = TreeMapBranchData(this.itemToTreeMapData(branch));
-			var itemCount:int = treeMapBranchData.itemCount;
-			for(var i:int = 0; i < itemCount; i++)
-			{
-				var child:Object = treeMapBranchData.getItemAt(i).item;
-				if(child == childToFind) return true;
-				if(this.dataDescriptor.isBranch(child) && this.branchContainsChild(child, childToFind))
-				{
-					return true;
-				}
-			}
-			return false;
 		}
-	
 	}
 }

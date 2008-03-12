@@ -24,11 +24,13 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	import com.flextoolbox.controls.TreeMap;
+	import com.yahoo.astra.utils.DisplayObjectUtil;
+	
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	
 	import mx.core.UIComponent;
-	import com.yahoo.astra.utils.DisplayObjectUtil;
-	import com.flextoolbox.controls.TreeMap;
 	
 	public class BaseTreeMapBranchRenderer extends UIComponent implements ITreeMapBranchRenderer, IDropInTreeMapItemRenderer
 	{
@@ -75,7 +77,7 @@ package com.flextoolbox.controls.treeMapClasses
 			if(this._selected != value)
 			{
 				this._selected = value;
-				this.invalidateDisplayList();
+				this.invalidateProperties();
 			}
 		}
 		
@@ -88,7 +90,7 @@ package com.flextoolbox.controls.treeMapClasses
 		}
 		
 		protected function layoutContents(contentBounds:Rectangle):void
-		{
+		{	
 			var treeMap:TreeMap = this.treeMapBranchData.owner;
 			
 			this.treeMapBranchData.layoutStrategy.updateLayout(this.treeMapBranchData, contentBounds);

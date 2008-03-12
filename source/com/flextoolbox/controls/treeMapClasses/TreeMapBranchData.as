@@ -97,6 +97,30 @@ package com.flextoolbox.controls.treeMapClasses
 			this._closed = value;
 		}
 		
+		private var _zoomEnabled:Boolean = false;
+		
+		public function get zoomEnabled():Boolean
+		{
+			return this._zoomEnabled;
+		}
+		
+		public function set zoomEnabled(value:Boolean):void
+		{
+			this._zoomEnabled = value;
+		}
+		
+		private var _zoomed:Boolean = false;
+		
+		public function get zoomed():Boolean
+		{
+			return this._zoomed;
+		}
+		
+		public function set zoomed(value:Boolean):void
+		{
+			this._zoomed = value;
+		}
+		
 	//--------------------------------------
 	//  Public Methods
 	//--------------------------------------

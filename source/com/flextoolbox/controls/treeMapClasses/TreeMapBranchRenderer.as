@@ -24,26 +24,30 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import flash.geom.Rectangle;
-	import mx.core.IFlexDisplayObject;
+	import com.flextoolbox.events.TreeMapEvent;
+	
 	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.geom.Rectangle;
+	
+	import mx.core.IFlexDisplayObject;
+	import mx.skins.RectangularBorder;
+	import mx.skins.halo.HaloBorder;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.ISimpleStyleClient;
 	import mx.styles.StyleManager;
-	import mx.skins.RectangularBorder;
-	import mx.managers.ISystemManager;
-	import mx.skins.halo.HaloBorder;
-	import flash.events.MouseEvent;
-	import com.flextoolbox.events.TreeMapEvent;
-	import flash.text.TextField;
-	import mx.core.UITextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import com.flextoolbox.controls.TreeMap;
-	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
 	
 	public class TreeMapBranchRenderer extends BaseTreeMapBranchRenderer
 	{
+		
+	//--------------------------------------
+	//  Static Methods
+	//--------------------------------------
+	
+		/**
+		 * @private
+		 * Sets the default style values for instances of this type.
+		 */
 		public static function initializeStyles():void
 		{
 			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapBranchRenderer");
@@ -76,15 +80,30 @@ package com.flextoolbox.controls.treeMapClasses
 		}
 		initializeStyles();
 		
+	//--------------------------------------
+	//  Constructor
+	//--------------------------------------
+	
+		/**
+		 * Constructor.
+		 */
 		public function TreeMapBranchRenderer()
 		{
 			super();
 		}
+	
+	//--------------------------------------
+	//  Properties
+	//--------------------------------------
 		
 		protected var headerHighlighted:Boolean = false;
 		
 		protected var header:TreeMapBranchHeader;
 		protected var border:IFlexDisplayObject;
+	
+	//--------------------------------------
+	//  Public Methods
+	//--------------------------------------
 	
 		/**
 		 * @private
@@ -130,6 +149,13 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 		}
 		
+	//--------------------------------------
+	//  Protected Methods
+	//--------------------------------------
+	
+		/**
+		 * @private
+		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
@@ -165,29 +191,38 @@ package com.flextoolbox.controls.treeMapClasses
 						this.header.styleChanged(null);
 					}
 				}
-				this.header.addEventListener(MouseEvent.CLICK, headerClickHandler, false, 0, true);
+				this.header.addEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
+				this.header.addEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		override protected function commitProperties():void
 		{
 			super.commitProperties();
 			
-			if(this.header)
+			if(this.treeMapBranchData)
 			{
 				this.header.label = this.treeMapBranchData.label;
 				this.header.selected = this.selected;
 				this.header.enabled = this.enabled && this.treeMapBranchData.showLabel;
+				this.header.zoomEnabled = this.enabled && this.treeMapBranchData.zoomEnabled;
+				this.header.zoomed = this.treeMapBranchData.zoomed;
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{	
-			var headerWidth:Number = 0;
+			//update the header
+			var headerWidth:Number = this.unscaledWidth;
 			var headerHeight:Number = 0;
-			if(this.header)
+			if(this.treeMapBranchData)
 			{
-				headerWidth = this.unscaledWidth;
 				if(this.treeMapBranchData.closed)
 				{
 					headerHeight = this.unscaledHeight;
@@ -196,15 +231,17 @@ package com.flextoolbox.controls.treeMapClasses
 				{
 					headerHeight = this.treeMapBranchData.showLabel ? this.header.getExplicitOrMeasuredHeight() : 0;
 				}
-				
-				this.header.setActualSize(headerWidth, headerHeight);
 			}
+			this.header.setActualSize(headerWidth, headerHeight);
 			
+			//update the border
 			if(this.border)
 			{
 				this.border.setActualSize(unscaledWidth, unscaledHeight);
 			}
-			if(this.treeMapBranchData.closed) return;
+			
+			//if not closed, layout the contents
+			if(this.treeMapBranchData && this.treeMapBranchData.closed) return;
 			
 			var paddingTop:Number = this.getStyle("paddingTop");
 			var paddingBottom:Number = this.getStyle("paddingBottom");
@@ -229,9 +266,19 @@ package com.flextoolbox.controls.treeMapClasses
 			this.layoutContents(contentBounds);
 		}
 		
-		protected function headerClickHandler(event:MouseEvent):void
+	//--------------------------------------
+	//  Protected Event Handlers
+	//--------------------------------------
+	
+		protected function headerSelectHandler(event:Event):void
 		{
-			var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this, true);
+			var select:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_SELECT, this);
+			this.dispatchEvent(select);
+		}
+	
+		protected function headerZoomHandler(event:Event):void
+		{
+			var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);
 			this.dispatchEvent(zoom);
 		}
 	}

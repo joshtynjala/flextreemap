@@ -24,23 +24,19 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import mx.containers.Accordion;
-	import mx.controls.Button;
-	import mx.core.Container;
-	import mx.core.EdgeMetrics;
-	import mx.core.IDataRenderer;
-	import mx.core.IFlexDisplayObject;
-	import mx.core.mx_internal;
-	import mx.styles.CSSStyleDeclaration;
-	import mx.styles.ISimpleStyleClient;
-	import mx.styles.StyleManager;
+	import com.flextoolbox.events.TreeMapEvent;
+	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
 	
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import com.flextoolbox.controls.TreeMap;
-	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
+	
+	import mx.controls.Button;
+	import mx.core.IDataRenderer;
 	import mx.core.UIComponent;
+	import mx.core.mx_internal;
+	import mx.styles.CSSStyleDeclaration;
+	import mx.styles.StyleManager;
+	import mx.styles.StyleProxy;
 	
 	use namespace mx_internal;
 	
@@ -55,25 +51,16 @@ package com.flextoolbox.controls.treeMapClasses
 	 * <p>Note: The majority of this comes from the class <code>mx.containers.accordionClasses.AccordionHeader</code>,
 	 * from the source code provided with the Flex 2 SDK.</p>
 	 */
-	public class TreeMapBranchHeader extends Button implements IDataRenderer
+	public class TreeMapBranchHeader extends UIComponent implements IDataRenderer
 	{
-	
-    //----------------------------------
-	//  Class Mixins
-    //----------------------------------
-	
-		/**
-		 * @private
-		 * Placeholder for mixin by AccordionHeaderAccImpl.
-		 */
-		mx_internal static var createAccessibilityImplementation:Function;
 		
     //----------------------------------
-	//  Class Methods
+	//  Static Methods
     //----------------------------------
     
 		/**
 		 * @private
+		 * Initializes the default styles for instances of this type.
 		 */
 		private static function initializeStyles():void
 		{
@@ -97,11 +84,27 @@ package com.flextoolbox.controls.treeMapClasses
 				this.selectedDownSkin = TreeMapBranchHeaderSkin;
 				this.selectedOverSkin = TreeMapBranchHeaderSkin;
 				this.selectedDisabledSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonUpSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonDownSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonOverSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonDisabledSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonSelectedUpSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonSelectedDownSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonSelectedOverSkin = TreeMapBranchHeaderSkin;
+				this.zoomButtonSelectedDisabledSkin = TreeMapBranchHeaderSkin;
+				this.zoomInIcon = ZoomInIcon;
+				this.zoomOutIcon = ZoomOutIcon;
 			}
 			
 			StyleManager.setStyleDeclaration("TreeMapBranchHeader", selector, false);
 		}
 		initializeStyles();
+	
+		[Embed(source="/assets/mac_max_up.png")]
+		private static const ZoomInIcon:Class;
+	
+		[Embed(source="/assets/mac_min_up.png")]
+		private static const ZoomOutIcon:Class;
 	
     //----------------------------------
 	//  Constructor
@@ -113,29 +116,40 @@ package com.flextoolbox.controls.treeMapClasses
 		public function TreeMapBranchHeader()
 		{
 			super();
-	
-			// Since we play games with allowing selected to be set without
-			// toggle being set, we need to clear the default toggleChanged
-			// flag here otherwise the initially selected header isn't
-			// drawn in a selected state.
-			toggleChanged = false;
-			mouseFocusEnabled = false;
-			tabEnabled = false;
+			this.tabEnabled = false;
 		}
 	
     //----------------------------------
 	//  Variables and Properties
     //----------------------------------
 	
-		/**
-		 * @private
-		 */
-		private var focusObj:DisplayObject;
+		protected var selectionButton:Button;
+		protected var zoomButton:Button;
 	
 		/**
 		 * @private
+		 * Storage for the label property.
 		 */
-		private var focusSkin:IFlexDisplayObject;
+		private var _label:String;
+	
+		/**
+		 * Stores a reference to the label with the header.
+		 */
+		public function get label():String
+		{
+			return this._label;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set label(value:String):void
+		{
+			this._label = value;
+			this.invalidateProperties();
+			this.invalidateSize();
+			this.invalidateDisplayList();
+		}
 	
 		/**
 		 * @private
@@ -146,7 +160,7 @@ package com.flextoolbox.controls.treeMapClasses
 		/**
 		 * Stores a reference to the content associated with the header.
 		 */
-		override public function get data():Object
+		public function get data():Object
 		{
 			return _data;
 		}
@@ -154,19 +168,95 @@ package com.flextoolbox.controls.treeMapClasses
 		/**
 		 * @private
 		 */
-		override public function set data(value:Object):void
+		public function set data(value:Object):void
 		{
 			_data = value;
+		}
+	
+		private var _selected:Boolean = false;
+	
+		public function get selected():Boolean
+		{
+			return this._selected;
 		}
 	
 		/**
 		 * @private
 		 */
-		override public function set selected(value:Boolean):void
+		public function set selected(value:Boolean):void
 		{
-			_selected = value;
+			this._selected = value;
+			this.invalidateProperties();
+		}
+		
+		private var _zoomEnabled:Boolean = false;
+		
+		public function get zoomEnabled():Boolean
+		{
+			return this._zoomEnabled;
+		}
+		
+		public function set zoomEnabled(value:Boolean):void
+		{
+			if(this._zoomEnabled != value)
+			{
+				this._zoomEnabled = value;
+				this.invalidateProperties();
+				this.invalidateSize();
+				this.invalidateDisplayList();
+			}
+		}
+		
+		private var _zoomed:Boolean = false;
+		
+		public function get zoomed():Boolean
+		{
+			return this._zoomed;
+		}
+		
+		public function set zoomed(value:Boolean):void
+		{
+			if(this._zoomed != value)
+			{
+				this._zoomed = value;
+				this.invalidateProperties();
+			}
+		}
 	
-			invalidateDisplayList();
+		private var _selectionButtonStyleFilter:Object = 
+		{
+			upSkin: "upSkin",
+			downSkin: "downSkin",
+			overSkin: "overSkin",
+			disabledSkin: "disabledSkin",
+			selectedUpSkin: "selectedUpSkin",
+			selectedDownSkin: "selectedDownSkin",
+			selectedOverSkin: "selectedOverSkin",
+			selectedDisabledSkin: "selectedDisabledSkin"
+		};
+		
+		protected function get selectionButtonStyleFilter():Object
+		{
+			return this._selectionButtonStyleFilter;
+		}
+	
+		private var _zoomButtonStyleFilter:Object = 
+		{
+			zoomButtonUpSkin: "upSkin",
+			zoomButtonDownSkin: "downSkin",
+			zoomButtonOverSkin: "overSkin",
+			zoomButtonDisabledSkin: "disabledSkin",
+			zoomButtonSelectedUpSkin: "selectedUpSkin",
+			zoomButtonSelectedDownSkin: "selectedDownSkin",
+			zoomButtonSelectedOverSkin: "selectedOverSkin",
+			zoomButtonSelectedDisabledSkin: "selectedDisabledSkin",
+			zoomInIcon: "icon",
+			zoomOutIcon: "selectedUpIcon"
+		};
+		
+		protected function get zoomButtonStyleFilter():Object
+		{
+			return this._zoomButtonStyleFilter;
 		}
 	
     //----------------------------------
@@ -176,113 +266,82 @@ package com.flextoolbox.controls.treeMapClasses
 		/**
 		 * @private
 		 */
-		override protected function initializeAccessibility():void
-		{
-			if (TreeMapBranchHeader.createAccessibilityImplementation != null)
-				TreeMapBranchHeader.createAccessibilityImplementation(this);
-		}
-	
-		/**
-		 * @private
-		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
 			
-			// AccordionHeader has a bit of a conflict here. Our styleName points to
-			// our parent Accordion, which has padding values defined. We also have
-			// padding values defined on our type selector, but since class selectors
-			// take precedence over type selectors, the type selector padding values
-			// are ignored. Force them in here.
-			var styleDecl:CSSStyleDeclaration = StyleManager.getStyleDeclaration(className);
+			if(!this.selectionButton)
+			{
+				this.selectionButton = new Button();
+				this.selectionButton.styleName = new StyleProxy(this, this.selectionButtonStyleFilter);
+				this.selectionButton.addEventListener(MouseEvent.CLICK, selectionButtonClickHandler);
+				this.addChild(this.selectionButton);
+			}
 			
-			if(styleDecl)
+			if(!this.zoomButton)
 			{
-				var value:Number = styleDecl.getStyle("paddingLeft");
-				if(!isNaN(value))
-				{
-					this.setStyle("paddingLeft", value);
-				}
-				value = styleDecl.getStyle("paddingRight");
-				if(!isNaN(value))
-				{
-					this.setStyle("paddingRight", value);
-				}
+				this.zoomButton = new Button();
+				this.zoomButton.styleName = new StyleProxy(this, this.zoomButtonStyleFilter);
+				this.zoomButton.addEventListener(MouseEvent.CLICK, zoomButtonClickHandler);
+				this.addChild(this.zoomButton);
+			}
+
+		}
+		
+		override protected function commitProperties():void
+		{
+			super.commitProperties();
+			
+			this.selectionButton.selected = this.selected;
+			this.selectionButton.label = this.label;
+			
+			this.zoomButton.selected = this.zoomed;
+			this.zoomButton.visible = this.zoomEnabled;
+		}
+		
+		override protected function measure():void
+		{
+			super.measure();
+			
+			this.measuredWidth = this.selectionButton.measuredWidth;
+			this.measuredHeight = this.selectionButton.measuredHeight;
+			
+			if(this.zoomEnabled)
+			{
+				this.measuredWidth += this.zoomButton.measuredWidth;
+				this.measuredHeight = Math.max(this.measuredHeight, this.zoomButton.measuredHeight);
 			}
 		}
 		
-		/**
-		 * @private
-		 */
-		override public function drawFocus(isFocused:Boolean):void
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
-			// Accordion header focus is drawn inside the control.
-			if (isFocused && !isEffectStarted)
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			
+			var zoomButtonWidth:Number = 0;
+			if(this.zoomEnabled)
 			{
-				if (!focusObj)
-				{
-					var focusClass:Class = getStyle("focusSkin");
-	
-					focusObj = new focusClass();
-	
-					var focusStyleable:ISimpleStyleClient = focusObj as ISimpleStyleClient;
-					if (focusStyleable)
-						focusStyleable.styleName = this;
-	
-					addChild(focusObj);
-	
-					// Call the draw method if it has one
-					focusSkin = focusObj as IFlexDisplayObject;
-				}
-	
-				if (focusSkin)
-				{
-					focusSkin.move(0, 0);
-					focusSkin.setActualSize(unscaledWidth, unscaledHeight);
-				}
-				focusObj.visible = true;
-	
-				dispatchEvent(new Event("focusDraw"));
+				zoomButtonWidth = Math.min(this.zoomButton.measuredWidth, unscaledWidth / 2);
+				this.zoomButton.setActualSize(zoomButtonWidth, unscaledHeight);
+				this.zoomButton.move(unscaledWidth - zoomButtonWidth, 0);
 			}
-			else if (focusObj)
-			{
-				focusObj.visible = false;
-			}
+			
+			var selectionButtonWidth:Number = unscaledWidth - zoomButtonWidth;
+			this.selectionButton.move(0, 0);
+			this.selectionButton.setActualSize(selectionButtonWidth, unscaledHeight);
 		}
 	
-		/**
-		 * @private
-		 */
-		override mx_internal function layoutContents(unscaledWidth:Number,
-												     unscaledHeight:Number,
-												     offset:Boolean):void
+    //----------------------------------
+	//  Protected Event Handlers
+    //----------------------------------
+		
+		protected function selectionButtonClickHandler(event:Event):void
 		{
-			super.layoutContents(unscaledWidth, unscaledHeight, offset);
-	
-			// Move the focus object to front.
-			// AccordionHeader needs special treatment because it doesn't
-			// show focus by having the standard focus ring display outside.
-			if (focusObj)
-				setChildIndex(focusObj, numChildren - 1);
-		}
-	
-		/**
-		 * @private
-		 */
-		override protected function rollOverHandler(event:MouseEvent):void
-		{
-			super.rollOverHandler(event);
-	
-			// The halo design specifies that accordion headers overlap
-			// by a pixel when layed out. In order for the border to be
-			// completely drawn on rollover, we need to set our index
-			// here to bring this header to the front.
-			var branch:UIComponent = UIComponent(this.parent);
-			if (branch.enabled)
-			{
-				branch.setChildIndex(this, branch.numChildren - 1);
-			}
+			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_SELECT));
 		}
 		
+		protected function zoomButtonClickHandler(event:MouseEvent):void
+		{
+			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM));
+		}
 	}
 }

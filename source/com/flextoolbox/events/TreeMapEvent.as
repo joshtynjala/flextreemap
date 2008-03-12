@@ -24,8 +24,9 @@
 
 package com.flextoolbox.events
 {
-	import flash.events.Event;
 	import com.flextoolbox.controls.treeMapClasses.ITreeMapItemRenderer;
+	
+	import flash.events.Event;
 
 	/**
 	 * The TreeMapEvent class represents events associated with items of the <code>TreeMap</code> control.
@@ -63,6 +64,11 @@ package com.flextoolbox.events
 		 * Dispatched when the user zooms a branch item in the TreeMap component.
 		 */
 		public static const BRANCH_ZOOM:String = "branchZoom";
+		
+		/**
+		 * Dispatched when the user selects a branch item in the TreeMap component.
+		 */
+		public static const BRANCH_SELECT:String = "branchSelect";
 	
 	//--------------------------------------
 	//  Constructor

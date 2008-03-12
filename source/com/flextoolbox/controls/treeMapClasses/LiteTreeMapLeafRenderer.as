@@ -1,30 +1,58 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2008 Josh Tynjala
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to 
+//  deal in the Software without restriction, including without limitation the
+//  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+//  IN THE SOFTWARE.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 package com.flextoolbox.controls.treeMapClasses
 {
-	import flash.display.CapsStyle;
-	import flash.display.JointStyle;
-	import flash.display.LineScaleMode;
+	import com.flextoolbox.utils.GraphicsUtil;
+	
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
 	import mx.core.UIComponent;
-	import mx.managers.ISystemManager;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	
-	[Mixin]
+	/**
+	 * A very simple leaf renderer for the TreeMap component.
+	 * 
+	 * @see com.flextoolbox.controls.TreeMap
+	 * 
+	 * @author Josh Tynjala
+	 */
 	public class LiteTreeMapLeafRenderer extends UIComponent implements ITreeMapLeafRenderer, IDropInTreeMapItemRenderer
 	{
 		
 	//--------------------------------------
-	//  Class Methods
+	//  Static Methods
 	//--------------------------------------
 	
 		/**
 		 * @private
-		 * Initializes the default styles.
+		 * Sets the default style values for instances of this type.
 		 */
-		public static function init(systemManager:ISystemManager):void
+		private static function initializeStyles():void
 		{
 			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("LiteTreeMapLeafRenderer");
 			if(!selector)
@@ -48,6 +76,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			StyleManager.setStyleDeclaration("LiteTreeMapLeafRenderer", selector, false);
 		}
+		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor
@@ -153,6 +182,7 @@ package com.flextoolbox.controls.treeMapClasses
 			if(this._treeMapLeafData)
 			{
 				label = this._treeMapLeafData.label;
+				this.toolTip = this._treeMapLeafData.dataTip;
 			}
 			
 			var labelChanged:Boolean = this.textField.text != label;
@@ -167,8 +197,6 @@ package com.flextoolbox.controls.treeMapClasses
 				var autoFitText:String = this.getStyle("autoFitText");
 				this.increaseOrDecreaseFontSizeToFit(autoFitText);
 			}
-			
-			this.toolTip = this._treeMapLeafData.dataTip;
 		}
 		
 		/**
@@ -178,13 +206,18 @@ package com.flextoolbox.controls.treeMapClasses
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
+			if(!this._treeMapLeafData)
+			{
+				return;
+			}
+			
 			var backgroundColor:uint = this._treeMapLeafData.color;
 			var themeColor:uint = this.getStyle("themeColor");
 			var rollOverColor:uint = this.getStyle("rollOverColor");
 			var borderColor:uint = this.getStyle("borderColor") as uint;
 			
 			this.graphics.clear();
-			this.graphics.lineStyle(2, borderColor);
+			//this.graphics.lineStyle(1, borderColor);
 			this.graphics.beginFill(backgroundColor, 1);
 			this.graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
 			this.graphics.endFill();
@@ -193,8 +226,7 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				var indicatorColor:uint = rollOverColor;
 				if(this.selected) indicatorColor = themeColor;
-				this.graphics.lineStyle(2, indicatorColor);
-				this.graphics.drawRect(2, 2, unscaledWidth - 4, unscaledHeight - 4);
+				GraphicsUtil.drawBorder(this.graphics, 0, 0, unscaledWidth, unscaledHeight, indicatorColor, indicatorColor, 2, 1);
 			}
 			
 			var paddingTop:Number = this.getStyle("paddingTop");

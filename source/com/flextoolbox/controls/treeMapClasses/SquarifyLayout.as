@@ -33,6 +33,13 @@ package com.flextoolbox.controls.treeMapClasses
 	import mx.collections.SortField;
 	import flash.geom.Point;
 	
+	/**
+	 * Squarify layout algorithm for the TreeMap component.
+	 * 
+	 * @see com.flextoolbox.controls.TreeMap
+	 * 
+	 * @author Josh Tynjala
+	 */
 	public class SquarifyLayout implements ITreeMapLayoutStrategy
 	{
 		
@@ -261,6 +268,8 @@ package com.flextoolbox.controls.treeMapClasses
 					currentData.width = Math.max(0, lengthOfShorterSide);
 					currentData.height = Math.max(0, lengthOfLongerSide);
 				}
+				currentData.x;
+				currentData.y;
 				currentDistance += lengthOfShorterSide;
 				this._numDrawnNodes++;
 			}

@@ -7,27 +7,28 @@ TreeMap Component for Adobe Flex
 Created by Josh Tynjala
 
 ---------------------------------------------------------------------------------
-Website:
+Links:
 ---------------------------------------------------------------------------------
-http://flex2treemap.googlecode.com/
 
----------------------------------------------------------------------------------
+Project Page:
+   * http://flex2treemap.googlecode.com/
+   
 API Documentation:
----------------------------------------------------------------------------------
-http://www.flextoolbox.com/documentation/treemap/index.html
+   * http://www.flextoolbox.com/documentation/treemap/index.html
 
----------------------------------------------------------------------------------
-Getting Started Documentation:
----------------------------------------------------------------------------------
-http://code.google.com/p/flex2treemap/wiki/GettingStarted
+Getting Started:
+   * http://code.google.com/p/flex2treemap/wiki/GettingStarted
 
----------------------------------------------------------------------------------
-Author's Blog
----------------------------------------------------------------------------------
-http://www.zeuslabs.us/
+Author's Blog:
+   * http://www.zeuslabs.us/
 
 ---------------------------------------------------------------------------------
 Release Notes:
 ---------------------------------------------------------------------------------
+
+01/21/2008 - 1.0.1
+   * Renamed the headerStyleName style to branchHeaderStyleName to avoid conflicts
+   * Updated build to use Flex SWCs external libraries to reduce build file size
+
 11/11/2007 - 1.0.0
-Initial Release for Flex 2.0.1
+   * Initial Release for Flex 2.0.1

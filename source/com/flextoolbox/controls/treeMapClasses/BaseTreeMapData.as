@@ -65,5 +65,16 @@ package com.flextoolbox.controls.treeMapClasses
 		{
 			this._weight = value;
 		}
+		private var _label:String = "";
+		
+		public function get label():String
+		{
+			return this._label;
+		}
+		
+		public function set label(value:String):void
+		{
+			this._label = value;
+		}
 	}
 }

@@ -49,18 +49,6 @@ package com.flextoolbox.controls.treeMapClasses
 			return this.items.length;
 		}
 		
-		private var _label:String = "";
-		
-		public function get label():String
-		{
-			return this._label;
-		}
-		
-		public function set label(value:String):void
-		{
-			this._label = value;
-		}
-		
 		private var _showLabel:Boolean = true;
 		
 		public function get showLabel():Boolean
@@ -95,18 +83,6 @@ package com.flextoolbox.controls.treeMapClasses
 		public function set closed(value:Boolean):void
 		{
 			this._closed = value;
-		}
-		
-		private var _zoomEnabled:Boolean = false;
-		
-		public function get zoomEnabled():Boolean
-		{
-			return this._zoomEnabled;
-		}
-		
-		public function set zoomEnabled(value:Boolean):void
-		{
-			this._zoomEnabled = value;
 		}
 		
 		private var _zoomed:Boolean = false;

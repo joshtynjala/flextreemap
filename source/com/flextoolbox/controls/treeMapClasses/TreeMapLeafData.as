@@ -47,18 +47,6 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Properties
 	//--------------------------------------
 		
-		private var _label:String = "";
-		
-		public function get label():String
-		{
-			return this._label;
-		}
-		
-		public function set label(value:String):void
-		{
-			this._label = value;
-		}
-		
 		private var _color:uint = 0x000000;
 		
 		public function get color():uint

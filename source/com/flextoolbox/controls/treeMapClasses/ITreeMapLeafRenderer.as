@@ -26,6 +26,6 @@ package com.flextoolbox.controls.treeMapClasses
 {
 	public interface ITreeMapLeafRenderer extends ITreeMapItemRenderer
 	{
-		
+		//nothing right now. just useful for type checking.
 	}
 }

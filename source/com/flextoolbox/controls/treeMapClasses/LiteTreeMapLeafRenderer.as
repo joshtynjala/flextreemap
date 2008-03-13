@@ -212,20 +212,22 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 			
 			var backgroundColor:uint = this._treeMapLeafData.color;
-			var themeColor:uint = this.getStyle("themeColor");
-			var rollOverColor:uint = this.getStyle("rollOverColor");
 			var borderColor:uint = this.getStyle("borderColor") as uint;
 			
 			this.graphics.clear();
-			//this.graphics.lineStyle(1, borderColor);
 			this.graphics.beginFill(backgroundColor, 1);
 			this.graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
 			this.graphics.endFill();
 			
 			if(this.treeMapData.owner.selectable && (this.selected || this.highlighted))
 			{
-				var indicatorColor:uint = rollOverColor;
-				if(this.selected) indicatorColor = themeColor;
+				var themeColor:uint = this.getStyle("themeColor");
+				var indicatorColor:uint = themeColor;
+				if(this.highlighted)
+				{
+					var rollOverColor:uint = this.getStyle("rollOverColor");
+					indicatorColor = rollOverColor;
+				}
 				GraphicsUtil.drawBorder(this.graphics, 0, 0, unscaledWidth, unscaledHeight, indicatorColor, indicatorColor, 2, 1);
 			}
 			

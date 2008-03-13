@@ -1143,7 +1143,6 @@ package com.flextoolbox.controls
 				branchData.showLabel = false;
 			}
 			branchData.closed = this.isDepthClosed(0);
-			branchData.zoomEnabled = false;
 			
 			branchData.uid = this.itemToUID(this._rootData);
 			this._itemToTreeMapData[this._rootData] = branchData;
@@ -1171,9 +1170,7 @@ package com.flextoolbox.controls
 				{
 					var childBranchData:TreeMapBranchData = new TreeMapBranchData(this);
 					childBranchData.layoutStrategy = this.layoutStrategy;
-					childBranchData.label = this.itemToLabel(item);
 					childBranchData.closed = closed || this.isDepthClosed(depth + 1);
-					childBranchData.zoomEnabled = this.zoomEnabled;
 					treeMapData = childBranchData;
 					
 					var childBranchChildren:ICollectionView = this.dataDescriptor.getChildren(item);
@@ -1183,11 +1180,12 @@ package com.flextoolbox.controls
 				{
 					var leafData:TreeMapLeafData = new TreeMapLeafData(this);
 					leafData.color = this.itemToColor(item);
-					leafData.label = this.itemToLabel(item);
+					leafData.dataTip = this.itemToDataTip(item);
 					treeMapData = leafData;
 				}
 				treeMapData.uid = uid;
 				treeMapData.weight = this.itemToWeight(item);
+				treeMapData.label = this.itemToLabel(item);
 				if(renderer is IDropInTreeMapItemRenderer)
 				{
 					IDropInTreeMapItemRenderer(renderer).treeMapData = treeMapData;

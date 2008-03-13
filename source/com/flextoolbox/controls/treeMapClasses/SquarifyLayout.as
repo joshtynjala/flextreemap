@@ -34,7 +34,9 @@ package com.flextoolbox.controls.treeMapClasses
 	import flash.geom.Point;
 	
 	/**
-	 * Squarify layout algorithm for the TreeMap component.
+	 * Squarify layout algorithm for the TreeMap component. The squarify
+	 * algorithm creates nodes that are unordered, with the lowest aspect
+	 * ratios, and medium stability of node positioning.
 	 * 
 	 * @see com.flextoolbox.controls.TreeMap
 	 * 
@@ -93,14 +95,14 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 		
 		/**
-		 * @copy com.flextoolbox.controls.treeMapClasses.ITreeMapLayoutStrategy#updateLayout
+		 * @copy ITreeMapLayoutStrategy#updateLayout()
 		 */
 		public function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
 		{
 			if(branchData.itemCount == 0) return;
 			this._dataProvider = new ArrayCollection(branchData.itemsToArray());
 			
-			var weightSum:Number = this.saveWeightsAndGetTotalSum(this._dataProvider);
+			var weightSum:Number = this.calculateTotalWeightSum(this._dataProvider);
 			
 			var sortWeights:Sort = new Sort();
 			var weightField:SortField = new SortField(null, true, true, true);
@@ -131,10 +133,9 @@ package com.flextoolbox.controls.treeMapClasses
 		
 		/**
 		 * @private
-		 * Determines the weight of items from the target TreeMap and saves the values
-		 * so that they don't need to be calculated every time a weight is required.
+		 * Calculates the sum of item weights.
 		 */
-		private function saveWeightsAndGetTotalSum(data:ICollectionView):Number
+		private function calculateTotalWeightSum(data:ICollectionView):Number
 		{
 			var sum:Number = 0;
 			var iterator:IViewCursor = data.createCursor();

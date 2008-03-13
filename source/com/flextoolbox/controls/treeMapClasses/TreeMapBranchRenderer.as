@@ -208,7 +208,7 @@ package com.flextoolbox.controls.treeMapClasses
 				this.header.label = this.treeMapBranchData.label;
 				this.header.selected = this.selected;
 				this.header.enabled = this.enabled && this.treeMapBranchData.showLabel;
-				this.header.zoomEnabled = this.enabled && this.treeMapBranchData.zoomEnabled;
+				this.header.zoomEnabled = this.enabled && this.treeMapBranchData.owner.zoomEnabled;
 				this.header.zoomed = this.treeMapBranchData.zoomed;
 			}
 		}
@@ -221,15 +221,20 @@ package com.flextoolbox.controls.treeMapClasses
 			//update the header
 			var headerWidth:Number = this.unscaledWidth;
 			var headerHeight:Number = 0;
+			this.header.visible = true;
 			if(this.treeMapBranchData)
 			{
 				if(this.treeMapBranchData.closed)
 				{
 					headerHeight = this.unscaledHeight;
 				}
+				else if(this.treeMapBranchData.showLabel)
+				{	
+					headerHeight = this.header.getExplicitOrMeasuredHeight();
+				}
 				else
 				{
-					headerHeight = this.treeMapBranchData.showLabel ? this.header.getExplicitOrMeasuredHeight() : 0;
+					this.header.visible = false;
 				}
 			}
 			this.header.setActualSize(headerWidth, headerHeight);

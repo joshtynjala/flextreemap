@@ -40,8 +40,6 @@ package com.flextoolbox.controls.treeMapClasses
 	
 	use namespace mx_internal;
 	
-	[AccessibilityClass(implementation="mx.accessibility.AccordionHeaderAccImpl")]
-	
 	/**
 	 * The TreeMapBranchHeader class defines the appearance of the header buttons
 	 * of the branches in a TreeMap.
@@ -100,6 +98,7 @@ package com.flextoolbox.controls.treeMapClasses
 		}
 		initializeStyles();
 	
+		//TODO: Externalize these somehow.
 		[Embed(source="/assets/mac_max_up.png")]
 		private static const ZoomInIcon:Class;
 	

@@ -84,6 +84,12 @@ package com.flextoolbox.controls
 	 */
 	[Event(name="leafDoubleClick", type="com.flextoolbox.events.TreeMapEvent")]
 
+	//--------------------------------------
+	//  Styles
+	//--------------------------------------
+	
+include "../styles/metadata/TextStyles.inc"
+	
 	/**
 	 * A treemap is a space-constrained visualization of hierarchical
 	 * structures. It is very effective in showing attributes of leaf nodes
@@ -171,7 +177,9 @@ package com.flextoolbox.controls
 			
 			if(value is XML)
 			{
-				this._dataProvider = new XMLListCollection(value.elements());
+				var list:XMLList = new XMLList();
+				list += value;
+				this._dataProvider = new XMLListCollection(list);
 			}
 			//if already a collection dont make new one
 	        else if(value is ICollectionView)

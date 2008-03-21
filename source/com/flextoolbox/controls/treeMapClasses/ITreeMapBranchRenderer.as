@@ -26,7 +26,29 @@ package com.flextoolbox.controls.treeMapClasses
 {
 	import flash.geom.Rectangle;
 
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+
+	/**
+	 * TODO: Document this!
+	 */
+	[Event(name="branchSelect", type="com.flextoolbox.events.TreeMapEvent")]
+
+	/**
+	 * TODO: Document this!
+	 */
+	[Event(name="branchZoom", type="com.flextoolbox.events.TreeMapEvent")]
+	
+	/**
+	 * The interface that defines functionality required for a TreeMap control's
+	 * branch renderers.
+	 * 
+	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
+	 */
 	public interface ITreeMapBranchRenderer extends ITreeMapItemRenderer
 	{
+		//nothing right now. just useful for type checking
 	}
 }

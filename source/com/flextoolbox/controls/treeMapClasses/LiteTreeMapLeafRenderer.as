@@ -37,9 +37,8 @@ package com.flextoolbox.controls.treeMapClasses
 	/**
 	 * A very simple leaf renderer for the TreeMap component.
 	 * 
-	 * @see com.flextoolbox.controls.TreeMap
-	 * 
 	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class LiteTreeMapLeafRenderer extends UIComponent implements ITreeMapLeafRenderer, IDropInTreeMapItemRenderer
 	{

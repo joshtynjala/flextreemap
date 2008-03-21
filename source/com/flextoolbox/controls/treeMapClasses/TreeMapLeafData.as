@@ -30,6 +30,7 @@ package com.flextoolbox.controls.treeMapClasses
 	 * The data passed to drop-in TreeMap leaf renderers.
 	 * 
 	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class TreeMapLeafData extends BaseTreeMapData
 	{

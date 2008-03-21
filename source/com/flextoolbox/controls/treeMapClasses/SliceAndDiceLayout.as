@@ -34,10 +34,9 @@ package com.flextoolbox.controls.treeMapClasses
 	 * Slice-and-dice layout algorithm for the TreeMap component. The slice-and-
 	 * dice algorithm creates nodes that are ordered, with very high aspect
 	 * ratios, but stable node positioning.
-	 * 
-	 * @see com.flextoolbox.controls.TreeMap
-	 * 
+	 *  
 	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class SliceAndDiceLayout implements ITreeMapLayoutStrategy
 	{

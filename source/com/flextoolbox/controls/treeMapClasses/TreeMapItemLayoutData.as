@@ -25,8 +25,12 @@
 package com.flextoolbox.controls.treeMapClasses
 {
 	/**
+	 * Used by instances of ITreeMapLayoutStrategy to position nodes within a
+	 * TreeMap control
 	 * 
 	 * @author Josh Tynjala
+	 * @see ITreeMapLayoutStrategy
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class TreeMapItemLayoutData
 	{

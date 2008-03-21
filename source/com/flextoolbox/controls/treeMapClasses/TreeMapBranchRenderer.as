@@ -37,6 +37,35 @@ package com.flextoolbox.controls.treeMapClasses
 	import mx.styles.ISimpleStyleClient;
 	import mx.styles.StyleManager;
 	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+
+	/**
+	 * @copy ITreeMapBranchRenderer#branchSelect
+	 */
+	[Event(name="branchSelect", type="com.flextoolbox.events.TreeMapEvent")]
+
+	/**
+	 * @copy ITreeMapBranchRenderer#branchZoom
+	 */
+	[Event(name="branchZoom", type="com.flextoolbox.events.TreeMapEvent")]
+	
+	//--------------------------------------
+	//  Styles
+	//--------------------------------------
+	
+include "../../styles/metadata/BorderStyles.inc"
+include "../../styles/metadata/PaddingStyles.inc"
+include "../../styles/metadata/TextStyles.inc"
+	
+	/**
+	 * The default branch renderer for the TreeMap control. Includes a header
+	 * with a label and a zoom button.
+	 * 
+	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
+	 */
 	public class TreeMapBranchRenderer extends BaseTreeMapBranchRenderer
 	{
 		
@@ -98,6 +127,7 @@ package com.flextoolbox.controls.treeMapClasses
 		
 		protected var headerHighlighted:Boolean = false;
 		
+		//TODO: Add headerRenderer property and headerStyleName property
 		protected var header:TreeMapBranchHeader;
 		protected var border:IFlexDisplayObject;
 	
@@ -208,7 +238,7 @@ package com.flextoolbox.controls.treeMapClasses
 				this.header.label = this.treeMapBranchData.label;
 				this.header.selected = this.selected;
 				this.header.enabled = this.enabled && this.treeMapBranchData.showLabel;
-				this.header.zoomEnabled = this.enabled && this.treeMapBranchData.owner.zoomEnabled;
+				this.header.zoomEnabled = this.enabled && this.treeMapBranchData.owner.zoomEnabled && this.treeMapBranchData.owner;
 				this.header.zoomed = this.treeMapBranchData.zoomed;
 			}
 		}

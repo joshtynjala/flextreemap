@@ -32,6 +32,13 @@ package com.flextoolbox.controls.treeMapClasses
 	
 	import mx.core.UIComponent;
 	
+	/**
+	 * Some basic functionality for a branch renderer of the TreeMap control.
+	 * Please consider this an abstract class that should be subclassed.
+	 * 
+	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
+	 */
 	public class BaseTreeMapBranchRenderer extends UIComponent implements ITreeMapBranchRenderer, IDropInTreeMapItemRenderer
 	{
 		public function BaseTreeMapBranchRenderer()

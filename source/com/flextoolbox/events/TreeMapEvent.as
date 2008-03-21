@@ -32,6 +32,7 @@ package com.flextoolbox.events
 	 * The TreeMapEvent class represents events associated with items of the <code>TreeMap</code> control.
 	 * 
 	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class TreeMapEvent extends Event
 	{

@@ -31,6 +31,13 @@ package com.flextoolbox.controls.treeMapClasses
 	import flash.events.IEventDispatcher;
 	import mx.core.IInvalidating;
 
+	/**
+	 * The interface that defines functionality required for a TreeMap control's
+	 * item renderers.
+	 * 
+	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
+	 */
 	public interface ITreeMapItemRenderer extends IDataRenderer, IUIComponent, IEventDispatcher, IFlexDisplayObject, IStyleClient, IInvalidating
 	{
 		function get selected():Boolean;

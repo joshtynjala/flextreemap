@@ -22,17 +22,18 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.flextoolbox.controls.treeMapClasses
+package com.flextoolbox.skins.halo
 {
+	import flash.display.BitmapData;
+	import mx.core.BitmapAsset;
+
+	[Embed(source="/assets/mac_min_up.png")]
 	/**
-	 * The interface that defines functionality required for a TreeMap control's
-	 * leaf renderers.
+	 * The default icon for zoom-out operations on the TreeMap control.
 	 * 
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
 	 */
-	public interface ITreeMapLeafRenderer extends ITreeMapItemRenderer
+	public class TreeMapZoomOutIcon extends BitmapAsset
 	{
-		//nothing right now. just useful for type checking.
 	}
 }

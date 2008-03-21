@@ -34,8 +34,8 @@ package com.flextoolbox.skins.halo
 	/**
 	 * The skin for all the states of an TreeMapBranchHeader in a TreeMap.
 	 * 
+	 * @author Josh Tynjala; Based on code by Adobe Systems, Inc.
 	 * @see com.flextoolbox.controls.TreeMap
-	 * @author Josh Tynjala
 	 */
 	public class TreeMapBranchHeaderSkin extends Border
 	{

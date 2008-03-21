@@ -24,6 +24,13 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	/**
+	 * The interface that defines functionality required for a TreeMap control's
+	 * drop-in item renderers.
+	 * 
+	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
+	 */
 	public interface IDropInTreeMapItemRenderer
 	{
 		function get treeMapData():BaseTreeMapData;

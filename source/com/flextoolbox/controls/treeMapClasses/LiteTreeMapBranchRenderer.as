@@ -34,12 +34,35 @@ package com.flextoolbox.controls.treeMapClasses
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+
 	/**
-	 * A very simple branch renderer for the TreeMap component.
-	 * 
-	 * @see com.flextoolbox.controls.TreeMap
-	 * 
+	 * @copy ITreeMapBranchRenderer#branchSelect
+	 */
+	[Event(name="branchSelect", type="com.flextoolbox.events.TreeMapEvent")]
+
+	/**
+	 * @copy ITreeMapBranchRenderer#branchZoom
+	 */
+	[Event(name="branchZoom", type="com.flextoolbox.events.TreeMapEvent")]
+	
+	//--------------------------------------
+	//  Styles
+	//--------------------------------------
+	
+	//TODO: Add rollOverColor and others
+	
+include "../../styles/metadata/BorderStyles.inc"
+include "../../styles/metadata/PaddingStyles.inc"
+include "../../styles/metadata/TextStyles.inc"
+
+	/**
+	 * A very simple branch renderer for the TreeMap control.
+	 *  
 	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class LiteTreeMapBranchRenderer extends BaseTreeMapBranchRenderer
 	{

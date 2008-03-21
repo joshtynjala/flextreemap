@@ -27,8 +27,8 @@ package com.flextoolbox.controls.treeMapClasses
 	/**
 	 * Defines constants for a TreeMap's <code>zoomOutType</code> property.
 	 * 
-	 * @see com.flextoolbox.controls.TreeMap
 	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class TreeMapZoomOutType
 	{

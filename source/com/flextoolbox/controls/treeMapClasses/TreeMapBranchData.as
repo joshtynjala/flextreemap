@@ -26,6 +26,12 @@ package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.controls.TreeMap;
 
+	/**
+	 * The data passed to drop-in TreeMap branch renderers.
+	 * 
+	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
+	 */
 	public class TreeMapBranchData extends BaseTreeMapData
 	{
 		

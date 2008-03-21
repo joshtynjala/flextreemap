@@ -22,10 +22,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+//TODO: Add Adobe Flex license info
+
 package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.events.TreeMapEvent;
 	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
+	import com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin;
+	import com.flextoolbox.skins.halo.TreeMapZoomInIcon;
+	import com.flextoolbox.skins.halo.TreeMapZoomOutIcon;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -43,11 +48,9 @@ package com.flextoolbox.controls.treeMapClasses
 	/**
 	 * The TreeMapBranchHeader class defines the appearance of the header buttons
 	 * of the branches in a TreeMap.
-	 * You use the <code>getHeaderAt()</code> method of the TreeMap class to get a reference
-	 * to an individual TreeMapBranchHeader object.
 	 * 
-	 * <p>Note: The majority of this comes from the class <code>mx.containers.accordionClasses.AccordionHeader</code>,
-	 * from the source code provided with the Flex 2 SDK.</p>
+	 * @author Josh Tynjala; Based on code by Adobe Systems, Inc.
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class TreeMapBranchHeader extends UIComponent implements IDataRenderer
 	{
@@ -71,6 +74,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			selector.defaultFactory = function():void
 			{
+				//TODO: Define all styles with metadata
 				this.fillAlphas = [1.0, 1.0];
 				this.paddingLeft = 5;
 				this.paddingRight = 5;
@@ -82,28 +86,21 @@ package com.flextoolbox.controls.treeMapClasses
 				this.selectedDownSkin = TreeMapBranchHeaderSkin;
 				this.selectedOverSkin = TreeMapBranchHeaderSkin;
 				this.selectedDisabledSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonUpSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonDownSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonOverSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonDisabledSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonSelectedUpSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonSelectedDownSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonSelectedOverSkin = TreeMapBranchHeaderSkin;
-				this.zoomButtonSelectedDisabledSkin = TreeMapBranchHeaderSkin;
-				this.zoomInIcon = ZoomInIcon;
-				this.zoomOutIcon = ZoomOutIcon;
+				this.zoomButtonUpSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomButtonDownSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomButtonOverSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomButtonDisabledSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomButtonSelectedUpSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomButtonSelectedDownSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomButtonSelectedOverSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomButtonSelectedDisabledSkin = TreeMapBranchHeaderZoomButtonSkin;
+				this.zoomInIcon = TreeMapZoomInIcon;
+				this.zoomOutIcon = TreeMapZoomOutIcon;
 			}
 			
 			StyleManager.setStyleDeclaration("TreeMapBranchHeader", selector, false);
 		}
 		initializeStyles();
-	
-		//TODO: Externalize these somehow.
-		[Embed(source="/assets/mac_max_up.png")]
-		private static const ZoomInIcon:Class;
-	
-		[Embed(source="/assets/mac_min_up.png")]
-		private static const ZoomOutIcon:Class;
 	
     //----------------------------------
 	//  Constructor
@@ -215,11 +212,8 @@ package com.flextoolbox.controls.treeMapClasses
 		
 		public function set zoomed(value:Boolean):void
 		{
-			if(this._zoomed != value)
-			{
-				this._zoomed = value;
-				this.invalidateProperties();
-			}
+			this._zoomed = value;
+			this.invalidateProperties();
 		}
 	
 		private var _selectionButtonStyleFilter:Object = 
@@ -248,14 +242,35 @@ package com.flextoolbox.controls.treeMapClasses
 			zoomButtonSelectedUpSkin: "selectedUpSkin",
 			zoomButtonSelectedDownSkin: "selectedDownSkin",
 			zoomButtonSelectedOverSkin: "selectedOverSkin",
-			zoomButtonSelectedDisabledSkin: "selectedDisabledSkin",
-			zoomInIcon: "icon",
-			zoomOutIcon: "selectedUpIcon"
+			zoomButtonSelectedDisabledSkin: "selectedDisabledSkin"
 		};
 		
 		protected function get zoomButtonStyleFilter():Object
 		{
 			return this._zoomButtonStyleFilter;
+		}
+		
+		override public function styleChanged(styleProp:String):void
+		{
+			super.styleChanged(styleProp);
+			
+			var allStyles:Boolean = !styleProp || styleProp == "styleName";
+			
+			if(allStyles || styleProp == "zoomInIcon")
+			{
+				if(this.zoomButton)
+				{
+					this.refreshZoomInIcon();
+				}
+			}
+			
+			if(allStyles || styleProp == "zoomOutIcon")
+			{
+				if(this.zoomButton)
+				{
+					this.refreshZoomOutIcon();
+				}
+			}
 		}
 	
     //----------------------------------
@@ -284,7 +299,8 @@ package com.flextoolbox.controls.treeMapClasses
 				this.zoomButton.addEventListener(MouseEvent.CLICK, zoomButtonClickHandler);
 				this.addChild(this.zoomButton);
 			}
-
+			this.refreshZoomInIcon();
+			this.refreshZoomOutIcon();
 		}
 		
 		override protected function commitProperties():void
@@ -327,6 +343,24 @@ package com.flextoolbox.controls.treeMapClasses
 			var selectionButtonWidth:Number = unscaledWidth - zoomButtonWidth;
 			this.selectionButton.move(0, 0);
 			this.selectionButton.setActualSize(selectionButtonWidth, unscaledHeight);
+		}
+	
+		protected function refreshZoomInIcon():void
+		{
+			var zoomInIcon:Class = this.getStyle("zoomInIcon");
+			this.zoomButton.setStyle("upIcon", zoomInIcon);
+			this.zoomButton.setStyle("overIcon", zoomInIcon);
+			this.zoomButton.setStyle("downIcon", zoomInIcon);
+			this.zoomButton.setStyle("disabledIcon", zoomInIcon);
+		}
+	
+		protected function refreshZoomOutIcon():void
+		{
+			var zoomOutIcon:Class = this.getStyle("zoomOutIcon");
+			this.zoomButton.setStyle("selectedUpIcon", zoomOutIcon);
+			this.zoomButton.setStyle("selectedOverIcon", zoomOutIcon);
+			this.zoomButton.setStyle("selectedDownIcon", zoomOutIcon);
+			this.zoomButton.setStyle("selectedDisabledIcon", zoomOutIcon);
 		}
 	
     //----------------------------------

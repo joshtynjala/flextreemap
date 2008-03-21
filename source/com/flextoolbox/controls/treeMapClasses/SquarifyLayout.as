@@ -37,10 +37,9 @@ package com.flextoolbox.controls.treeMapClasses
 	 * Squarify layout algorithm for the TreeMap component. The squarify
 	 * algorithm creates nodes that are unordered, with the lowest aspect
 	 * ratios, and medium stability of node positioning.
-	 * 
-	 * @see com.flextoolbox.controls.TreeMap
-	 * 
+	 *  
 	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class SquarifyLayout implements ITreeMapLayoutStrategy
 	{

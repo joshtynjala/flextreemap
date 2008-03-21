@@ -31,6 +31,9 @@ package com.flextoolbox.controls.treeMapClasses
 	 * Designed to allow easy switching between treemap layout algorithms. 
 	 * Several algorithms have been developed for treemaps and this interface
 	 * may be extended to allow new layout methods.
+	 * 
+	 * @author Josh Tynjala
+	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public interface ITreeMapLayoutStrategy
 	{

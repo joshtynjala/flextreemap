@@ -26,6 +26,7 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	import com.flextoolbox.controls.TreeMap;
 	import com.flextoolbox.events.TreeMapEvent;
 	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
 	import com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin;
@@ -45,11 +46,22 @@ package com.flextoolbox.controls.treeMapClasses
 	
 	use namespace mx_internal;
 	
+    //----------------------------------
+	//  Styles
+    //----------------------------------
+	
+include "../../styles/metadata/BorderStyles.inc"
+include "../../styles/metadata/PaddingStyles.inc"
+include "../../styles/metadata/TextStyles.inc"
+
+	[Style(name="zoomInIcon", type="Class", inherit="no")]
+	[Style(name="zoomOutIcon", type="Class", inherit="no")]
+    
 	/**
 	 * The TreeMapBranchHeader class defines the appearance of the header buttons
 	 * of the branches in a TreeMap.
 	 * 
-	 * @author Josh Tynjala; Based on code by Adobe Systems, Inc.
+	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class TreeMapBranchHeader extends UIComponent implements IDataRenderer
@@ -76,8 +88,11 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				//TODO: Define all styles with metadata
 				this.fillAlphas = [1.0, 1.0];
-				this.paddingLeft = 5;
-				this.paddingRight = 5;
+				this.paddingTop = 0;
+				this.paddingRight = 6;
+				this.paddingBottom = 0;
+				this.paddingLeft = 6;
+ 				this.textAlign = "left";
 				this.upSkin = TreeMapBranchHeaderSkin;
 				this.downSkin = TreeMapBranchHeaderSkin;
 				this.overSkin = TreeMapBranchHeaderSkin;
@@ -116,36 +131,11 @@ package com.flextoolbox.controls.treeMapClasses
 		}
 	
     //----------------------------------
-	//  Variables and Properties
+	//  Properties
     //----------------------------------
 	
 		protected var selectionButton:Button;
 		protected var zoomButton:Button;
-	
-		/**
-		 * @private
-		 * Storage for the label property.
-		 */
-		private var _label:String;
-	
-		/**
-		 * Stores a reference to the label with the header.
-		 */
-		public function get label():String
-		{
-			return this._label;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set label(value:String):void
-		{
-			this._label = value;
-			this.invalidateProperties();
-			this.invalidateSize();
-			this.invalidateDisplayList();
-		}
 	
 		/**
 		 * @private
@@ -166,55 +156,11 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		public function set data(value:Object):void
 		{
-			_data = value;
-		}
-	
-		private var _selected:Boolean = false;
-	
-		public function get selected():Boolean
-		{
-			return this._selected;
-		}
-	
-		/**
-		 * @private
-		 */
-		public function set selected(value:Boolean):void
-		{
-			this._selected = value;
+			this._data = value;
 			this.invalidateProperties();
 		}
-		
-		private var _zoomEnabled:Boolean = false;
-		
-		public function get zoomEnabled():Boolean
-		{
-			return this._zoomEnabled;
-		}
-		
-		public function set zoomEnabled(value:Boolean):void
-		{
-			if(this._zoomEnabled != value)
-			{
-				this._zoomEnabled = value;
-				this.invalidateProperties();
-				this.invalidateSize();
-				this.invalidateDisplayList();
-			}
-		}
-		
-		private var _zoomed:Boolean = false;
-		
-		public function get zoomed():Boolean
-		{
-			return this._zoomed;
-		}
-		
-		public function set zoomed(value:Boolean):void
-		{
-			this._zoomed = value;
-			this.invalidateProperties();
-		}
+	
+		protected var zoomEnabled:Boolean = false;
 	
 		private var _selectionButtonStyleFilter:Object = 
 		{
@@ -225,7 +171,11 @@ package com.flextoolbox.controls.treeMapClasses
 			selectedUpSkin: "selectedUpSkin",
 			selectedDownSkin: "selectedDownSkin",
 			selectedOverSkin: "selectedOverSkin",
-			selectedDisabledSkin: "selectedDisabledSkin"
+			selectedDisabledSkin: "selectedDisabledSkin",
+			paddingTop: "paddingTop",
+			paddingRight: "paddingRight",
+			paddingBottom: "paddingBottom",
+			paddingLeft: "paddingLeft"
 		};
 		
 		protected function get selectionButtonStyleFilter():Object
@@ -258,18 +208,12 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			if(allStyles || styleProp == "zoomInIcon")
 			{
-				if(this.zoomButton)
-				{
-					this.refreshZoomInIcon();
-				}
+				this.refreshZoomInIcon();
 			}
 			
 			if(allStyles || styleProp == "zoomOutIcon")
 			{
-				if(this.zoomButton)
-				{
-					this.refreshZoomOutIcon();
-				}
+				this.refreshZoomOutIcon();
 			}
 		}
 	
@@ -307,11 +251,22 @@ package com.flextoolbox.controls.treeMapClasses
 		{
 			super.commitProperties();
 			
-			this.selectionButton.selected = this.selected;
-			this.selectionButton.label = this.label;
-			
-			this.zoomButton.selected = this.zoomed;
-			this.zoomButton.visible = this.zoomEnabled;
+			var branchRenderer:ITreeMapBranchRenderer = this.data as ITreeMapBranchRenderer;
+			if(branchRenderer)
+			{
+				var treeMap:TreeMap = branchRenderer.owner as TreeMap;
+				var branch:Object = branchRenderer.data;
+				var branchData:TreeMapBranchData = IDropInTreeMapItemRenderer(branchRenderer).treeMapData as TreeMapBranchData;
+				
+				this.selectionButton.selected = branchRenderer.selected;
+				this.selectionButton.label = branchData.label;
+				
+				//only enable the zoom button if treemap zoom is enabled and the branch data isn't the root
+				this.zoomEnabled = treeMap.zoomEnabled && !treeMap.itemIsRoot(branch);
+				
+				this.zoomButton.visible = this.zoomEnabled;
+				this.zoomButton.selected = branch == treeMap.zoomedBranch;
+			}
 		}
 		
 		override protected function measure():void
@@ -347,20 +302,37 @@ package com.flextoolbox.controls.treeMapClasses
 	
 		protected function refreshZoomInIcon():void
 		{
+			if(!this.zoomButton)
+			{
+				return;
+			}
+			
+			var zoomStyleName:StyleProxy = StyleProxy(this.zoomButton.styleName);
 			var zoomInIcon:Class = this.getStyle("zoomInIcon");
 			this.zoomButton.setStyle("upIcon", zoomInIcon);
 			this.zoomButton.setStyle("overIcon", zoomInIcon);
 			this.zoomButton.setStyle("downIcon", zoomInIcon);
 			this.zoomButton.setStyle("disabledIcon", zoomInIcon);
+			
+			//if I don't call this,  zoomButton.getStyle("overIcon") returns undefined!
+			//I have no idea why!
+			this.zoomButton.regenerateStyleCache(false);
 		}
 	
 		protected function refreshZoomOutIcon():void
 		{
+			if(!this.zoomButton)
+			{
+				return;
+			}
+			
 			var zoomOutIcon:Class = this.getStyle("zoomOutIcon");
 			this.zoomButton.setStyle("selectedUpIcon", zoomOutIcon);
 			this.zoomButton.setStyle("selectedOverIcon", zoomOutIcon);
 			this.zoomButton.setStyle("selectedDownIcon", zoomOutIcon);
 			this.zoomButton.setStyle("selectedDisabledIcon", zoomOutIcon);
+			
+			this.zoomButton.regenerateStyleCache(false);
 		}
 	
     //----------------------------------

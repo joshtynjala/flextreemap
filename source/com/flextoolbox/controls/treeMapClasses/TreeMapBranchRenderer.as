@@ -30,7 +30,11 @@ package com.flextoolbox.controls.treeMapClasses
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
+	import mx.core.ClassFactory;
+	import mx.core.IDataRenderer;
+	import mx.core.IFactory;
 	import mx.core.IFlexDisplayObject;
+	import mx.core.UIComponent;
 	import mx.skins.RectangularBorder;
 	import mx.skins.halo.HaloBorder;
 	import mx.styles.CSSStyleDeclaration;
@@ -57,7 +61,15 @@ package com.flextoolbox.controls.treeMapClasses
 	
 include "../../styles/metadata/BorderStyles.inc"
 include "../../styles/metadata/PaddingStyles.inc"
-include "../../styles/metadata/TextStyles.inc"
+	
+	/**
+	 * Name of the CSS style declaration that specifies styles for the treemap
+	 * branch headers. You can use this class selector to set the values of all
+	 * the style properties of the TreeMapBranchHeader class.
+	 * 
+	 * @see TreeMapBranchHeader
+	 */
+	[Style(name="headerStyleName",type="String",inherit="no")]
 	
 	/**
 	 * The default branch renderer for the TreeMap control. Includes a header
@@ -99,10 +111,6 @@ include "../../styles/metadata/TextStyles.inc"
 				this.borderStyle = "solid";
 				this.borderColor = 0xaaaaaa;
 				this.borderThickness = 1;
-				
-				this.fontSize = 10;
-				this.fontWeight = "bold";
-				this.textAlign = "left";
 			}
 			
 			StyleManager.setStyleDeclaration("TreeMapBranchRenderer", selector, false);
@@ -125,11 +133,55 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Properties
 	//--------------------------------------
 		
-		protected var headerHighlighted:Boolean = false;
-		
-		//TODO: Add headerRenderer property and headerStyleName property
-		protected var header:TreeMapBranchHeader;
+		/**
+		 * @private
+		 * The border skin for the branch.
+		 */
 		protected var border:IFlexDisplayObject;
+	
+		/**
+		 * @private
+		 * The header control on this branch renderer.
+		 */
+		protected var header:UIComponent;
+	
+		/**
+		 * @private
+		 * Flag that indicates if the headerRenderer factory has changed
+		 * and if a new header needs to be created to replace the old.
+		 */	
+		protected var headerRendererChanged:Boolean = true;
+	
+		/**
+		 * @private
+		 * Storage for the headerRenderer property.
+		 */
+		private var _headerRenderer:IFactory = new ClassFactory(TreeMapBranchHeader);
+		
+		/**
+		 * A factory used to create the header controls for the branch. The
+		 * default value is a factory which creates a com.flextoolbox.controls.treeMapClasses.TreeMapBranchHeader.
+		 * The created object must be a subclass of UIComponent and implement
+		 * the mx.core.IDataRenderer interface. The data property is set to the
+		 * branch renderer associated with the header.
+		 * 
+		 * @see TreeMapBranchHeader
+		 */
+		public function get headerRenderer():IFactory
+		{
+			return this._headerRenderer;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set headerRenderer(value:IFactory):void
+		{
+			this._headerRenderer = value;
+			this.headerRendererChanged = true;
+			this.invalidateProperties();
+			this.invalidateDisplayList();
+		}
 	
 	//--------------------------------------
 	//  Public Methods
@@ -139,10 +191,10 @@ include "../../styles/metadata/TextStyles.inc"
 		 * @private
 		 */
 		override public function styleChanged(styleProp:String):void
-		{
-			var allStyles:Boolean = !styleProp || styleProp == "styleName";
-			
+		{	
 			super.styleChanged(styleProp);
+			
+			var allStyles:Boolean = !styleProp || styleProp == "styleName";
 			
 			if(allStyles || styleProp == "borderSkin")
 			{
@@ -163,18 +215,12 @@ include "../../styles/metadata/TextStyles.inc"
 				}
 			}
 			
-			if(allStyles || styleProp == "branchHeaderStyleName" && this.header)
+			if(allStyles || styleProp == "headerStyleName")
 			{
-				var headerStyleName:String = this.getStyle("branchHeaderStyleName");
-				if(headerStyleName)
+				if(this.header)
 				{
-					var headerStyleDecl:CSSStyleDeclaration = StyleManager.getStyleDeclaration("." + headerStyleName);
-					if(headerStyleDecl)
-					{
-						this.header.styleDeclaration = headerStyleDecl;
-						this.header.regenerateStyleCache(true);
-						this.header.styleChanged(null);
-					}
+					var headerStyleName:String = this.getStyle("headerStyleName");
+					this.header.styleName = headerStyleName;
 				}
 			}
 		}
@@ -203,27 +249,6 @@ include "../../styles/metadata/TextStyles.inc"
 					this.addChildAt(DisplayObject(this.border), 0);
 				}
 			}
-			
-			if(!this.header)
-			{
-				this.header = new TreeMapBranchHeader();
-				this.addChild(this.header);
-				
-				this.header.styleName = this;
-				var headerStyleName:String = this.getStyle("headerStyleName");
-				if(headerStyleName)
-				{
-					var headerStyleDecl:CSSStyleDeclaration = StyleManager.getStyleDeclaration("." + headerStyleName);
-					if(headerStyleDecl)
-					{
-						this.header.styleDeclaration = headerStyleDecl;
-						this.header.regenerateStyleCache(true);
-						this.header.styleChanged(null);
-					}
-				}
-				this.header.addEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
-				this.header.addEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
-			}
 		}
 		
 		/**
@@ -233,13 +258,31 @@ include "../../styles/metadata/TextStyles.inc"
 		{
 			super.commitProperties();
 			
+			if(this.headerRendererChanged)
+			{
+				if(this.header)
+				{
+					this.header.removeEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
+					this.header.removeEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
+					this.removeChild(this.header);
+					this.header = null;
+				}
+
+				var headerStyleName:String = this.getStyle("headerStyleName");				
+				this.header = this.headerRenderer.newInstance();
+				this.header.styleName = headerStyleName;
+				this.header.addEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
+				this.header.addEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
+				this.addChild(this.header);
+				
+				this.headerRendererChanged = false;
+			}
+			
+			IDataRenderer(this.header).data = this;
+			
 			if(this.treeMapBranchData)
 			{
-				this.header.label = this.treeMapBranchData.label;
-				this.header.selected = this.selected;
 				this.header.enabled = this.enabled && this.treeMapBranchData.showLabel;
-				this.header.zoomEnabled = this.enabled && this.treeMapBranchData.owner.zoomEnabled && this.treeMapBranchData.owner;
-				this.header.zoomed = this.treeMapBranchData.zoomed;
 			}
 		}
 		

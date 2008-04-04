@@ -973,6 +973,17 @@ include "../styles/metadata/TextStyles.inc"
 	    	return this._uidToItemRenderer[uid];
 	    }
 	
+	    /**
+	     * Determines if an item is the root node
+	     * 
+	     * @param item				the data for which to check against the root
+	     * @return					true if the item is the root data, false if not
+	     */
+		public function itemIsRoot(item:Object):Boolean
+		{
+			return this._rootData == item || this._discoveredRoot == item;
+		}
+	
 		/**
 		 * @private
 		 * 

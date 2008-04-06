@@ -96,7 +96,7 @@
 			paddingBottom: 2;
 		}
 		
-		TreeMapNodeRenderer
+		TreeMapLeafRenderer
 		{
 			focusAlpha: 0;
 		}

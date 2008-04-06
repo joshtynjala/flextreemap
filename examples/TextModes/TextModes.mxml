@@ -39,7 +39,7 @@
 
 	<mx:VBox width="250">
 		<mx:Label color="0xffffff" fontSize="16" text="Using the fontSizeMode Style"/>
-		<mx:RadioButtonGroup id="textMode" change="treeMap.setStyle('nodeStyleName', textMode.selectedValue);"/>
+		<mx:RadioButtonGroup id="textMode" change="treeMap.setStyle('leafStyleName', textMode.selectedValue);"/>
 		<mx:RadioButton groupName="textMode" label="noChange" value="autoFitNone" selected="true"/>
 		<mx:RadioButton groupName="textMode" label="fitToBounds" value="autoFitFull"/>
 		<mx:RadioButton groupName="textMode" label="fitToBoundsWithoutBreaks" value="autoFitPartial"/>
@@ -76,7 +76,7 @@
 	<mx:Style>
 		.autoFitNone
 		{
-			/* When fontSizeMode is "none", the font size on leaves alway matches
+			/* When fontSizeMode is "noChange", the font size on leaves alway matches
 			   the fontSize style */
 			   
 			fontSizeMode: "noChange";
@@ -85,7 +85,7 @@
 		
 		.autoFitFull
 		{
-			/* When fontSizeMode is "full", the font size on leaves increases to
+			/* When fontSizeMode is "fitToBounds", the font size on leaves increases to
 			   fill as much space as possible. Words may be broken onto multiple
 			   lines within the renderer */
 			   
@@ -95,7 +95,7 @@
 		
 		.autoFitPartial
 		{
-			/* When fontSizeMode is "partial", the font size of leaves increases
+			/* When fontSizeMode is "fitToBoundsWithoutBreaks", the font size of leaves increases
 			   to fill empty space in the renderer, but it stops if a word will
 			   be broken onto multiple lines. The fontSize style is used as a
 			   minimum size, and words that break at this size will remain

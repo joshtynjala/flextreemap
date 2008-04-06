@@ -1,8 +1,22 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2008 Josh Tynjala
+//
+// 	This source code is subject to the terms of the Mozilla Public License (MPL)
+//  http://www.mozilla.org/MPL/MPL-1.1.html
+//
+//  Contains modified code derived from the Open Source Flex 3 SDK originally
+//  developed by Adobe Systems Incorporated. Changes to the code are minor and
+//  include mostly aesthetic alterations. Original source code copyright (c)
+//  2005-2007 Adobe Systems Incorporated.
+//
+////////////////////////////////////////////////////////////////////////////////
+
 package com.flextoolbox.utils
 {
 	import flash.display.Graphics;
 	
-	public class GraphicsUtil
+	public class FlexGraphicsUtil
 	{
 		/**
 		 * Draws a border using a series of rectangular fills.
@@ -31,17 +45,14 @@ package com.flextoolbox.utils
 		{
 			graphics.moveTo(x, y);
 			graphics.beginFill(color, alpha);
-			graphics.lineTo(x + w, y);
-			graphics.lineTo(x + w, h + y);
-			graphics.lineTo(x, h + y);
-			graphics.lineTo(x, y);
+			graphics.drawRect(x, y, w, h);
 			graphics.endFill();
 		}
 		
 		/**
-		 * Draws an arrow.
+		 * Draws an arrow pointing down.
 		 */	
-		public static function drawArrow(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
+		public static function drawDownArrow(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
 								   color:Number, alpha:Number):void
 		{	
 			graphics.moveTo(x, y);
@@ -49,6 +60,20 @@ package com.flextoolbox.utils
 			graphics.lineTo(x + w, y);
 			graphics.lineTo(x + w / 2, h + y);
 			graphics.lineTo(x, y);
+			graphics.endFill();
+		}
+		
+		/**
+		 * Draws an arrow pointing up.
+		 */	
+		public static function drawUpArrow(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
+								   color:Number, alpha:Number):void
+		{	
+			graphics.moveTo(x, y + h);
+			graphics.beginFill(color, alpha);
+			graphics.lineTo(x + w / 2, y);
+			graphics.lineTo(x + w, y + h);
+			graphics.lineTo(x, y + h);
 			graphics.endFill();
 		}
 

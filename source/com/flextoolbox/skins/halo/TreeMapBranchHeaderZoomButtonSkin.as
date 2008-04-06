@@ -2,23 +2,13 @@
 //
 //  Copyright (c) 2008 Josh Tynjala
 //
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to 
-//  deal in the Software without restriction, including without limitation the
-//  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-//  sell copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
+// 	This source code is subject to the terms of the Mozilla Public License (MPL)
+//  http://www.mozilla.org/MPL/MPL-1.1.html
 //
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-//  IN THE SOFTWARE.
+//  Contains modified code derived from the Open Source Flex 3 SDK originally
+//  developed by Adobe Systems Incorporated. Changes to the code are minor and
+//  include mostly aesthetic alterations. Original source code copyright (c)
+//  2005-2007 Adobe Systems Incorporated.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +25,7 @@ package com.flextoolbox.skins.halo
 	 * The skin for all the states of an TreeMapBranchHeader zoom button control
 	 * in a TreeMap.
 	 * 
-	 * @author Josh Tynjala; Based on code by Adobe Systems, Inc.
+	 * @author Josh Tynjala; Based on code by Adobe Systems Incorporated
 	 * @see com.flextoolbox.controls.TreeMap
 	 */
 	public class TreeMapBranchHeaderZoomButtonSkin extends Border
@@ -73,7 +63,6 @@ package com.flextoolbox.skins.halo
 				
 				// Cross-component styles.
 				HaloColors.addHaloColors(o, themeColor, fillColor0, fillColor1);
-				
 			}
 			
 			return cache[key];
@@ -150,21 +139,16 @@ package com.flextoolbox.skins.halo
 			falseFillColors[0] = ColorUtil.adjustBrightness2(fillColors[0], -8);
 			falseFillColors[1] = ColorUtil.adjustBrightness2(fillColors[1], -10);	
 			
-			var borderColorDrk1:Number =
-				ColorUtil.adjustBrightness2(borderColor, -15);
+			var borderColorDrk1:Number = ColorUtil.adjustBrightness2(borderColor, -15);
 				
-			var overFillColor1:Number =
-					ColorUtil.adjustBrightness2(fillColors[0], -4);
-			var overFillColor2:Number =
-					ColorUtil.adjustBrightness2(fillColors[1], -6);
+			var overFillColor1:Number = ColorUtil.adjustBrightness2(fillColors[0], -4);
+			var overFi ColorUtil.adjustBrightness2(fillColors[1], -6);
 			
 			if (!selectedFillColors)
 			{
 				selectedFillColors = []; // So we don't clobber the original...
-				selectedFillColors[0] =
-					ColorUtil.adjustBrightness2(themeColor, 55);
-				selectedFillColors[1] =
-					ColorUtil.adjustBrightness2(themeColor, 10);
+				selectedFillColors[0] = ColorUtil.adjustBrightness2(themeColor, 55);
+				selectedFillColors[1] = ColorUtil.adjustBrightness2(themeColor, 10);
 			}
 			
 			// Derivative styles.
@@ -173,7 +157,7 @@ package com.flextoolbox.skins.halo
 													 falseFillColors[1],
 													 fillColors[0], fillColors[1]);
 			
-			graphics.clear();
+			this.graphics.clear();
 	
 			switch(name)
 			{
@@ -182,33 +166,28 @@ package com.flextoolbox.skins.halo
 				case "selectedUpSkin":
 				case "selectedDisabledSkin":
 				{
-	   				var upFillColors:Array =
-						[ falseFillColors[0], falseFillColors[1] ];
+	   				var upFillColors:Array = [ falseFillColors[0], falseFillColors[1] ];
 	   				var upFillAlphas:Array = [ fillAlphas[0], fillAlphas[1] ];
 	
 					// edge 
-					drawRoundRect(
-						0, 0, w, h, 0,
+					drawRoundRect(0, 0, w, h, 0,
 						[ borderColor, borderColorDrk1 ], 1,
 						verticalGradientMatrix(0, 0, w, h),
 						GradientType.LINEAR, null,
 	                    { x: 1, y: 1, w: w - 2, h: h - 2, r: 0 });
 	
 					// fill 
-					drawRoundRect(
-						1, 1,w - 2, h - 2, 0,
+					drawRoundRect(1, 1,w - 2, h - 2, 0,
 						upFillColors, upFillAlphas,
 						verticalGradientMatrix(1, 1, w - 2, h - 2));
 					
 					// top highlight
-					drawRoundRect(
-						1, 1, w - 2, (h - 2) / 2, 0,
+					drawRoundRect(1, 1, w - 2, (h - 2) / 2, 0,
 						[ 0xFFFFFF, 0xFFFFFF ], highlightAlphas,
 						verticalGradientMatrix(1, 1, w - 2, (h - 2) / 2)); 
 	
 					// bottom edge bevel shadow
-					drawRoundRect(
-						1, h - 2, w - 2, 1, 0,
+					drawRoundRect(1, h - 2, w - 2, 1, 0,
 						borderColor, 0.1);
 					
 					break;
@@ -218,7 +197,7 @@ package com.flextoolbox.skins.halo
 				case "overSkin":
 				{
 					var overFillColors:Array;
-					if (fillColors.length > 2)
+					if(fillColors.length > 2)
 					{
 						overFillColors =
 						[
@@ -232,34 +211,34 @@ package com.flextoolbox.skins.halo
 					}
 	
 					var overFillAlphas:Array;
-					if (fillAlphas.length > 2)
+					if(fillAlphas.length > 2)
+					{
 						overFillAlphas = [ fillAlphas[2], fillAlphas[3] ];
+					}
 	  				else
+	  				{
 						overFillAlphas = [ fillAlphas[0], fillAlphas[1] ];
+	  				}
 	
 					// edge
-					drawRoundRect(
-						0, 0, w, h, 0,
+					drawRoundRect(0, 0, w, h, 0,
 						[ themeColor, derStyles.themeColDrk1 ], 1,
 						verticalGradientMatrix(0, 0, w, h),
 						GradientType.LINEAR, null,
 						{ x: 1, y: 1, w: w - 2, h: h - 2, r: 0 });
 					
 					// fill
-					drawRoundRect(
-						1, 1, w - 2, h - 2, 0,
+					drawRoundRect(1, 1, w - 2, h - 2, 0,
 						overFillColors, overFillAlphas,
 						verticalGradientMatrix(1, 1, w - 2, h - 2));
 	
 					// top highlight
-					drawRoundRect(
-						1, 1, w - 2, (h - 2) / 2, 0,
+					drawRoundRect(1, 1, w - 2, (h - 2) / 2, 0,
 						[ 0xFFFFFF, 0xFFFFFF ], highlightAlphas,
 						verticalGradientMatrix(1, 1, w - 2, (h - 2) / 2)); 
 	
 					// bottom edge bevel shadow
-					drawRoundRect(
-						1, h - 2, w - 2, 1, 0,
+					drawRoundRect(1, h - 2, w - 2, 1, 0,
 						borderColor, 0.1);
 					
 					break;
@@ -269,20 +248,17 @@ package com.flextoolbox.skins.halo
 				case "selectedDownSkin":
 				{
 					// edge 
-					drawRoundRect(
-						0, 0, w, h, 0,
+					drawRoundRect(0, 0, w, h, 0,
 						[ themeColor, derStyles.themeColDrk1 ], 1,
 						verticalGradientMatrix(0, 0, w, h));
 					
 					// fill
-					drawRoundRect(
-						1, 1, w - 2, h - 2, 0,
+					drawRoundRect(1, 1, w - 2, h - 2, 0,
 						[ derStyles.fillColorPress1, derStyles.fillColorPress2 ], 1,
 						verticalGradientMatrix(1, 1, w - 2, h - 2));
 					
 					// top highlight
-					drawRoundRect(
-						1, 1, w - 2, (h - 2) / 2, 0,
+					drawRoundRect(1, 1, w - 2, (h - 2) / 2, 0,
 						[ 0xFFFFFF, 0xFFFFFF ], highlightAlphas,
 						verticalGradientMatrix(1, 1, w - 2, (h - 2) / 2));
 	

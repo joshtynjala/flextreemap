@@ -24,12 +24,10 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import com.flextoolbox.utils.GraphicsUtil;
+	import com.flextoolbox.utils.FlexGraphicsUtil;
 	import com.flextoolbox.utils.UITextFieldUtil;
 	
 	import flash.events.MouseEvent;
-	import flash.text.TextField;
-	import flash.text.TextFormat;
 	
 	import mx.core.UIComponent;
 	import mx.core.UITextField;
@@ -256,7 +254,7 @@ package com.flextoolbox.controls.treeMapClasses
 					var rollOverColor:uint = this.getStyle("rollOverColor");
 					indicatorColor = rollOverColor;
 				}
-				GraphicsUtil.drawBorder(this.graphics, 0, 0, unscaledWidth, unscaledHeight, indicatorColor, indicatorColor, 2, 1);
+				FlexGraphicsUtil.drawBorder(this.graphics, 0, 0, unscaledWidth, unscaledHeight, indicatorColor, indicatorColor, 2, 1);
 			}
 			
 			var paddingTop:Number = this.getStyle("paddingTop");
@@ -269,7 +267,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			//width must always be maximum to handle alignment
 			this.textField.width = Math.max(0, viewWidth);
-			this.textField.height = Math.max(0, viewHeight)
+			this.textField.height = Math.max(0, viewHeight);
 				
 			var fontSizeMode:String = this.getStyle("fontSizeMode");
 			UITextFieldUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSize"), fontSizeMode);

@@ -89,26 +89,9 @@ package com.flextoolbox.events
 	//--------------------------------------
 		
 		/**
-		 * @private
-		 * Storage for the affected item renderer.
+		 * The item renderer to which the event is associated.
 		 */
-		private var _itemRenderer:ITreeMapItemRenderer;
-		
-		/**
-		 * The item renderer where the event occurred.
-		 */
-		public function get itemRenderer():ITreeMapItemRenderer
-		{
-			return this._itemRenderer;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set itemRenderer(renderer:ITreeMapItemRenderer):void
-		{
-			this._itemRenderer = renderer;
-		}
+		public var itemRenderer:ITreeMapItemRenderer;
 		
 	//--------------------------------------
 	//  Public Methods

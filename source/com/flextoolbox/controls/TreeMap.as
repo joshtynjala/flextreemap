@@ -1552,11 +1552,18 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function branchZoomHandler(event:TreeMapEvent):void
 		{
-			if(event.target != event.currentTarget) return;
+			if(!this.zoomEnabled)
+			{
+				return;
+			}
+			
 			var renderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(event.target);
 			
 			//ignore the root renderer
-			if(renderer == this.rootBranchRenderer) return;
+			if(renderer == this.rootBranchRenderer)
+			{
+				return;
+			}
 			
 			var oldZoomedBranch:Object = this.zoomedBranch;
 			

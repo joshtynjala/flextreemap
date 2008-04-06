@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="LayoutModes Example" default="build" basedir="../../">
 
-	<property file="build.properties"/>
+	<property name="build.output" location="../../build"/>
 	
 	<target name="build">
-		<exec executable="${mxmlc}" dir="${basedir}/examples/LayoutModes" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.shortName}.swc'"/>
+		<exec executable="${mxmlc}" failonerror="true">
+			<arg line="--library-path+='${build.output}/${library.shortName}.swc'"/>
 			<arg line="LayoutModes.mxml"/>
 		</exec>
 	</target>

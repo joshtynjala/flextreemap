@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="GettingStarted Example" default="build" basedir="../../">
 
-	<property file="build.properties"/>
+	<property name="build.output" location="../../build"/>
 	
 	<target name="build">
-		<exec executable="${mxmlc}" dir="${basedir}/examples/GettingStarted" failonerror="true">
-			<arg line="--library-path+='${build.dir}/${library.shortName}.swc'"/>
+		<exec executable="${mxmlc}" failonerror="true">
+			<arg line="--library-path+='${build.output}/${library.shortName}.swc'"/>
 			<arg line="GettingStarted.mxml"/>
 		</exec>
 	</target>

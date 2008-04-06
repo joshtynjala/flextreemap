@@ -15,6 +15,7 @@
 package com.flextoolbox.skins.halo
 {
 	import flash.display.GradientType;
+	
 	import mx.core.EdgeMetrics;
 	import mx.skins.Border;
 	import mx.skins.halo.*;
@@ -142,7 +143,7 @@ package com.flextoolbox.skins.halo
 			var borderColorDrk1:Number = ColorUtil.adjustBrightness2(borderColor, -15);
 				
 			var overFillColor1:Number = ColorUtil.adjustBrightness2(fillColors[0], -4);
-			var overFi ColorUtil.adjustBrightness2(fillColors[1], -6);
+			var overFillColor2:Number = ColorUtil.adjustBrightness2(fillColors[1], -6);
 			
 			if (!selectedFillColors)
 			{

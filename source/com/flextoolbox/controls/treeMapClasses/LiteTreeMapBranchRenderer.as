@@ -29,6 +29,7 @@ package com.flextoolbox.controls.treeMapClasses
 	
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.ui.Keyboard;
 	
 	import mx.core.UITextField;
 	import mx.styles.CSSStyleDeclaration;
@@ -59,7 +60,10 @@ include "../../styles/metadata/PaddingStyles.inc"
 include "../../styles/metadata/TextStyles.inc"
 
 	/**
-	 * A very simple branch renderer for the TreeMap control.
+	 * A very simple branch renderer for the TreeMap control. If the TreeMap has
+	 * branch selection enabled, clicking the branch renderer will select the
+	 * branch. If the TreeMap has zoom enabled, double clicking or ctrl-clicking
+	 * the branch renderer will zoom the branch.
 	 *  
 	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
@@ -136,6 +140,8 @@ include "../../styles/metadata/TextStyles.inc"
 		}
 		
 		protected var mouseIsOver:Boolean = false;
+		
+		protected var zoomCursorID:int = 0;
 	
 	//--------------------------------------
 	//  Protected Methods
@@ -151,7 +157,7 @@ include "../../styles/metadata/TextStyles.inc"
 			if(!this.headerText)
 			{
 				this.headerText = new UITextField();
-				this.headerText.mouseEnabled = true;
+				this.headerText.mouseEnabled = false;
 				this.headerText.styleName = this;
 				this.addChild(this.headerText);
 			}
@@ -243,22 +249,20 @@ include "../../styles/metadata/TextStyles.inc"
 		
 		protected function clickHandler(event:MouseEvent):void
 		{
-			if(!this.treeMapBranchData.owner.selectable || !this.treeMapBranchData.owner.branchesSelectable)
+			if(event.ctrlKey)
 			{
-				return;
+				var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);
+				this.dispatchEvent(zoom);
 			}
-			
-			var select:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_SELECT, this);
-			this.dispatchEvent(select);
+			else
+			{
+				var select:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_SELECT, this);
+				this.dispatchEvent(select);
+			}
 		}
 		
 		protected function doubleClickHandler(event:MouseEvent):void
 		{
-			if(!this.treeMapBranchData.owner.zoomEnabled)
-			{
-				return;
-			}
-			
 			var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);
 			this.dispatchEvent(zoom);
 		}
@@ -274,6 +278,5 @@ include "../../styles/metadata/TextStyles.inc"
 			this.mouseIsOver = false;
 			this.invalidateDisplayList();
 		}
-		
 	}
 }

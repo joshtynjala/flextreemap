@@ -90,6 +90,18 @@ package com.flextoolbox.controls
 	
 include "../styles/metadata/TextStyles.inc"
 	
+	
+	/**
+	 * Sets the style name for all leaf nodes.
+	 */
+	[Style(name="leafStyleName", type="String", inherit="no")]
+	
+	
+	/**
+	 * Sets the style name for all branch nodes.
+	 */
+	[Style(name="branchStyleName", type="String", inherit="no")]
+	
 	/**
 	 * A treemap is a space-constrained visualization of hierarchical
 	 * structures. It is very effective in showing attributes of leaf nodes
@@ -274,6 +286,7 @@ include "../styles/metadata/TextStyles.inc"
 	    public function set layoutStrategy(strategy:ITreeMapLayoutStrategy):void
 	    {
 	    	this._layoutStrategy = strategy;
+	    	this.invalidateProperties();
 		    this.invalidateDisplayList();
 	    }
 	    
@@ -281,7 +294,7 @@ include "../styles/metadata/TextStyles.inc"
 	     * @private
 	     * Storage for the leafRenderer property.
 	     */
-	    private var _leafRenderer:IFactory = new ClassFactory(LiteTreeMapLeafRenderer);
+	    private var _leafRenderer:IFactory = new ClassFactory(TreeMapLeafRenderer);
 	
 		protected var leafRendererChanged:Boolean = false;
 	
@@ -823,48 +836,6 @@ include "../styles/metadata/TextStyles.inc"
 	//--------------------------------------
 	
 		/**
-		 * Determines the UID for a data provider item.  All items
-		 * in a data provider must either have a unique ID (UID)
-		 * or one will be generated and associated with it.  This
-		 * means that you cannot have an object or scalar value
-		 * appear twice in a data provider.  For example, the following
-		 * data provider is not supported because the value "foo"
-		 * appears twice and the UID for a string is the string itself
-		 *
-		 * <blockquote>
-		 * 		<code>var sampleDP:Array = ["foo", "bar", "foo"]</code>
-		 * </blockquote>
-		 *
-		 * Simple dynamic objects can appear twice if they are two
-		 * separate instances.  The following is supported because
-		 * each of the instances will be given a different UID because
-		 * they are different objects.
-		 *
-		 * <blockquote>
-		 * 		<code>var sampleDP:Array = [{label: "foo"}, {label: "foo"}]</code>
-		 * </blockquote>
-		 *
-		 * Note that the following is not supported because the same instance
-		 * appears twice.
-		 *
-		 * <blockquote>
-		 * 		<code>var foo:Object = {label: "foo"};
-		 * 		sampleDP:Array = [foo, foo];</code>
-		 * </blockquote>
-		 *
-		 * @param item		The data provider item
-		 *
-		 * @return			The UID as a string
-		 */
-		protected function itemToUID(item:Object):String
-		{
-			if(!item)
-			{
-				return "null";
-			}
-			return UIDUtil.getUID(item);
-		}
-		/**
 		 * Determines the label text for an item from the data provider.
 		 * If no label is specfied, returns the result of the item's
 		 * toString() method. If item is null, returns an empty string.
@@ -939,10 +910,17 @@ include "../styles/metadata/TextStyles.inc"
 				if(this.dataDescriptor.isBranch(item))
 				{
 					weight = 0;
-					var iterator:IViewCursor = this.dataDescriptor.getChildren(item).createCursor();
+					
+					//a branch isn't always an ICollectionView
+					if(!(item is ICollectionView))
+					{
+						item = this.dataDescriptor.getChildren(item);
+					}
+					var iterator:IViewCursor = ICollectionView(item).createCursor();
 					while(!iterator.afterLast)
 					{
-						weight += this.itemToWeight(iterator.current);
+						var childItem:Object = iterator.current;
+						weight += this.itemToWeight(childItem);
 						iterator.moveNext();
 					}
 					return weight;
@@ -984,6 +962,39 @@ include "../styles/metadata/TextStyles.inc"
 			return this._rootData == item || this._discoveredRoot == item;
 		}
 	
+		override public function styleChanged(styleProp:String):void
+		{
+			super.styleChanged(styleProp);
+			
+			var allStyles:Boolean = !styleProp || styleProp == "styleName";
+			
+			if(allStyles || styleProp == "leafStyleName")
+			{
+				var leafStyleName:String = this.getStyle("leafStyleName");
+				var leafRendererCount:int = this.leafRenderers.length;
+				for(var i:int = 0; i < leafRendererCount; i++)
+				{
+					var leafRenderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(this.leafRenderers[i]);
+					leafRenderer.styleName = leafStyleName;
+				}
+			}
+			
+			if(allStyles || styleProp == "branchStyleName")
+			{
+				var branchStyleName:String = this.getStyle("branchStyleName");
+				var branchRendererCount:int = this.branchRenderers.length;
+				for(i = 0; i < branchRendererCount; i++)
+				{
+					var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(this.branchRenderers[i]);
+					branchRenderer.styleName = branchStyleName;
+				}
+			}
+		}
+	
+	//--------------------------------------
+	//  Protected Methods
+	//--------------------------------------
+	
 		/**
 		 * @private
 		 * 
@@ -997,10 +1008,49 @@ include "../styles/metadata/TextStyles.inc"
 		{
 			return this._itemToTreeMapData[item];
 		}
-	
-	//--------------------------------------
-	//  Protected Methods
-	//--------------------------------------
+		
+		/**
+		 * Determines the UID for a data provider item.  All items
+		 * in a data provider must either have a unique ID (UID)
+		 * or one will be generated and associated with it.  This
+		 * means that you cannot have an object or scalar value
+		 * appear twice in a data provider.  For example, the following
+		 * data provider is not supported because the value "foo"
+		 * appears twice and the UID for a string is the string itself
+		 *
+		 * <blockquote>
+		 * 		<code>var sampleDP:Array = ["foo", "bar", "foo"]</code>
+		 * </blockquote>
+		 *
+		 * Simple dynamic objects can appear twice if they are two
+		 * separate instances.  The following is supported because
+		 * each of the instances will be given a different UID because
+		 * they are different objects.
+		 *
+		 * <blockquote>
+		 * 		<code>var sampleDP:Array = [{label: "foo"}, {label: "foo"}]</code>
+		 * </blockquote>
+		 *
+		 * Note that the following is not supported because the same instance
+		 * appears twice.
+		 *
+		 * <blockquote>
+		 * 		<code>var foo:Object = {label: "foo"};
+		 * 		sampleDP:Array = [foo, foo];</code>
+		 * </blockquote>
+		 *
+		 * @param item		The data provider item
+		 *
+		 * @return			The UID as a string
+		 */
+		protected function itemToUID(item:Object):String
+		{
+			if(!item)
+			{
+				return "null";
+			}
+			return UIDUtil.getUID(item);
+		}
 		
 		/**
 		 * @private
@@ -1233,6 +1283,7 @@ include "../styles/metadata/TextStyles.inc"
 			else
 			{
 				renderer = ITreeMapLeafRenderer(this.leafRenderer.newInstance());
+				renderer.styleName = this.getStyle("leafStyleName");
 				renderer.addEventListener(MouseEvent.CLICK, leafClickHandler, false, 0, true);
 				renderer.addEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler, false, 0, true);
 				renderer.addEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler, false, 0, true);
@@ -1260,6 +1311,7 @@ include "../styles/metadata/TextStyles.inc"
 			else
 			{
 				renderer = ITreeMapBranchRenderer(this.branchRenderer.newInstance());
+				renderer.styleName = this.getStyle("branchStyleName");
 				renderer.addEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler, false, 0, true);
 				renderer.addEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler, false, 0, true);
 				this.addChild(UIComponent(renderer));

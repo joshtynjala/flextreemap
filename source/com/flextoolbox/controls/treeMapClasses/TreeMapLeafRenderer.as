@@ -24,19 +24,18 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import com.flextoolbox.utils.GraphicsUtil;
+	import com.flextoolbox.utils.FontSizeMode;
 	import com.flextoolbox.utils.UITextFieldUtil;
 	
-	import flash.events.MouseEvent;
-	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
+	import mx.controls.Button;
 	import mx.core.UIComponent;
 	import mx.core.UITextField;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
-	
-	
+
+
 	//--------------------------------------
 	//  Events
 	//--------------------------------------
@@ -45,16 +44,15 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 	//  Styles
 	//--------------------------------------
-	
-	
-	
+
+
 	/**
-	 * A very simple leaf renderer for the TreeMap component.
+	 * The default leaf renderer for the TreeMap control.
 	 * 
 	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
 	 */
-	public class LiteTreeMapLeafRenderer extends UIComponent implements ITreeMapLeafRenderer, IDropInTreeMapItemRenderer
+	public class TreeMapLeafRenderer extends UIComponent implements ITreeMapLeafRenderer, IDropInTreeMapItemRenderer
 	{
 		
 	//--------------------------------------
@@ -67,7 +65,7 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		private static function initializeStyles():void
 		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("LiteTreeMapLeafRenderer");
+			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapLeafRenderer");
 			if(!selector)
 			{
 				selector = new CSSStyleDeclaration();
@@ -75,10 +73,13 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			selector.defaultFactory = function():void
 			{
-				this.autoFitText = "none";
+				this.fontSizeMode = FontSizeMode.NO_CHANGE;
 				this.color = 0xffffff;
+				this.fillAlphas = [1.0, 1.0];
+				this.fontSize = 10;
+				this.highlightAlphas = [0.3, 0];
 				this.cornerRadius = 0;
-				this.borderColor = 0xcccccc;//0x676a6c;
+				this.borderColor = 0x676a6c;
 				this.textAlign = "center";
 				this.paddingLeft = 0;
 				this.paddingRight = 0;
@@ -87,7 +88,7 @@ package com.flextoolbox.controls.treeMapClasses
 				this.rollOverColor = 0x7FCEFF;
 			}
 			
-			StyleManager.setStyleDeclaration("LiteTreeMapLeafRenderer", selector, false);
+			StyleManager.setStyleDeclaration("TreeMapLeafRenderer", selector, false);
 		}
 		initializeStyles();
 		
@@ -95,24 +96,16 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Constructor
 	//--------------------------------------
 	
-		/**
-		 * Constructor.
-		 */
-		public function LiteTreeMapLeafRenderer()
+		public function TreeMapLeafRenderer()
 		{
 			super();
-			this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler);
-			this.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
 		}
 		
 	//--------------------------------------
 	//  Properties
 	//--------------------------------------
-		
-		/**
-		 * @private
-		 * The TextField used to display the leaf's label.
-		 */
+	
+		protected var background:Button;
 		protected var textField:UITextField;
 		
 		private var _treeMapLeafData:TreeMapLeafData;
@@ -165,12 +158,10 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 		}
 		
-		protected var highlighted:Boolean = false;
-		
 	//--------------------------------------
 	//  Public Methods
 	//--------------------------------------
-	
+		
 		override public function styleChanged(styleProp:String):void
 		{
 			super.styleChanged(styleProp);
@@ -187,12 +178,16 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Protected Methods
 	//--------------------------------------
 	
-		/**
-		 * @private
-		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
+			
+			if(!this.background)
+			{
+				this.background = new Button();
+				this.background.styleName = this;
+				this.addChild(this.background);
+			}
 			
 			if(!this.textField)
 			{
@@ -206,9 +201,6 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 		}
 		
-		/**
-		 * @private
-		 */
 		override protected function commitProperties():void
 		{
 			super.commitProperties();
@@ -218,6 +210,8 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				label = this._treeMapLeafData.label;
 				this.toolTip = this._treeMapLeafData.dataTip;
+				var color:uint = this._treeMapLeafData.color;
+				this.setStyle("fillColors", [color, color]);
 			}
 			
 			var labelChanged:Boolean = this.textField.text != label;
@@ -225,39 +219,15 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				this.textField.text = label;
 			}
+			
+			this.background.selected = this.selected;
 		}
 		
-		/**
-		 * @private
-		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
-			if(!this._treeMapLeafData)
-			{
-				return;
-			}
-			
-			var backgroundColor:uint = this._treeMapLeafData.color;
-			var borderColor:uint = this.getStyle("borderColor") as uint;
-			
-			this.graphics.clear();
-			this.graphics.beginFill(backgroundColor, 1);
-			this.graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
-			this.graphics.endFill();
-			
-			if(this.treeMapData.owner.selectable && (this.selected || this.highlighted))
-			{
-				var themeColor:uint = this.getStyle("themeColor");
-				var indicatorColor:uint = themeColor;
-				if(this.highlighted)
-				{
-					var rollOverColor:uint = this.getStyle("rollOverColor");
-					indicatorColor = rollOverColor;
-				}
-				GraphicsUtil.drawBorder(this.graphics, 0, 0, unscaledWidth, unscaledHeight, indicatorColor, indicatorColor, 2, 1);
-			}
+			this.background.setActualSize(unscaledWidth, unscaledHeight);
 			
 			var paddingTop:Number = this.getStyle("paddingTop");
 			var paddingBottom:Number = this.getStyle("paddingBottom");
@@ -269,7 +239,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			//width must always be maximum to handle alignment
 			this.textField.width = Math.max(0, viewWidth);
-			this.textField.height = Math.max(0, viewHeight)
+			this.textField.height = Math.max(0, viewHeight);
 				
 			var fontSizeMode:String = this.getStyle("fontSizeMode");
 			UITextFieldUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSize"), fontSizeMode);
@@ -280,18 +250,6 @@ package com.flextoolbox.controls.treeMapClasses
 			//center the text field
 			this.textField.x = (unscaledWidth - this.textField.width) / 2;
 			this.textField.y = (unscaledHeight - this.textField.height) / 2;
-		}
-		
-		protected function rollOverHandler(event:MouseEvent):void
-		{
-			this.highlighted = true;
-			this.invalidateDisplayList();
-		}
-		
-		protected function rollOutHandler(event:MouseEvent):void
-		{
-			this.highlighted = false;
-			this.invalidateDisplayList();
 		}
 		
 	}

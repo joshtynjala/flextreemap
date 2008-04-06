@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-	Copyright (c) 2007 Josh Tynjala
+	Copyright (c) 2008 Josh Tynjala
 	
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to 
@@ -28,24 +28,24 @@
 	<!--
 		Important Notes:
 		
-		1. Renderers can use a style called autoFitText to change label font
+		1. Renderers can use a style called fontSizeMode to change label font
 		   sizes dynamically. By default, the labels are displayed using
-		   the standard fontSize style, but special autoFitText values may
+		   the standard fontSize style, but special fontSizeMode values may
 		   change this behavior.
 		
 		2. See comments below in the <mx:Style> element for explanations of each
-		   value accepted by the autoFitText style.
+		   value accepted by the fontSizeMode style.
 	-->
 
 	<mx:VBox width="250">
-		<mx:Label color="0xffffff" fontSize="16" text="Using the autoFitText Style"/>
+		<mx:Label color="0xffffff" fontSize="16" text="Using the fontSizeMode Style"/>
 		<mx:RadioButtonGroup id="textMode" change="treeMap.setStyle('nodeStyleName', textMode.selectedValue);"/>
-		<mx:RadioButton groupName="textMode" label="none" value="autoFitNone" selected="true"/>
-		<mx:RadioButton groupName="textMode" label="full" value="autoFitFull"/>
-		<mx:RadioButton groupName="textMode" label="partial" value="autoFitPartial"/>
+		<mx:RadioButton groupName="textMode" label="noChange" value="autoFitNone" selected="true"/>
+		<mx:RadioButton groupName="textMode" label="fitToBounds" value="autoFitFull"/>
+		<mx:RadioButton groupName="textMode" label="fitToBoundsWithoutBreaks" value="autoFitPartial"/>
 	</mx:VBox>
 	
-	<toolbox:TreeMap id="treeMap" width="400" height="300" nodeStyleName="autoFitNone"
+	<toolbox:TreeMap id="treeMap" width="400" height="300" leafStyleName="autoFitNone"
 		dataProvider="{marketData}" labelField="@name" weightField="@marketCap"/>
 	
 	<mx:XMLList id="marketData" xmlns="">
@@ -76,33 +76,33 @@
 	<mx:Style>
 		.autoFitNone
 		{
-			/* When autoFitText is "none", the font size on leaves alway matches
+			/* When fontSizeMode is "none", the font size on leaves alway matches
 			   the fontSize style */
 			   
-			autoFitText: "none";
+			fontSizeMode: "noChange";
 			fontSize: 10;
 		}
 		
 		.autoFitFull
 		{
-			/* When autoFitText is "full", the font size on leaves increases to
+			/* When fontSizeMode is "full", the font size on leaves increases to
 			   fill as much space as possible. Words may be broken onto multiple
 			   lines within the renderer */
 			   
-			autoFitText: "full";
+			fontSizeMode: "fitToBounds";
 			fontSize: 6;
 		}
 		
 		.autoFitPartial
 		{
-			/* When autoFitText is "partial", the font size of leaves increases
+			/* When fontSizeMode is "partial", the font size of leaves increases
 			   to fill empty space in the renderer, but it stops if a word will
 			   be broken onto multiple lines. The fontSize style is used as a
 			   minimum size, and words that break at this size will remain
 			   broken. Decrease fontSize to set a lower minimum if this isn't
 			   the desired behavior. */
 			    
-			autoFitText: "partial";
+			fontSizeMode: "fitToBoundsWithoutBreaks";
 			fontSize: 6;
 		}
 	</mx:Style>

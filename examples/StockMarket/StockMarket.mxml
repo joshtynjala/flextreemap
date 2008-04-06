@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-	Copyright (c) 2007 Josh Tynjala
+	Copyright (c) 2008 Josh Tynjala
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to 
@@ -28,13 +28,13 @@
 
 	<toolbox:TreeMap id="treeMap" width="400" height="300"
 		dataProvider="{marketData}" labelField="@name" weightField="@marketCap"
-		colorFunction="{itemToColor}" toolTipFunction="{itemToToolTip}"/>
+		colorFunction="{itemToColor}" dataTipFunction="{itemToToolTip}"/>
 	
 	<mx:CurrencyFormatter id="formatter"/>
 	
 	<mx:XMLList id="marketData" xmlns="">
 		<sector name="Technology">
-			<company name="WidgetCorp" marketCap="4200000000" value="42.01" change="-2.03"/>
+			<company name="WidgetCo" marketCap="4200000000" value="42.01" change="-2.03"/>
 			<company name="Sprocket Systems" marketCap="2100000000" value="24.87" change="4.45"/>
 			<company name="Gizmodyne" marketCap="10500000000" value="106.52" change="1.01"/>
 			<company name="GadgetSoft" marketCap="1200000000" value="12.98" change="-0.82"/>
@@ -48,12 +48,12 @@
 		<sector name="Energy">
 			<company name="Axxom Monopocorp" marketCap="3200000000" value="36.18" change="5.46"/>
 			<company name="RP Petrol" marketCap="7500000000" value="26.74" change="-3.25"/>
-			<company name="Lexaco" marketCap="3900000000" value="15.96" change="-2.08"/>
+			<company name="Rexaco" marketCap="3900000000" value="15.96" change="-2.08"/>
 		</sector>
 		<sector name="Communication">
 			<company name="Richtel Networks" marketCap="2400000000" value="34.93" change="-1.94"/>
 			<company name="TCI" marketCap="9600000000" value="45.82" change="0.22"/>
-			<company name="Norizon" marketCap="1400000000" value="27.46" change="1.68"/>
+			<company name="Horizon Wireless" marketCap="1400000000" value="27.46" change="1.68"/>
 		</sector>
 	</mx:XMLList>
 	

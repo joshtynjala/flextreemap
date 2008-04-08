@@ -247,7 +247,10 @@ package com.flextoolbox.controls.treeMapClasses
 				//if all nodes in a row have a weight of zero, give them the same area
 				if(isNaN(ratio))
 				{
-					if(sumOfRow == 0) ratio = 1 / dataInRow.length;
+					if(sumOfRow == 0 || isNaN(sumOfRow))
+					{
+						ratio = 1 / dataInRow.length;
+					}
 					else ratio = 0;
 				}
 				
@@ -307,13 +310,13 @@ package com.flextoolbox.controls.treeMapClasses
 			if(isNaN(lengthOfLongerSide))
 			{
 				//if all remaining weights are zero, give each row an equal size
-				if(sumOfRemaining == 0)
+				if(sumOfRemaining == 0 || isNaN(sumOfRemaining))
 				{
 					lengthOfLongerSide = this._longerSide * (dataInRow.length / (this._dataProvider.length - this._numDrawnNodes));
 				}
 				else lengthOfLongerSide = 0;
 			}
-			return lengthOfLongerSide
+			return lengthOfLongerSide;
 		}
 	
 		/**
@@ -339,11 +342,17 @@ package com.flextoolbox.controls.treeMapClasses
 		private function compareWeights(a:TreeMapItemLayoutData, b:TreeMapItemLayoutData, fields:Array = null):int
 		{
 			if(a == null && b == null)
+			{
 				return 0;
+			}
 			if(a == null)
+			{
 				return 1;
+			}
 			if(b == null)
+			{
 				return -1;
+			}
                  
 			var weightA:Number = a.weight;
 			var weightB:Number = b.weight;

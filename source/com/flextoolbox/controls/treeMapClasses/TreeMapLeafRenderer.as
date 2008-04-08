@@ -234,8 +234,8 @@ package com.flextoolbox.controls.treeMapClasses
 			var paddingLeft:Number = this.getStyle("paddingLeft");
 			var paddingRight:Number = this.getStyle("paddingRight");
 			
-	        var viewWidth:Number = unscaledWidth - paddingLeft - paddingRight;
-    	    var viewHeight:Number = unscaledHeight - paddingTop - paddingBottom;
+	        var viewWidth:Number = Math.max(0, unscaledWidth - paddingLeft - paddingRight);
+    	    var viewHeight:Number = Math.max(0, unscaledHeight - paddingTop - paddingBottom);
 			
 			//width must always be maximum to handle alignment
 			this.textField.width = Math.max(0, viewWidth);

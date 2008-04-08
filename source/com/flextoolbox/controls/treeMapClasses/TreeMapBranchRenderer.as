@@ -292,18 +292,18 @@ include "../../styles/metadata/PaddingStyles.inc"
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{	
 			//update the header
-			var headerWidth:Number = this.unscaledWidth;
+			var headerWidth:Number = unscaledWidth;
 			var headerHeight:Number = 0;
 			this.header.visible = true;
 			if(this.treeMapBranchData)
 			{
 				if(this.treeMapBranchData.closed)
 				{
-					headerHeight = this.unscaledHeight;
+					headerHeight = unscaledHeight;
 				}
 				else if(this.treeMapBranchData.showLabel)
 				{	
-					headerHeight = this.header.getExplicitOrMeasuredHeight();
+					headerHeight = Math.min(unscaledHeight, this.header.getExplicitOrMeasuredHeight());
 				}
 				else
 				{
@@ -319,7 +319,10 @@ include "../../styles/metadata/PaddingStyles.inc"
 			}
 			
 			//if not closed, layout the contents
-			if(this.treeMapBranchData && this.treeMapBranchData.closed) return;
+			if(this.treeMapBranchData && this.treeMapBranchData.closed)
+			{
+				return;
+			}
 			
 			var paddingTop:Number = this.getStyle("paddingTop");
 			var paddingBottom:Number = this.getStyle("paddingBottom");
@@ -338,8 +341,8 @@ include "../../styles/metadata/PaddingStyles.inc"
 			
 			var x:Number = paddingLeft;
 			var y:Number = headerHeight + paddingTop;
-			var w:Number = unscaledWidth - x - paddingRight;
-			var h:Number = unscaledHeight - y - paddingBottom;
+			var w:Number = Math.max(0, unscaledWidth - x - paddingRight);
+			var h:Number = Math.max(0, unscaledHeight - y - paddingBottom);
 			var contentBounds:Rectangle = new Rectangle(x, y, w, h);
 			this.layoutContents(contentBounds);
 		}

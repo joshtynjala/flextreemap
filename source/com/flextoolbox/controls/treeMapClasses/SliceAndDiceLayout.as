@@ -74,6 +74,17 @@ package com.flextoolbox.controls.treeMapClasses
 				var currentData:TreeMapItemLayoutData = TreeMapItemLayoutData(dataIterator.current);
 				var currentWeight:Number = currentData.weight;
 				var oppositeLength:Number = lengthOfLongSide * (currentWeight / totalWeight);
+				if(isNaN(oppositeLength))
+				{
+					if(totalWeight == 0)
+					{
+						oppositeLength = lengthOfLongSide * 1 / dataProvider.length; 
+					}
+					else
+					{
+						oppositeLength = 0;
+					}
+				}
 				
 				var nodeBounds:Rectangle;
 				if(lengthOfLongSide == bounds.width)

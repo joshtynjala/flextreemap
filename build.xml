@@ -42,14 +42,27 @@
 	</target>
 	
 	<target name="build-docs">
+		<!-- build the examples that appear within the documentation -->
+		<exec executable="${mxmlc}" failonerror="true">
+			<arg line="--library-path+='${build.output}/${library.shortName}.swc'"/>
+			<arg line="'${docs.examples}/com/flextoolbox/controls/examples/TreeMapExample.mxml'"/>
+		</exec>
+		
+		<!-- build the asdocs -->
 		<exec executable="${asdoc}" dir="${basedir}" failonerror="true">
 			<arg line="--source-path '${source.output}'"/>
 			<arg line="--doc-sources '${source.output}'"/>
+			<arg line="--footer 'Copyright 2008 Josh Tynjala. All rights reserved.'"/>
 			<arg line="--main-title '${library.name} by Josh Tynjala'"/>
 			<arg line="--window-title '${library.name} by Josh Tynjala'"/>
-			<arg line="--footer 'Copyright 2008 Josh Tynjala'"/>
+			<arg line="--templates-path '${docs.template}'"/>
 			<arg line="--output '${docs.output}'"/>
 		</exec>
+		
+		<!-- copy the examples into the asdocs -->
+		<copy overwrite="true" todir="${docs.output}">
+			<fileset dir="${docs.examples}" includes="**/*.swf"/>
+		</copy>
 	</target>
 	
 	<target name="build-examples">

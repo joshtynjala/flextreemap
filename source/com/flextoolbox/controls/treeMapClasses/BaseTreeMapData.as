@@ -60,6 +60,18 @@ package com.flextoolbox.controls.treeMapClasses
 			return this._owner;
 		}
 		
+		private var _depth:int = 0;
+		
+		public function get depth():int
+		{
+			return this._depth;
+		}
+		
+		public function set depth(value:int):void
+		{
+			this._depth = value;
+		}
+		
 		private var _weight:Number = 0;
 		
 		public function get weight():Number
@@ -71,6 +83,7 @@ package com.flextoolbox.controls.treeMapClasses
 		{
 			this._weight = value;
 		}
+		
 		private var _label:String = "";
 		
 		public function get label():String

@@ -92,33 +92,24 @@ package com.flextoolbox.controls.treeMapClasses
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
-			var contentBounds:Rectangle = new Rectangle(0, 0, unscaledWidth, unscaledHeight);
+			var contentBounds:Rectangle = new Rectangle(this.x, this.y, unscaledWidth, unscaledHeight);
 			this.layoutContents(contentBounds);
 		}
 		
 		protected function layoutContents(contentBounds:Rectangle):void
 		{	
-			var treeMap:TreeMap = this.treeMapBranchData.owner;
-			
 			this.treeMapBranchData.layoutStrategy.updateLayout(this.treeMapBranchData, contentBounds);
 			
 			var itemCount:int = this.treeMapBranchData.itemCount;
 			for(var i:int = 0; i < itemCount; i++)
 			{
 				var itemLayoutData:TreeMapItemLayoutData = this.treeMapBranchData.getItemAt(i);
-				var itemPosition:Point = new Point(itemLayoutData.x, itemLayoutData.y);
-				var topLevelPosition:Point = DisplayObjectUtil.localToLocal(itemPosition, this, this.owner);
 				
-				var renderer:ITreeMapItemRenderer = treeMap.itemToItemRenderer(itemLayoutData.item);
-				if(renderer.data == treeMap.zoomedBranch)
+				//skip zoomed items because the treemap itself will draw and position them
+				if(!itemLayoutData.zoomed)
 				{
-					renderer.move(0, 0);
-					//this is strange and kind hacky, but it works!
-					renderer.setActualSize(treeMap.width, treeMap.height);
-				}
-				else
-				{
-					renderer.move(topLevelPosition.x, topLevelPosition.y);
+					var renderer:ITreeMapItemRenderer = itemLayoutData.renderer;
+					renderer.move(itemLayoutData.x, itemLayoutData.y);
 					renderer.setActualSize(itemLayoutData.width, itemLayoutData.height);
 				}
 			}

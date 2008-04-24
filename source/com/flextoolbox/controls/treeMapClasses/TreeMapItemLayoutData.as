@@ -39,25 +39,25 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Constructor
 	//--------------------------------------
 		
-		public function TreeMapItemLayoutData(item:Object)
+		public function TreeMapItemLayoutData(renderer:ITreeMapItemRenderer)
 		{
-			this.item = item;			
+			this.renderer = renderer;			
 		}
 		
 	//--------------------------------------
 	//  Properties
 	//--------------------------------------
 	
-		private var _item:Object;
+		private var _renderer:ITreeMapItemRenderer;
 		
-		public function get item():Object
+		public function get renderer():ITreeMapItemRenderer
 		{
-			return this._item;
+			return this._renderer;
 		}
 		
-		public function set item(value:Object):void
+		public function set renderer(value:ITreeMapItemRenderer):void
 		{
-			this._item = value;
+			this._renderer = value;
 		}
 	
 		private var _x:Number = 0;
@@ -118,6 +118,18 @@ package com.flextoolbox.controls.treeMapClasses
 		public function set weight(value:Number):void
 		{
 			this._weight = value;
+		}
+		
+		private var _zoomed:Boolean = false;
+		
+		public function get zoomed():Boolean
+		{
+			return this._zoomed;
+		}
+		
+		public function set zoomed(value:Boolean):void
+		{
+			this._zoomed = value;
 		}
 	}
 }

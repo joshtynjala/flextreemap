@@ -235,11 +235,13 @@ include "../../styles/metadata/TextStyles.inc"
 				return;
 			}
 			
-			var x:Number = paddingLeft;
-			var y:Number = headerHeight + paddingTop;
-			var w:Number = unscaledWidth - x - paddingRight;
-			var h:Number = unscaledHeight - y - paddingBottom;
-			var contentBounds:Rectangle = new Rectangle(x, y, w, h);
+			var boundsX:Number = paddingLeft;
+			var boundsY:Number = headerHeight + paddingTop;
+			var boundsW:Number = Math.max(0, unscaledWidth - boundsX - paddingRight);
+			var boundsH:Number = Math.max(0, unscaledHeight - boundsY - paddingBottom);
+			boundsX += this.x;
+			boundsY += this.y;
+			var contentBounds:Rectangle = new Rectangle(boundsX, boundsY, boundsW, boundsH);
 			this.layoutContents(contentBounds);
 		}
 	

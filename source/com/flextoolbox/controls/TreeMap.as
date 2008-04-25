@@ -182,6 +182,7 @@ include "../styles/metadata/TextStyles.inc"
 		}
 	
 		private var _discoveredRoot:Object = null;
+		private var _displayedRoot:Object = null;
 	
 		protected var dataProviderChanged:Boolean = false;
 	
@@ -449,7 +450,7 @@ include "../styles/metadata/TextStyles.inc"
 		 * @private
 		 * A cache of weights for every item in the dataProvider. Performance boost.
 		 */
-		private var _cachedWeights:Dictionary;
+		private var _uidToWeight:Object;
 	
 		/**
 		 * @private
@@ -951,9 +952,13 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		public function itemToWeight(item:Object):Number
 		{
-			if(item === null) return 0;
+			if(item === null)
+			{
+				return 0;
+			}
 			
-			var weight:Number = this._cachedWeights[item];
+			var uid:String = this.itemToUID(item);
+			var weight:Number = this._uidToWeight[uid];
 			if(isNaN(weight))
 			{
 				//automatically determine branch weight from sum of children
@@ -969,10 +974,8 @@ include "../styles/metadata/TextStyles.inc"
 						weight += this.itemToWeight(childItem);
 						iterator.moveNext();
 					}
-					return weight;
 				}
-				
-				if(this.weightFunction != null)
+				else if(this.weightFunction != null)
 				{
 					weight = this.weightFunction(item);
 				}
@@ -984,7 +987,7 @@ include "../styles/metadata/TextStyles.inc"
 				{
 					weight = 0;
 				}
-				this._cachedWeights[item] = weight;
+				this._uidToWeight[uid] = weight;
 			}
 			return weight;
 		}
@@ -1110,25 +1113,20 @@ include "../styles/metadata/TextStyles.inc"
 			//we need to update/create/destroy item renderers
 			if(this.dataProviderChanged || this.zoomChanged)
 			{
-				this._uidToItemRenderer = {};
+				this._displayedRoot = this._discoveredRoot;
+				if(this.zoomedBranch)
+				{
+					this._displayedRoot = this.zoomedBranch;
+				}
 				this.createCache();
 				if(this.dataProvider)
 				{
 					this.rootBranchRenderer = this.getBranchRenderer();
-					this.refreshBranchChildRenderers(this.rootBranchRenderer, this._discoveredRoot, 0, this.zoomedBranch ? -1 : 0);
+					this.refreshBranchChildRenderers(this.rootBranchRenderer, this._displayedRoot, 0, 0);
 				}
-				
-				//optimization when maxDepth is defined. we keep renderers
-				//around even if they aren't being used. saves display list
-				//manipulations. if the data provider changes, then we start
-				//from scratch because it could have been a major change
-				if(this.maxDepth < 0 || this.dataProviderChanged)
-				{
-					this.clearCache();
-				}
+				this.clearCache();
 			}
-			
-			this.commitBranchProperties(this._discoveredRoot, 0, this.zoomedBranch ? -1 : 0);
+			this.commitBranchProperties(this._displayedRoot, 0, 0);
 			
 			this.commitZoom();
 			this.commitSelection();
@@ -1176,8 +1174,8 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function initializeData():void
 		{
-			this._cachedWeights = new Dictionary(true);
 			this._uidToChildren = {};
+			this._uidToWeight = {};
 			
 			if(!this._dataProvider)
 			{
@@ -1238,19 +1236,28 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function createCache():void
 		{
+			this._uidToItemRenderer = {};
 			this.itemRenderers = [];
 			
 			if(!this.leafRendererChanged)
 			{
 				//reuse leaf renderers if the factory hasn't changed.
-				this._leafRendererCache = this.leafRenderers.concat();
+				//also keep anything that's already in the cache.
+				//this condition may happen if maxDepth has been set
+				//because we keep renderers around even when they're
+				//outside the zoom range.
+				this._leafRendererCache = this._leafRendererCache.concat(this.leafRenderers.concat());
 			}
 			this.leafRenderers = [];
 			
 			if(!this.branchRendererChanged)
 			{
 				//reuse branch renderers if the factory hasn't changed.
-				this._branchRendererCache = this.branchRenderers.concat();
+				//also keep anything that's already in the cache.
+				//this condition may happen if maxDepth has been set
+				//because we keep renderers around even when they're
+				//outside the zoom range.
+				this._branchRendererCache = this._branchRendererCache.concat(this.branchRenderers.concat());
 			}
 			this.rootBranchRenderer = null;
 			this.branchRenderers = [];
@@ -1267,9 +1274,14 @@ include "../styles/metadata/TextStyles.inc"
 			var uid:String = this.itemToUID(branch);
 			this._uidToItemRenderer[uid] = renderer;
 			
-			if(this.zoomEnabled && this.maxDepth >= 0 && zoomDepth >= this.maxDepth)
+			depth++;
+			if(this.isMaxDepthActive())
 			{
-				return;
+				zoomDepth++;
+				if(zoomDepth > this.maxDepth)
+				{
+					return;
+				}
 			}
 			
 			var children:ICollectionView = this.branchToChildren(branch);
@@ -1280,15 +1292,7 @@ include "../styles/metadata/TextStyles.inc"
 				if(this.dataDescriptor.isBranch(item))
 				{
 					var childBranchRenderer:ITreeMapBranchRenderer = this.getBranchRenderer();
-					if(this.zoomEnabled && item == this.zoomedBranch)
-					{
-						zoomDepth = 0;
-					}
-					else if(zoomDepth >= 0)
-					{
-						zoomDepth++;
-					}
-					this.refreshBranchChildRenderers(childBranchRenderer, item, depth + 1, zoomDepth);
+					this.refreshBranchChildRenderers(childBranchRenderer, item, depth, zoomDepth);
 				}
 				else
 				{
@@ -1360,9 +1364,31 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function clearCache():void
 		{
+			//optimization when maxDepth is defined. we keep renderers
+			//around even if they aren't being used. saves display list
+			//manipulations. if the data provider changes, then we start
+			//from scratch because it could have been a major change
+			if(this.isMaxDepthActive() && !this.dataProviderChanged)
+			{
+				var itemCount:int = this._branchRendererCache.length;
+				for(var i:int = 0; i < itemCount; i++)
+				{
+					var extraRenderer:UIComponent = UIComponent(this._branchRendererCache[i]);
+					extraRenderer.visible = false;
+				}
+				
+				itemCount = this._leafRendererCache.length;
+				for(i = 0; i < itemCount; i++)
+				{
+					extraRenderer = UIComponent(this._leafRendererCache[i]);
+					extraRenderer.visible = false;
+				}
+				return;
+			}
+			
 			//remove branches from cache
-			var itemCount:int = this._branchRendererCache.length;
-			for(var i:int = 0; i < itemCount; i++)
+			itemCount = this._branchRendererCache.length;
+			for(i = 0; i < itemCount; i++)
 			{
 				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._branchRendererCache.pop());
 				renderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
@@ -1400,17 +1426,22 @@ include "../styles/metadata/TextStyles.inc"
 				branchData.showLabel = true;
 			}
 			
-			this.commitItemProperties(branch, branchData, depth);
+			this.commitItemProperties(branch, branchData, depth, zoomDepth);
+			
+			depth++
+			if(this.isMaxDepthActive())
+			{
+				zoomDepth++;
+				if(zoomDepth > this.maxDepth)
+				{
+					return;
+				}
+			}
 			this.commitBranchChildProperties(branch, branchData, depth, zoomDepth);
 		}
 	
 		protected function commitBranchChildProperties(branch:Object, branchData:TreeMapBranchData, depth:int, zoomDepth:int):void
 		{
-			if(this.zoomEnabled && this.maxDepth >= 0 && zoomDepth >= this.maxDepth)			
-			{
-				return;
-			}
-			
 			var children:ICollectionView = this.branchToChildren(branch);
 			var iterator:IViewCursor = children.createCursor();
 			while(!iterator.afterLast)
@@ -1418,28 +1449,17 @@ include "../styles/metadata/TextStyles.inc"
 				var item:Object = iterator.current;
 				if(this.dataDescriptor.isBranch(item))
 				{
-					if(this.zoomEnabled && item == this.zoomedBranch)
-					{
-						zoomDepth = 0;
-					}
-					else if(zoomDepth >= 0)
-					{
-						zoomDepth++;
-					}
-					this.commitBranchProperties(item, depth + 1, zoomDepth);
+					this.commitBranchProperties(item, depth, zoomDepth);
 				}
 				else
 				{
 					var leafData:TreeMapLeafData = new TreeMapLeafData(this);
 					leafData.color = this.itemToColor(item);
 					leafData.dataTip = this.itemToDataTip(item);
-					this.commitItemProperties(item, leafData, depth);
+					this.commitItemProperties(item, leafData, depth, zoomDepth);
 				}
 				
 				var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
-				//only show the renderer if we don't have a max depth
-				//or if the zoom depth >= 0
-				renderer.visible = !this.zoomEnabled || this.maxDepth < 0 || !this.zoomedBranch || zoomDepth >= 0;
 				
 				var layoutData:TreeMapItemLayoutData = new TreeMapItemLayoutData(renderer);
 				layoutData.weight = this.itemToWeight(item);
@@ -1450,7 +1470,7 @@ include "../styles/metadata/TextStyles.inc"
 			}
 		}
 	
-		protected function commitItemProperties(item:Object, treeMapData:BaseTreeMapData, depth:int):void
+		protected function commitItemProperties(item:Object, treeMapData:BaseTreeMapData, depth:int, zoomDepth:int):void
 		{
 			var uid:String = this.itemToUID(item);
 			treeMapData.uid = uid;
@@ -1463,6 +1483,7 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				IDropInTreeMapItemRenderer(renderer).treeMapData = treeMapData;
 			}
+			renderer.visible = this.isDepthVisible(zoomDepth);
 			this.setChildIndex(UIComponent(renderer), this.numChildren - 1);
 		}
 		
@@ -1514,9 +1535,39 @@ include "../styles/metadata/TextStyles.inc"
 			}
 		}
 		
+		protected function isMaxDepthActive():Boolean
+		{
+			return this.zoomEnabled && this.maxDepth >= 0;
+		}
+		
+		protected function isDepthVisible(depth:int):Boolean
+		{
+			if(!this.isMaxDepthActive())
+			{
+				return true;
+			}
+			
+			if(depth >= 0 && depth <= this.maxDepth)
+			{
+				return true;
+			}
+			
+			return false;
+		}
+		
 		protected function isDepthClosed(depth:int):Boolean
 		{
-			return this.zoomEnabled && this.maxDepth >= 0 && depth >= this.maxDepth;
+			if(!this.isMaxDepthActive())
+			{
+				return false;
+			}
+			
+			if(depth < this.maxDepth)
+			{
+				return false;
+			}
+			
+			return true; 
 		}
 		
 		/**

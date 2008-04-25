@@ -28,32 +28,37 @@
 	<!--
 		Important Notes:
 		
-		1. Items use the labelField property to access @label from the XML to display.
+		1. Items use the labelField property to set the text that appears on the
+		item renderers. In this case, we want the label attribute from the XML.
 		
-		2. The TreeMap determines item renderer sizes by using the weightField property
-		   to access @data from the XML.
+		2. The TreeMap determines the dimensions of each item renderer using the
+		weightField property. We'll use the data attribute from the XML.
 	-->
+	
 	<toolbox:TreeMap width="400" height="300"
 		dataProvider="{MailBox}" labelField="@label" weightField="@data"/>
 	
-	<!--
-		Sample XML data to populate the TreeMap
-		Source: "Working with Tree Controls"
-		http://www.adobe.com/devnet/flex/quickstart/working_with_tree/
-	-->
+	<!-- Sample XML data to populate the TreeMap -->
+	
 	<mx:XMLListCollection id="MailBox">
 		<mx:XMLList>
-			<node label="Mail" data="100">
-				<node label="Inbox" data="70"/>
-	
-				<node label="Personal Folder" data="10">
-					<node label="Business" data="2"/>
-					<node label="Demo" data="3"/>	
-					<node label="Saved Mail" data="5" />
+			<node label="Mail">
+				<node label="Inbox" data="40">
+					<node label="Clients" data="31"/>
+					<node label="Personal Folder">
+						<node label="Open Source Projects" data="18"/>	
+						<node label="Fan Mail" data="8" />
+					</node>
+					
+					<node label="Mailing Lists">
+						<node label="flexcoders" data="30"/>
+						<node label="flexcomponents" data="20"/>
+					</node>
+					<node label="Unsorted" data="50"/>
 				</node>
 	
-				<node label="Sent" data="15"/>
-				<node label="Trash" data="5"/>
+				<node label="Sent" data="35"/>
+				<node label="Trash" data="23"/>
 			</node>
 		</mx:XMLList>
 	</mx:XMLListCollection>

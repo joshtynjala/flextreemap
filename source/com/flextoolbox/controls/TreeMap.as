@@ -1117,7 +1117,15 @@ include "../styles/metadata/TextStyles.inc"
 					this.rootBranchRenderer = this.getBranchRenderer();
 					this.refreshBranchChildRenderers(this.rootBranchRenderer, this._discoveredRoot, 0, this.zoomedBranch ? -1 : 0);
 				}
-				this.clearCache();
+				
+				//optimization when maxDepth is defined. we keep renderers
+				//around even if they aren't being used. saves display list
+				//manipulations. if the data provider changes, then we start
+				//from scratch because it could have been a major change
+				if(this.maxDepth < 0 || this.dataProviderChanged)
+				{
+					this.clearCache();
+				}
 			}
 			
 			this.commitBranchProperties(this._discoveredRoot, 0, this.zoomedBranch ? -1 : 0);

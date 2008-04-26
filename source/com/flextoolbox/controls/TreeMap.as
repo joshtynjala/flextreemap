@@ -29,7 +29,6 @@ package com.flextoolbox.controls
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.utils.Dictionary;
 	import flash.xml.XMLNode;
 	
 	import mx.collections.ArrayCollection;
@@ -91,7 +90,6 @@ package com.flextoolbox.controls
 	
 include "../styles/metadata/TextStyles.inc"
 	
-	
 	/**
 	 * Sets the style name for all leaf nodes.
 	 */
@@ -137,9 +135,13 @@ include "../styles/metadata/TextStyles.inc"
 	//  Static Methods
 	//--------------------------------------
 		
+		/**
+		 * @private
+		 * Initializes the default style values.
+		 */
 		public static function initializeStyles():void
 		{
-			
+			//TODO: add defaults that may be different than the framework's defaults
 		}
 		initializeStyles();
 		
@@ -147,6 +149,9 @@ include "../styles/metadata/TextStyles.inc"
 	//  Constructor
 	//--------------------------------------
 	
+		/**
+		 * Constructor.
+		 */
 		public function TreeMap()
 		{
 			super();
@@ -156,43 +161,115 @@ include "../styles/metadata/TextStyles.inc"
 	//  Properties
 	//--------------------------------------
 	
+		/**
+		 * @private
+		 * Storage for the hasRoot property.
+		 */
 		private var _hasRoot:Boolean = false;
 		
+		/**
+		 * Indicates that the current dataProvider has a root item; for example, 
+		 * a single top node in a hierarchical structure. XML and Object 
+		 * are examples of types that have a root. Lists and arrays do not.
+		 * 
+		 * @see #showRoot
+		 */
 		public function get hasRoot():Boolean
 		{
 			return this._hasRoot;
 		}
 		
+		/**
+		 * @private
+		 * Storage for the showRoot property.
+		 */
 		private var _showRoot:Boolean = true;
 		
 		[Bindable]
+		/**
+		 * Sets the visibility of the root item.
+		 *
+		 * If the dataProvider data has a root node, and this is set to 
+		 * <code>false</code>, the TreeMap control does not display the root item. 
+		 * Only the decendants of the root item are displayed.  
+		 * 
+		 * This flag has no effect on non-rooted dataProviders, such as List and Array. 
+		 *
+		 * @default true
+		 * @see #hasRoot
+		 */
 		public function get showRoot():Boolean
 		{
 			return this._showRoot;
 		}
 		
+		/**
+		 * @private
+		 */
 		public function set showRoot(value:Boolean):void
 		{
 			this._showRoot = value;
 			
-			//TODO: Should this use its own flag?
 			this.dataProviderChanged = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
 		}
 	
+		/**
+		 * The root discovered from the data provider. May be the data provider
+		 * itself, or its first and only child if that child is a branch.
+		 */
 		private var _discoveredRoot:Object = null;
+		
+		/**
+		 * @private
+		 * The visible root renderer isn't always the "discovered" root of the
+		 * data provider. If the treemap is zoomed, it may be the zoomed branch
+		 * instead. This is an optimization to minimize the number of required
+		 * item renderers.
+		 */
 		private var _displayedRoot:Object = null;
 	
+		/**
+		 * @private
+		 * Flag indicating that a new data provider has been set
+		 * or that the existing data provider has been modified.
+		 */
 		protected var dataProviderChanged:Boolean = false;
 	
+		/**
+		 * @private
+		 * Storage for the dataProvider property.
+		 */
 		private var _dataProvider:ICollectionView = new ArrayCollection();
 	
+		/**
+		 * An object that contains the data to be displayed.
+		 * When you assign a value to this property, the TreeMap class handles
+		 * the source data object as follows:
+		 * <p>
+		 * <ul>
+		 * 	<li>A String containing valid XML text is converted to an XMLListCollection.</li>
+		 * 	<li>An XMLNode is converted to an XMLListCollection.</li>
+		 * 	<li>An XMLList is converted to an XMLListCollection.</li>
+		 * 	<li>Any object that implements the ICollectionView interface is cast to
+		 *  an ICollectionView.</li>
+		 * 	<li>An Array is converted to an ArrayCollection.</li>
+		 * 	<li>Any other type object is wrapped in an Array with the object as its sole
+		 *  entry.</li>
+		 * </ul>
+		 * </p>
+		 *
+		 *  @default an empty ArrayCollection
+		 */
 		public function get dataProvider():Object
 		{
 			return this._dataProvider;
 		}
 		
+		/**
+		 * @private
+		 */
 		public function set dataProvider(value:Object):void
 		{
 			if(this._dataProvider)
@@ -267,6 +344,7 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		private var _dataDescriptor:ITreeDataDescriptor = new DefaultDataDescriptor();
 	
+		[Bindable]
 		/**
 		 * Returns the current ITreeDataDescriptor.
 		 *
@@ -304,13 +382,13 @@ include "../styles/metadata/TextStyles.inc"
 			this.invalidateDisplayList();
 		}
 		
-		
 		/**
 		 * @private
 		 * Storage for the strategy used for layout of nodes and branches.
 		 */
 		private var _layoutStrategy:ITreeMapLayoutStrategy = new SquarifyLayout();
 	    
+	    [Bindable]
 	    /**
 	     * The custom layout algorithm for the control.
 	     *
@@ -331,14 +409,19 @@ include "../styles/metadata/TextStyles.inc"
 		    this.invalidateDisplayList();
 	    }
 	    
+		/**
+		 * @private
+		 * Flag indicating that the leaf renderer type has changed.
+		 */
+		protected var leafRendererChanged:Boolean = false;
+		
 	    /**
 	     * @private
 	     * Storage for the leafRenderer property.
 	     */
 	    private var _leafRenderer:IFactory = new ClassFactory(TreeMapLeafRenderer);
 	
-		protected var leafRendererChanged:Boolean = false;
-	
+		[Bindable]
 	    /**
 	     * The custom leaf renderer for the control.
 	     * You can specify a drop-in, inline, or custom leaf renderer.
@@ -360,6 +443,12 @@ include "../styles/metadata/TextStyles.inc"
 			this.invalidateProperties();
 			this.invalidateDisplayList();
 	    }
+		
+		/**
+		 * @private
+		 * Flag indicating that the branch renderer type has changed.
+		 */
+		protected var branchRendererChanged:Boolean = false;
 	
 		/**
 		 * @private
@@ -367,8 +456,7 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		private var _branchRenderer:IFactory = new ClassFactory(TreeMapBranchRenderer);
 		
-		protected var branchRendererChanged:Boolean = false;
-		
+		[Bindable]
 	    /**
 	     * The custom branch renderer for the control. You can specify a drop-in,
 	     * inline, or custom branch renderer. Unlike the renderers used by Tree
@@ -410,39 +498,47 @@ include "../styles/metadata/TextStyles.inc"
 	    /**
 		 * @private
 		 * The complete collection of leaf renderers. Not every leaf in the
-		 * data provider may have a renderer.
+		 * data provider may have an associated renderer.
 		 */
 		protected var leafRenderers:Array = [];
 		
 	    /**
 		 * @private
 		 * The complete collection of leaf renderers. Not every branch in the
-		 * data provider may have a renderer.
+		 * data provider may have an associated renderer.
 		 */
 		protected var branchRenderers:Array = [];
 		
 		/**
 		 * @private
+		 * Holds the leftover leaf renderers for reuse.
 		 */
 		private var _leafRendererCache:Array = [];
 		
 		/**
 		 * @private
+		 * Holds the leftover branch renderers for reuse.
 		 */
 		private var _branchRendererCache:Array = [];
 		
 		/**
 		 * @private
-		 * Hash to covert from a UID to the renderer for an item.
+		 * Hash to covert from an item's UID to the associated renderer.
 		 */
 		private var _uidToItemRenderer:Object;
 	    
 		/**
 		 * @private
-		 * Hash to covert from a UID to the children of a branch. We can't trust
+		 * Hash to convert from a UID to the children of a branch. We can't trust
 		 * ICollectionView to return the same children every time.
 		 */
 	    private var _uidToChildren:Object;
+	    
+	    /**
+	     * @private
+	     * Hash to convert from a branch's UID to the depth of the branch.
+	     */
+	    private var _uidToDepth:Object;
 	    
 	//-- Weight
 	
@@ -457,6 +553,7 @@ include "../styles/metadata/TextStyles.inc"
 		 * Storage for the field used to calculate a node's weight.
 		 */
 		private var _weightField:String = "weight";
+		
 		[Bindable("weightFieldChanged")]
 	    /**
 	     * The name of the field in the data provider items to use in weight calculations.
@@ -689,13 +786,13 @@ include "../styles/metadata/TextStyles.inc"
 		
 	//-- Selection
 	
-		[Bindable]
 		/**
 		 * @private
 		 * Storage for the selectable property.
 		 */
 		private var _selectable:Boolean = false;
 		
+		[Bindable]
 	    /**
 	     * Indicates if the node's within the TreeMap can be selected by the user.
 		 */
@@ -713,13 +810,13 @@ include "../styles/metadata/TextStyles.inc"
 			this.invalidateProperties();
 		}
 	
-		[Bindable]
 		/**
 		 * @private
 		 * Storage for the branchesSelectable property.
 		 */
 		private var _branchesSelectable:Boolean = false;
 		
+		[Bindable]
 	    /**
 	     * Indicates if the node's within the TreeMap can be selected by the user.
 		 */
@@ -771,6 +868,10 @@ include "../styles/metadata/TextStyles.inc"
 		
 	//-- ZOOMING
 		
+		/**
+		 * @private
+		 * Flag indicating if the zoomed branch has changed.
+		 */
 		protected var zoomChanged:Boolean = false;
 		
 		/**
@@ -779,6 +880,7 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		private var _zoomedBranches:Array = [];
 		
+		[Bindable("zoomChange")]
 		/**
 		 * The currently zoomed branch.
 		 */
@@ -804,6 +906,7 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				this._zoomedBranches = [];
 			}
+			this.dispatchEvent(new Event("zoomChange"));
 			this.zoomChanged = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
@@ -815,8 +918,9 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		private var _zoomEnabled:Boolean = true;
 		
+		[Bindable]
 		/**
-		 * TODO: document
+		 * If true, branches may be zoomed in (maximized) to display in the full bounds of the treemap.
 		 */
 		public function get zoomEnabled():Boolean
 		{
@@ -838,6 +942,7 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		private var _zoomOutType:String = TreeMapZoomOutType.PREVIOUS;
 		
+		[Bindable]
 		/**
 		 * Determines the way that zoom out actions work. Values are defined by the
 		 * constants in the <code>TreeMapZoomOutType</code> class.
@@ -863,6 +968,7 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		private var _maxDepth:int = -1;
 		
+		[Bindable]
 		/**
 		 * If value is >= 0, the treemap will only render branches to a specific depth.
 		 */
@@ -1015,6 +1121,9 @@ include "../styles/metadata/TextStyles.inc"
 			return item == this._discoveredRoot;
 		}
 	
+		/**
+		 * @private
+		 */
 		override public function styleChanged(styleProp:String):void
 		{
 			super.styleChanged(styleProp);
@@ -1091,6 +1200,10 @@ include "../styles/metadata/TextStyles.inc"
 			return UIDUtil.getUID(item);
 		}
 		
+		/**
+		 * @private
+		 * Takes a branch and finds the saved data for its children.
+		 */
 		protected function branchToChildren(branch:Object):ICollectionView
 		{
 			var uid:String = this.itemToUID(branch);
@@ -1122,13 +1235,12 @@ include "../styles/metadata/TextStyles.inc"
 				if(this.dataProvider)
 				{
 					this.rootBranchRenderer = this.getBranchRenderer();
-					this.refreshBranchChildRenderers(this.rootBranchRenderer, this._displayedRoot, 0, 0);
+					this.refreshBranchChildRenderers(this.rootBranchRenderer, this._displayedRoot, 0);
 				}
 				this.clearCache();
 			}
-			this.commitBranchProperties(this._displayedRoot, 0, 0);
-			
-			this.commitZoom();
+			this.commitBranchProperties(this._displayedRoot, 0);
+
 			this.commitSelection();
 			
 			this.dataProviderChanged = false;
@@ -1175,6 +1287,7 @@ include "../styles/metadata/TextStyles.inc"
 		protected function initializeData():void
 		{
 			this._uidToChildren = {};
+			this._uidToDepth = {};
 			this._uidToWeight = {};
 			
 			if(!this._dataProvider)
@@ -1195,7 +1308,7 @@ include "../styles/metadata/TextStyles.inc"
 				}
 			}
 			
-			this.initializeBranch(this._discoveredRoot);
+			this.initializeBranch(this._discoveredRoot, 0);
 		}
 		
 		/**
@@ -1204,7 +1317,7 @@ include "../styles/metadata/TextStyles.inc"
 		 * we need to cache the values returned from getChildren() for lookup every time we loop
 		 * through a branch's children.
 		 */
-		private function initializeBranch(branch:Object):void
+		private function initializeBranch(branch:Object, depth:int):void
 		{
 			var uid:String = this.itemToUID(branch);
 			var children:ICollectionView;
@@ -1217,6 +1330,7 @@ include "../styles/metadata/TextStyles.inc"
 				children = this.dataDescriptor.getChildren(branch);
 			}
 			this._uidToChildren[uid] = children;
+			this._uidToDepth[uid] = depth;
 			
 			var iterator:IViewCursor = children.createCursor();
 			while(!iterator.afterLast)
@@ -1224,7 +1338,7 @@ include "../styles/metadata/TextStyles.inc"
 				var item:Object = iterator.current;
 				if(this.dataDescriptor.isBranch(item))
 				{
-					this.initializeBranch(item);
+					this.initializeBranch(item, depth + 1);
 				}
 				iterator.moveNext();
 			}
@@ -1267,14 +1381,13 @@ include "../styles/metadata/TextStyles.inc"
 		 * @private
 		 * Creates the child renderers of a branch and updates their data.
 		 */
-		protected function refreshBranchChildRenderers(renderer:ITreeMapBranchRenderer, branch:Object, depth:int, zoomDepth:int):void
+		protected function refreshBranchChildRenderers(renderer:ITreeMapBranchRenderer, branch:Object, zoomDepth:int):void
 		{
 			renderer.data = branch;
 			
 			var uid:String = this.itemToUID(branch);
 			this._uidToItemRenderer[uid] = renderer;
 			
-			depth++;
 			if(this.isMaxDepthActive())
 			{
 				zoomDepth++;
@@ -1292,7 +1405,7 @@ include "../styles/metadata/TextStyles.inc"
 				if(this.dataDescriptor.isBranch(item))
 				{
 					var childBranchRenderer:ITreeMapBranchRenderer = this.getBranchRenderer();
-					this.refreshBranchChildRenderers(childBranchRenderer, item, depth, zoomDepth);
+					this.refreshBranchChildRenderers(childBranchRenderer, item, zoomDepth);
 				}
 				else
 				{
@@ -1409,7 +1522,11 @@ include "../styles/metadata/TextStyles.inc"
 			}
 		}
 	
-		protected function commitBranchProperties(branch:Object, depth:int, zoomDepth:int):void
+		/**
+		 * @private
+		 * Updates a branches properties.
+		 */
+		protected function commitBranchProperties(branch:Object, zoomDepth:int):void
 		{
 			var branchData:TreeMapBranchData = new TreeMapBranchData(this);
 			branchData.layoutStrategy = this.layoutStrategy;
@@ -1426,9 +1543,10 @@ include "../styles/metadata/TextStyles.inc"
 				branchData.showLabel = true;
 			}
 			
-			this.commitItemProperties(branch, branchData, depth, zoomDepth);
+			var branchDepth:int = this._uidToDepth[branch];
 			
-			depth++
+			this.commitItemProperties(branch, branchData, branchDepth, zoomDepth);
+			
 			if(this.isMaxDepthActive())
 			{
 				zoomDepth++;
@@ -1437,9 +1555,13 @@ include "../styles/metadata/TextStyles.inc"
 					return;
 				}
 			}
-			this.commitBranchChildProperties(branch, branchData, depth, zoomDepth);
+			this.commitBranchChildProperties(branch, branchData, branchDepth + 1, zoomDepth);
 		}
 	
+		/**
+		 * @private
+		 * Loops through a branch's children and updates properties.
+		 */
 		protected function commitBranchChildProperties(branch:Object, branchData:TreeMapBranchData, depth:int, zoomDepth:int):void
 		{
 			var children:ICollectionView = this.branchToChildren(branch);
@@ -1449,7 +1571,7 @@ include "../styles/metadata/TextStyles.inc"
 				var item:Object = iterator.current;
 				if(this.dataDescriptor.isBranch(item))
 				{
-					this.commitBranchProperties(item, depth, zoomDepth);
+					this.commitBranchProperties(item, zoomDepth);
 				}
 				else
 				{
@@ -1470,6 +1592,10 @@ include "../styles/metadata/TextStyles.inc"
 			}
 		}
 	
+		/**
+		 * @private
+		 * Updates the item's treeMapData. Sets visibility and depth.
+		 */
 		protected function commitItemProperties(item:Object, treeMapData:BaseTreeMapData, depth:int, zoomDepth:int):void
 		{
 			var uid:String = this.itemToUID(item);
@@ -1489,57 +1615,19 @@ include "../styles/metadata/TextStyles.inc"
 		
 		/**
 		 * @private
-		 * Handles the display of the zoomed renderer.
+		 * Determines if we need to account for max depth.
+		 * Zoom must be enabled, and maxDepth must be set.
 		 */
-		protected function commitZoom():void
-		{
-			if(this.zoomedBranch)
-			{
-				this.updateDepthsForZoomedBranch(this.zoomedBranch);
-			}
-		}
-		
-		/**
-		 * @private
-		 * Puts a branch and all of its children at the highest depths
-		 * so that they may be zoomed.
-		 */
-		protected function updateDepthsForZoomedBranch(branch:Object):void
-		{
-			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(this.itemToItemRenderer(branch));
-			//the renderer may not have been created if maxDepth is set
-			if(branchRenderer)
-			{
-				this.setChildIndex(UIComponent(branchRenderer), this.numChildren - 1);
-			}
-			
-			var children:ICollectionView = this.branchToChildren(branch);
-			var iterator:IViewCursor = children.createCursor();
-			while(!iterator.afterLast)
-			{
-				var child:Object = iterator.current;
-				if(this.dataDescriptor.isBranch(child))
-				{
-					this.updateDepthsForZoomedBranch(child);
-				}
-				else
-				{
-					var childRenderer:ITreeMapItemRenderer = this.itemToItemRenderer(child);
-					//the child renderer may not exist if maxDepth is set
-					if(childRenderer)
-					{
-						this.setChildIndex(UIComponent(childRenderer), this.numChildren - 1);
-					}
-				}
-				iterator.moveNext();
-			}
-		}
-		
 		protected function isMaxDepthActive():Boolean
 		{
 			return this.zoomEnabled && this.maxDepth >= 0;
 		}
 		
+		/**
+		 * @private
+		 * Determines if an item renderer at the specified depth should be visible.
+		 * It may exist, but be hidden due to zooming or maxDepth.
+		 */
 		protected function isDepthVisible(depth:int):Boolean
 		{
 			if(!this.isMaxDepthActive())
@@ -1555,6 +1643,10 @@ include "../styles/metadata/TextStyles.inc"
 			return false;
 		}
 		
+		/**
+		 * @private
+		 * Determines if a branch renderer at the specified depth should be closed.
+		 */
 		protected function isDepthClosed(depth:int):Boolean
 		{
 			if(!this.isMaxDepthActive())
@@ -1754,6 +1846,8 @@ include "../styles/metadata/TextStyles.inc"
 					}
 				}
 			}
+			
+			this.dispatchEvent(new Event("zoomChange"));
 			
 			this.zoomChanged = true;
 			this.invalidateProperties();

@@ -270,19 +270,27 @@ include "../../styles/metadata/PaddingStyles.inc"
 
 				var headerStyleName:String = this.getStyle("headerStyleName");				
 				this.header = this.headerRenderer.newInstance();
-				this.header.styleName = headerStyleName;
-				this.header.addEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
-				this.header.addEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
-				this.addChild(this.header);
+				
+				if(this.header)
+				{
+					this.header.styleName = headerStyleName;
+					this.header.addEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
+					this.header.addEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
+					this.addChild(this.header);
+				}
 				
 				this.headerRendererChanged = false;
 			}
 			
-			IDataRenderer(this.header).data = this;
-			
-			if(this.treeMapBranchData)
+			if(this.header)
 			{
-				this.header.enabled = this.enabled && this.treeMapBranchData.showLabel;
+				if(this.header is IDataRenderer)
+				{
+					IDataRenderer(this.header).data = this;
+				}
+			
+				this.header.enabled = this.enabled && (!this.treeMapBranchData || this.treeMapBranchData.showLabel);
+				this.header.visible = this.treeMapBranchData.closed || this.treeMapBranchData.showLabel;
 			}
 		}
 		
@@ -294,7 +302,6 @@ include "../../styles/metadata/PaddingStyles.inc"
 			//update the header
 			var headerWidth:Number = unscaledWidth;
 			var headerHeight:Number = 0;
-			this.header.visible = true;
 			if(this.treeMapBranchData)
 			{
 				if(this.treeMapBranchData.closed)
@@ -304,10 +311,6 @@ include "../../styles/metadata/PaddingStyles.inc"
 				else if(this.treeMapBranchData.showLabel)
 				{	
 					headerHeight = Math.min(unscaledHeight, this.header.getExplicitOrMeasuredHeight());
-				}
-				else
-				{
-					this.header.visible = false;
 				}
 			}
 			this.header.setActualSize(headerWidth, headerHeight);
@@ -353,12 +356,19 @@ include "../../styles/metadata/PaddingStyles.inc"
 	//  Protected Event Handlers
 	//--------------------------------------
 	
+		/**
+		 * Handles selecte events from the header.
+		 */
 		protected function headerSelectHandler(event:Event):void
 		{
 			var select:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_SELECT, this);
 			this.dispatchEvent(select);
 		}
 	
+		/**
+		 * @private
+		 * Handles zoom events from the header.
+		 */
 		protected function headerZoomHandler(event:Event):void
 		{
 			var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);

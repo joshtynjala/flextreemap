@@ -22,8 +22,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-//TODO: Add Adobe Flex license info
-
 package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.controls.TreeMap;
@@ -35,10 +33,12 @@ package com.flextoolbox.controls.treeMapClasses
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.text.TextFieldAutoSize;
 	
 	import mx.controls.Button;
 	import mx.core.IDataRenderer;
 	import mx.core.UIComponent;
+	import mx.core.UITextField;
 	import mx.core.mx_internal;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
@@ -88,11 +88,12 @@ include "../../styles/metadata/TextStyles.inc"
 			{
 				//TODO: Define all styles with metadata
 				this.fillAlphas = [1.0, 1.0];
-				this.paddingTop = 0;
+				this.paddingTop = 2;
 				this.paddingRight = 6;
-				this.paddingBottom = 0;
+				this.paddingBottom = 2;
 				this.paddingLeft = 6;
  				this.textAlign = "left";
+ 				this.fontWeight = "bold";
 				this.upSkin = TreeMapBranchHeaderSkin;
 				this.downSkin = TreeMapBranchHeaderSkin;
 				this.overSkin = TreeMapBranchHeaderSkin;
@@ -136,6 +137,15 @@ include "../../styles/metadata/TextStyles.inc"
 	
 		protected var selectionButton:Button;
 		protected var zoomButton:Button;
+		
+		/**
+		 * @private
+		 * The text field that displays the header's label.
+		 * 
+		 * We need a separate text field because Button performs poorly when
+		 * resized quickly and it has a label.
+		 */
+		protected var label:UITextField;
 	
 		/**
 		 * @private
@@ -158,10 +168,15 @@ include "../../styles/metadata/TextStyles.inc"
 		{
 			this._data = value;
 			this.invalidateProperties();
+			this.invalidateSize();
+			this.invalidateDisplayList();
 		}
 	
 		protected var zoomEnabled:Boolean = false;
 	
+		/**
+		 * @private
+		 */
 		private var _selectionButtonStyleFilter:Object = 
 		{
 			upSkin: "upSkin",
@@ -183,6 +198,9 @@ include "../../styles/metadata/TextStyles.inc"
 			return this._selectionButtonStyleFilter;
 		}
 	
+		/**
+		 * @private
+		 */
 		private var _zoomButtonStyleFilter:Object = 
 		{
 			zoomButtonUpSkin: "upSkin",
@@ -200,6 +218,9 @@ include "../../styles/metadata/TextStyles.inc"
 			return this._zoomButtonStyleFilter;
 		}
 		
+		/**
+		 * @private
+		 */
 		override public function styleChanged(styleProp:String):void
 		{
 			super.styleChanged(styleProp);
@@ -245,6 +266,14 @@ include "../../styles/metadata/TextStyles.inc"
 			}
 			this.refreshZoomInIcon();
 			this.refreshZoomOutIcon();
+			
+			if(!this.label)
+			{
+				this.label = new UITextField();
+				this.label.styleName = this;
+				this.label.mouseEnabled = false;
+				this.addChild(this.label);
+			}
 		}
 		
 		override protected function commitProperties():void
@@ -259,7 +288,8 @@ include "../../styles/metadata/TextStyles.inc"
 				var branchData:TreeMapBranchData = IDropInTreeMapItemRenderer(branchRenderer).treeMapData as TreeMapBranchData;
 				
 				this.selectionButton.selected = branchRenderer.selected;
-				this.selectionButton.label = branchData.label;
+				this.label.autoSize = TextFieldAutoSize.LEFT;
+				this.label.text = branchData.label;
 				
 				//only enable the zoom button if treemap zoom is enabled and the branch data isn't the root
 				this.zoomEnabled = treeMap.zoomEnabled && !treeMap.itemIsRoot(branch);
@@ -273,8 +303,13 @@ include "../../styles/metadata/TextStyles.inc"
 		{
 			super.measure();
 			
-			this.measuredWidth = this.selectionButton.measuredWidth;
-			this.measuredHeight = this.selectionButton.measuredHeight;
+			var paddingTop:Number = this.getStyle("paddingTop");
+			var paddingRight:Number = this.getStyle("paddingRight");
+			var paddingBottom:Number = this.getStyle("paddingBottom");
+			var paddingLeft:Number = this.getStyle("paddingLeft");
+			
+			this.measuredWidth = this.label.measuredWidth + paddingLeft + paddingRight;
+			this.measuredHeight = this.label.measuredHeight + paddingTop + paddingBottom;
 			
 			if(this.zoomEnabled)
 			{
@@ -287,6 +322,11 @@ include "../../styles/metadata/TextStyles.inc"
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			
+			var paddingTop:Number = this.getStyle("paddingTop");
+			var paddingRight:Number = this.getStyle("paddingRight");
+			var paddingBottom:Number = this.getStyle("paddingBottom");
+			var paddingLeft:Number = this.getStyle("paddingLeft");
+			
 			var zoomButtonWidth:Number = 0;
 			if(this.zoomEnabled)
 			{
@@ -298,6 +338,12 @@ include "../../styles/metadata/TextStyles.inc"
 			var selectionButtonWidth:Number = unscaledWidth - zoomButtonWidth;
 			this.selectionButton.move(0, 0);
 			this.selectionButton.setActualSize(selectionButtonWidth, unscaledHeight);
+			
+			this.label.autoSize = TextFieldAutoSize.NONE;
+			var labelHeight:Number = Math.min(this.label.measuredHeight + paddingTop + paddingBottom, unscaledHeight); 
+			this.label.setActualSize(this.selectionButton.width - paddingLeft - paddingRight, labelHeight);
+			this.label.x = paddingLeft;
+			this.label.y = paddingTop + (this.selectionButton.height - this.label.height) / 2;
 		}
 	
 		protected function refreshZoomInIcon():void
@@ -314,7 +360,7 @@ include "../../styles/metadata/TextStyles.inc"
 			this.zoomButton.setStyle("downIcon", zoomInIcon);
 			this.zoomButton.setStyle("disabledIcon", zoomInIcon);
 			
-			//if I don't call this,  zoomButton.getStyle("overIcon") returns undefined!
+			//if I don't call this, zoomButton.getStyle("overIcon") returns undefined!
 			//I have no idea why!
 			this.zoomButton.regenerateStyleCache(false);
 		}

@@ -26,6 +26,7 @@ package com.flextoolbox.controls
 {
 	import com.flextoolbox.controls.treeMapClasses.*;
 	import com.flextoolbox.events.TreeMapEvent;
+	import com.flextoolbox.events.TreeMapLayoutEvent;
 	
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -1434,10 +1435,10 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				renderer = ITreeMapLeafRenderer(this.leafRenderer.newInstance());
 				renderer.styleName = this.getStyle("leafStyleName");
-				renderer.addEventListener(MouseEvent.CLICK, leafClickHandler, false, 0, true);
-				renderer.addEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler, false, 0, true);
-				renderer.addEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler, false, 0, true);
-				renderer.addEventListener(MouseEvent.ROLL_OUT, leafRollOutHandler, false, 0, true);
+				renderer.addEventListener(MouseEvent.CLICK, leafClickHandler);
+				renderer.addEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler);
+				renderer.addEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler);
+				renderer.addEventListener(MouseEvent.ROLL_OUT, leafRollOutHandler);
 				this.addChild(UIComponent(renderer));
 			}
 			
@@ -1461,11 +1462,12 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				renderer = ITreeMapBranchRenderer(this.branchRenderer.newInstance());
 				renderer.styleName = this.getStyle("branchStyleName");
-				renderer.addEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler, false, 0, true);
-				renderer.addEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler, false, 0, true);
 				this.addChild(UIComponent(renderer));
 			}
 			
+			renderer.addEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
+			renderer.addEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
+			renderer.addEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
 			this.branchRenderers.push(renderer);
 			this.itemRenderers.push(renderer);
 			return renderer;
@@ -1487,6 +1489,9 @@ include "../styles/metadata/TextStyles.inc"
 				for(var i:int = 0; i < itemCount; i++)
 				{
 					var extraRenderer:UIComponent = UIComponent(this._branchRendererCache[i]);
+				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
+				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
+				extraRenderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
 					extraRenderer.visible = false;
 				}
 				
@@ -1506,6 +1511,7 @@ include "../styles/metadata/TextStyles.inc"
 				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._branchRendererCache.pop());
 				renderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
 				renderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
+				renderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
 				this.removeChild(UIComponent(renderer));
 			}
 			
@@ -1528,19 +1534,22 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function commitBranchProperties(branch:Object, zoomDepth:int):void
 		{
+			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(this.itemToItemRenderer(branch));
+			
 			var branchData:TreeMapBranchData = new TreeMapBranchData(this);
 			branchData.layoutStrategy = this.layoutStrategy;
 			branchData.closed = this.isDepthClosed(zoomDepth);
+			branchData.zoomed = branch == this.zoomedBranch;
 			
 			//only display a label on the branch renderer if it's not the root
 			//or if the root is a true root and showRoot == true
 			if(this.itemIsRoot(branch) && (!this.hasRoot || !this.showRoot))
 			{
-				branchData.showLabel = false;
+				branchData.displaySimple = false;
 			}
 			else
 			{
-				branchData.showLabel = true;
+				branchData.displaySimple = true;
 			}
 			
 			var branchDepth:int = this._uidToDepth[branch];
@@ -1564,6 +1573,9 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function commitBranchChildProperties(branch:Object, branchData:TreeMapBranchData, depth:int, zoomDepth:int):void
 		{
+			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(this.itemToItemRenderer(branch));
+			branchRenderer.removeAllItems(); //start fresh
+			
 			var children:ICollectionView = this.branchToChildren(branch);
 			var iterator:IViewCursor = children.createCursor();
 			while(!iterator.afterLast)
@@ -1577,16 +1589,12 @@ include "../styles/metadata/TextStyles.inc"
 				{
 					var leafData:TreeMapLeafData = new TreeMapLeafData(this);
 					leafData.color = this.itemToColor(item);
-					leafData.dataTip = this.itemToDataTip(item);
 					this.commitItemProperties(item, leafData, depth, zoomDepth);
 				}
 				
-				var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
-				
-				var layoutData:TreeMapItemLayoutData = new TreeMapItemLayoutData(renderer);
+				var layoutData:TreeMapItemLayoutData = new TreeMapItemLayoutData(item);
 				layoutData.weight = this.itemToWeight(item);
-				layoutData.zoomed = this.zoomedBranch == item;
-				branchData.addItem(layoutData);
+				branchRenderer.addItem(layoutData);
 				
 				iterator.moveNext();
 			}
@@ -1603,6 +1611,7 @@ include "../styles/metadata/TextStyles.inc"
 			treeMapData.depth = depth;
 			treeMapData.weight = this.itemToWeight(item);
 			treeMapData.label = this.itemToLabel(item);
+			treeMapData.dataTip = this.itemToDataTip(item);
 			
 			var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
 			if(renderer is IDropInTreeMapItemRenderer)
@@ -1864,6 +1873,26 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				this.selectedItem = ITreeMapBranchRenderer(event.target).data;
 				this.dispatchEvent(new Event(Event.CHANGE));
+			}
+		}
+		
+		protected function branchLayoutChangeHandler(event:TreeMapLayoutEvent):void
+		{
+			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(event.target);
+			
+			var itemCount:int = branchRenderer.itemCount;
+			for(var i:int = 0; i < itemCount; i++)
+			{
+				var itemLayoutData:TreeMapItemLayoutData = branchRenderer.getItemAt(i);
+				var item:Object = itemLayoutData.data;
+				
+				//skip zoomed items because the treemap itself will draw and position them
+				if(item != this.zoomedBranch)
+				{
+					var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
+					renderer.move(itemLayoutData.x, itemLayoutData.y);
+					renderer.setActualSize(itemLayoutData.width, itemLayoutData.height);
+				}
 			}
 		}
 	}

@@ -24,14 +24,14 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	
+	import mx.collections.ArrayCollection;
 	import mx.collections.ICollectionView;
 	import mx.collections.IViewCursor;
-	import flash.utils.Dictionary;
-	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
 	import mx.collections.SortField;
-	import flash.geom.Point;
 	
 	/**
 	 * Squarify layout algorithm for the TreeMap component. The squarify
@@ -96,11 +96,15 @@ package com.flextoolbox.controls.treeMapClasses
 		/**
 		 * @copy ITreeMapLayoutStrategy#updateLayout()
 		 */
-		public function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
+		public function updateLayout(branchRenderer:ITreeMapBranchRenderer, bounds:Rectangle):void
 		{
-			if(branchData.itemCount == 0) return;
-			this._dataProvider = new ArrayCollection(branchData.itemsToArray());
+			//there's no point in trying to layout nothing
+			if(branchRenderer.itemCount == 0)
+			{
+				return;
+			}
 			
+			this._dataProvider = new ArrayCollection(branchRenderer.itemsToArray());
 			var weightSum:Number = this.calculateTotalWeightSum(this._dataProvider);
 			
 			var sortWeights:Sort = new Sort();

@@ -288,6 +288,7 @@ include "../../styles/metadata/TextStyles.inc"
 				var branchData:TreeMapBranchData = IDropInTreeMapItemRenderer(branchRenderer).treeMapData as TreeMapBranchData;
 				
 				this.selectionButton.selected = branchRenderer.selected;
+				this.selectionButton.toolTip = branchData.dataTip;
 				this.label.autoSize = TextFieldAutoSize.LEFT;
 				this.label.text = branchData.label;
 				

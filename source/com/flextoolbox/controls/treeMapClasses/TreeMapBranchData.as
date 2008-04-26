@@ -48,25 +48,6 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Properties
 	//--------------------------------------
 		
-		protected var items:Array = [];
-		
-		public function get itemCount():int
-		{
-			return this.items.length;
-		}
-		
-		private var _showLabel:Boolean = true;
-		
-		public function get showLabel():Boolean
-		{
-			return this._showLabel;
-		}
-		
-		public function set showLabel(value:Boolean):void
-		{
-			this._showLabel = value;
-		}
-		
 		private var _layoutStrategy:ITreeMapLayoutStrategy;
 		
 		public function get layoutStrategy():ITreeMapLayoutStrategy
@@ -77,6 +58,21 @@ package com.flextoolbox.controls.treeMapClasses
 		public function set layoutStrategy(value:ITreeMapLayoutStrategy):void
 		{
 			this._layoutStrategy = value;
+		}
+		
+		private var _displaySimple:Boolean = true;
+		
+		/**
+		 * Does not display addition information to the user, such as a label.
+		 */
+		public function get displaySimple():Boolean
+		{
+			return this._displaySimple;
+		}
+		
+		public function set displaySimple(value:Boolean):void
+		{
+			this._displaySimple = value;
 		}
 		
 		private var _closed:Boolean = false;
@@ -101,49 +97,6 @@ package com.flextoolbox.controls.treeMapClasses
 		public function set zoomed(value:Boolean):void
 		{
 			this._zoomed = value;
-		}
-		
-	//--------------------------------------
-	//  Public Methods
-	//--------------------------------------
-	
-		public function getItemAt(index:int):TreeMapItemLayoutData
-		{
-			return this.items[index];
-		}
-	
-		public function addItem(item:TreeMapItemLayoutData):void
-		{
-			this.items.push(item);
-		}
-	
-		public function addItemAt(item:TreeMapItemLayoutData, index:int):void
-		{
-			this.items.splice(index, 0, item);
-		}
-	
-		public function removeItem(item:TreeMapItemLayoutData):void
-		{
-			var index:int = this.items.indexOf(item);
-			if(index >= 0)
-			{
-				this.items.splice(index, 1);
-			}
-		}
-	
-		public function removeItemAt(index:int):void
-		{
-			this.items.splice(index, 1);
-		}
-		
-		public function removeAllItems():void
-		{
-			this.items = [];
-		}
-		
-		public function itemsToArray():Array
-		{
-			return this.items.concat();
 		}
 		
 	}

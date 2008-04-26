@@ -59,9 +59,14 @@ package com.flextoolbox.controls.treeMapClasses
 		/**
 		 * @copy ITreeMapLayoutStrategy#updateLayout()
 		 */
-		public function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
+		public function updateLayout(branchRenderer:ITreeMapBranchRenderer, bounds:Rectangle):void
 		{	
-			var dataProvider:ICollectionView = new ArrayCollection(branchData.itemsToArray());
+			if(branchRenderer.itemCount == 0)
+			{
+				return;
+			}
+			
+			var dataProvider:ICollectionView = new ArrayCollection(branchRenderer.itemsToArray());
 			var totalWeight:Number = this.calculateTotalWeightSum(dataProvider);
 			var dataIterator:IViewCursor = dataProvider.createCursor();
 			

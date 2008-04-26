@@ -24,10 +24,8 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import com.flextoolbox.controls.TreeMap;
-	import com.yahoo.astra.utils.DisplayObjectUtil;
+	import com.flextoolbox.events.TreeMapLayoutEvent;
 	
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	import mx.core.UIComponent;
@@ -46,19 +44,7 @@ package com.flextoolbox.controls.treeMapClasses
 			super();
 		}
 		
-		protected var treeMapBranchData:TreeMapBranchData;
-		
-		public function get treeMapData():BaseTreeMapData
-		{
-			return this.treeMapBranchData;
-		}
-		
-		public function set treeMapData(value:BaseTreeMapData):void
-		{
-			this.treeMapBranchData = TreeMapBranchData(value);
-			this.invalidateProperties();
-			this.invalidateDisplayList();
-		}
+		protected var items:Array = [];
 		
 		private var _data:Object;
 		
@@ -88,6 +74,72 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 		}
 		
+		protected var treeMapBranchData:TreeMapBranchData;
+		
+		public function get treeMapData():BaseTreeMapData
+		{
+			return this.treeMapBranchData;
+		}
+		
+		public function set treeMapData(value:BaseTreeMapData):void
+		{
+			this.treeMapBranchData = TreeMapBranchData(value);
+			this.invalidateProperties();
+			this.invalidateDisplayList();
+		}
+		
+		public function get itemCount():int
+		{
+			return this.items.length;
+		}
+		
+	//--------------------------------------
+	//  Public Methods
+	//--------------------------------------
+	
+		public function getItemAt(index:int):TreeMapItemLayoutData
+		{
+			return this.items[index];
+		}
+	
+		public function addItem(item:TreeMapItemLayoutData):void
+		{
+			this.items.push(item);
+		}
+	
+		public function addItemAt(item:TreeMapItemLayoutData, index:int):void
+		{
+			this.items.splice(index, 0, item);
+		}
+	
+		public function removeItem(item:TreeMapItemLayoutData):void
+		{
+			var index:int = this.items.indexOf(item);
+			if(index >= 0)
+			{
+				this.items.splice(index, 1);
+			}
+		}
+	
+		public function removeItemAt(index:int):void
+		{
+			this.items.splice(index, 1);
+		}
+		
+		public function removeAllItems():void
+		{
+			this.items = [];
+		}
+		
+		public function itemsToArray():Array
+		{
+			return this.items.concat();
+		}
+		
+	//--------------------------------------
+	//  Protected Methods
+	//--------------------------------------
+	
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
@@ -98,22 +150,8 @@ package com.flextoolbox.controls.treeMapClasses
 		
 		protected function layoutContents(contentBounds:Rectangle):void
 		{	
-			this.treeMapBranchData.layoutStrategy.updateLayout(this.treeMapBranchData, contentBounds);
-			
-			var itemCount:int = this.treeMapBranchData.itemCount;
-			for(var i:int = 0; i < itemCount; i++)
-			{
-				var itemLayoutData:TreeMapItemLayoutData = this.treeMapBranchData.getItemAt(i);
-				
-				//skip zoomed items because the treemap itself will draw and position them
-				if(!itemLayoutData.zoomed)
-				{
-					var renderer:ITreeMapItemRenderer = itemLayoutData.renderer;
-					renderer.move(itemLayoutData.x, itemLayoutData.y);
-					renderer.setActualSize(itemLayoutData.width, itemLayoutData.height);
-				}
-			}
-			
+			this.treeMapBranchData.layoutStrategy.updateLayout(this, contentBounds);
+			this.dispatchEvent(new TreeMapLayoutEvent(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, this.data));
 		}
 	}
 }

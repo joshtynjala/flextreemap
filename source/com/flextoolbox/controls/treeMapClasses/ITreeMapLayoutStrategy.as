@@ -24,7 +24,6 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import com.flextoolbox.controls.treeMapClasses.TreeMapBranchData;
 	import flash.geom.Rectangle;
 		
 	/**
@@ -43,8 +42,8 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 * Updates the size and positions of a TreeMap branch's renderers.
+		 * Updates the size and positions of a TreeMap branch renderer's child items.
 		 */
-		function updateLayout(branchData:TreeMapBranchData, bounds:Rectangle):void
+		function updateLayout(branchRenderer:ITreeMapBranchRenderer, bounds:Rectangle):void
 	}
 }

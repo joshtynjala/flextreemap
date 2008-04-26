@@ -173,7 +173,8 @@ include "../../styles/metadata/TextStyles.inc"
 			if(this.treeMapBranchData)
 			{
 				this.headerText.text = this.treeMapBranchData.label;
-				this.headerText.enabled = this.enabled && this.treeMapBranchData.showLabel;
+				this.headerText.enabled = this.enabled && this.treeMapBranchData.displaySimple;
+				this.headerText.toolTip = this.treeMapBranchData.dataTip;
 			}
 		}
 		
@@ -198,7 +199,7 @@ include "../../styles/metadata/TextStyles.inc"
 			}
 			else
 			{
-				headerHeight = this.treeMapBranchData.showLabel ? this.headerText.getExplicitOrMeasuredHeight() : 0;
+				headerHeight = this.treeMapBranchData.displaySimple ? this.headerText.getExplicitOrMeasuredHeight() : 0;
 			}
 			this.headerText.x = paddingLeft;
 			this.headerText.y = paddingTop;

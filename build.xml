@@ -13,7 +13,7 @@
 		<copy overwrite="true" todir="${examples.output}">
 			<fileset dir="${examples}"/>
 		</copy>
-		
+				
 		<!-- copy informational files -->
 		<copy overwrite="true" todir="${output}">
 			<fileset dir="${basedir}">
@@ -45,6 +45,7 @@
 		<!-- build the examples that appear within the documentation -->
 		<exec executable="${mxmlc}" failonerror="true">
 			<arg line="--library-path+='${build.output}/${library.shortName}.swc'"/>
+			<arg line="--output '${docs.output}/com/flextoolbox/controls/examples/TreeMapExample.swf'"/>
 			<arg line="'${docs.examples}/com/flextoolbox/controls/examples/TreeMapExample.mxml'"/>
 		</exec>
 		
@@ -58,11 +59,6 @@
 			<arg line="--templates-path '${docs.template}'"/>
 			<arg line="--output '${docs.output}'"/>
 		</exec>
-		
-		<!-- copy the examples into the asdocs -->
-		<copy overwrite="true" todir="${docs.output}">
-			<fileset dir="${docs.examples}" includes="**/*.swf"/>
-		</copy>
 	</target>
 	
 	<target name="build-examples">

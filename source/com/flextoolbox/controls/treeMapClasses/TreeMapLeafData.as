@@ -60,17 +60,5 @@ package com.flextoolbox.controls.treeMapClasses
 			this._color = value;
 		}
 		
-		private var _dataTip:String = "";
-		
-		public function get dataTip():String
-		{
-			return this._dataTip;
-		}
-		
-		public function set dataTip(value:String):void
-		{
-			this._dataTip = value;
-		}
-		
 	}
 }

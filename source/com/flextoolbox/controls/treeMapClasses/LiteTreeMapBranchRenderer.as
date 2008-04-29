@@ -191,15 +191,15 @@ include "../../styles/metadata/TextStyles.inc"
 			var paddingRight:Number = this.getStyle("paddingRight");
 			
 			//update the header
-			var headerWidth:Number = this.unscaledWidth - paddingLeft - paddingRight;
+			var headerWidth:Number = Math.max(0, this.unscaledWidth - paddingLeft - paddingRight);
 			var headerHeight:Number = 0;
 			if(this.treeMapBranchData && this.treeMapBranchData.closed)
 			{
-				headerHeight = this.unscaledHeight - paddingTop - paddingBottom;
+				headerHeight = Math.max(0, this.unscaledHeight - paddingTop - paddingBottom);
 			}
 			else
 			{
-				headerHeight = this.treeMapBranchData.displaySimple ? this.headerText.getExplicitOrMeasuredHeight() : 0;
+				headerHeight = Math.min(unscaledHeight, this.treeMapBranchData.displaySimple ? this.headerText.getExplicitOrMeasuredHeight() : 0);
 			}
 			this.headerText.x = paddingLeft;
 			this.headerText.y = paddingTop;

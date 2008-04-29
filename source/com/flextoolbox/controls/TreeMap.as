@@ -313,7 +313,7 @@ include "../styles/metadata/TextStyles.inc"
 	        else if(value is ICollectionView)
 	        {
 	            this._dataProvider = ICollectionView(value);
-	    		if(this._dataProvider.length == 1)
+	    		if(this._dataProvider.length == 1 && !(this._dataProvider[0] is ICollectionView))
 	    		{
 	    			this._hasRoot = true;
 	    		}
@@ -1321,15 +1321,7 @@ include "../styles/metadata/TextStyles.inc"
 		private function initializeBranch(branch:Object, depth:int):void
 		{
 			var uid:String = this.itemToUID(branch);
-			var children:ICollectionView;
-			if(branch is ICollectionView)
-			{
-				children = ICollectionView(branch);
-			}
-			else
-			{
-				children = this.dataDescriptor.getChildren(branch);
-			}
+			var children:ICollectionView = this.dataDescriptor.getChildren(branch);
 			this._uidToChildren[uid] = children;
 			this._uidToDepth[uid] = depth;
 			
@@ -1354,28 +1346,23 @@ include "../styles/metadata/TextStyles.inc"
 			this._uidToItemRenderer = {};
 			this.itemRenderers = [];
 			
-			if(!this.leafRendererChanged)
+			this._leafRendererCache = this._leafRendererCache.concat(this.leafRenderers);
+			if(this.leafRendererChanged)
 			{
-				//reuse leaf renderers if the factory hasn't changed.
-				//also keep anything that's already in the cache.
-				//this condition may happen if maxDepth has been set
-				//because we keep renderers around even when they're
-				//outside the zoom range.
-				this._leafRendererCache = this._leafRendererCache.concat(this.leafRenderers.concat());
+				//if we have a different leaf renderer, we need to start fresh
+				this.clearLeafRendererCache();
 			}
 			this.leafRenderers = [];
 			
-			if(!this.branchRendererChanged)
+			this._branchRendererCache = this._branchRendererCache.concat(this.branchRenderers);
+			if(this.branchRendererChanged)
 			{
-				//reuse branch renderers if the factory hasn't changed.
-				//also keep anything that's already in the cache.
-				//this condition may happen if maxDepth has been set
-				//because we keep renderers around even when they're
-				//outside the zoom range.
-				this._branchRendererCache = this._branchRendererCache.concat(this.branchRenderers.concat());
+				//if we have a new branch renderer, we need to start fresh
+				this.clearBranchRendererCache();
 			}
-			this.rootBranchRenderer = null;
 			this.branchRenderers = [];
+	
+			this.rootBranchRenderer = null;
 		}
 		
 		/**
@@ -1483,15 +1470,15 @@ include "../styles/metadata/TextStyles.inc"
 			//around even if they aren't being used. saves display list
 			//manipulations. if the data provider changes, then we start
 			//from scratch because it could have been a major change
-			if(this.isMaxDepthActive() && !this.dataProviderChanged)
+			if(this.isMaxDepthActive())
 			{
 				var itemCount:int = this._branchRendererCache.length;
 				for(var i:int = 0; i < itemCount; i++)
 				{
 					var extraRenderer:UIComponent = UIComponent(this._branchRendererCache[i]);
-				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
-				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
-				extraRenderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
+					extraRenderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
+					extraRenderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
+					extraRenderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
 					extraRenderer.visible = false;
 				}
 				
@@ -1501,12 +1488,25 @@ include "../styles/metadata/TextStyles.inc"
 					extraRenderer = UIComponent(this._leafRendererCache[i]);
 					extraRenderer.visible = false;
 				}
+			}
+			
+			if(!this.dataProviderChanged)
+			{
 				return;
 			}
 			
-			//remove branches from cache
-			itemCount = this._branchRendererCache.length;
-			for(i = 0; i < itemCount; i++)
+			this.clearBranchRendererCache();
+			this.clearLeafRendererCache();
+		}
+		
+		/**
+		 * @private
+		 * Removes any remaining branch renderers that aren't being used.
+		 */
+		protected function clearBranchRendererCache():void
+		{
+			var itemCount:int = this._branchRendererCache.length;
+			for(var i:int = 0; i < itemCount; i++)
 			{
 				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._branchRendererCache.pop());
 				renderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
@@ -1514,12 +1514,18 @@ include "../styles/metadata/TextStyles.inc"
 				renderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
 				this.removeChild(UIComponent(renderer));
 			}
-			
-			//remove leaves from cache
-			itemCount = this._leafRendererCache.length;
-			for(i = 0; i < itemCount; i++)
+		}
+		
+		/**
+		 * @private
+		 * Removes any remaining branch renderers that aren't being used.
+		 */
+		protected function clearLeafRendererCache():void
+		{
+			var itemCount:int = this._leafRendererCache.length;
+			for(var i:int = 0; i < itemCount; i++)
 			{
-				renderer = ITreeMapItemRenderer(this._leafRendererCache.pop());
+				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._leafRendererCache.pop());
 				renderer.removeEventListener(MouseEvent.CLICK, leafClickHandler);
 				renderer.removeEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler);
 				renderer.removeEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler);
@@ -1891,7 +1897,7 @@ include "../styles/metadata/TextStyles.inc"
 				{
 					var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
 					renderer.move(itemLayoutData.x, itemLayoutData.y);
-					renderer.setActualSize(itemLayoutData.width, itemLayoutData.height);
+					renderer.setActualSize(Math.max(0, itemLayoutData.width), Math.max(0, itemLayoutData.height));
 				}
 			}
 		}

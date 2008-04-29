@@ -35,7 +35,9 @@
 			<arg line="--namespace http://www.flextoolbox.com/2006/mxml manifest.xml"/>
 			<arg line="--source-path '${source.output}'"/>
 			<arg line="--include-namespaces http://www.flextoolbox.com/2006/mxml"/>
-			<arg line="--include-classes+='com.flextoolbox.controls.treeMapClasses.SliceAndDiceLayout'"/>
+			<arg line="--include-classes com.flextoolbox.controls.treeMapClasses.SliceAndDiceLayout"/>
+			<arg line="com.flextoolbox.controls.treeMapClasses.LiteTreeMapBranchRenderer"/>
+			<arg line="com.flextoolbox.controls.treeMapClasses.LiteTreeMapLeafRenderer"/>
 			<arg line="--external-library-path+='${flexsdk.lib}'"/>
 			<arg line="--output '${build.output}/${library.shortName}.swc'"/>
 	    </exec>

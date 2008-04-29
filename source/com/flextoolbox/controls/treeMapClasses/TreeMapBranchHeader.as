@@ -333,16 +333,18 @@ include "../../styles/metadata/TextStyles.inc"
 			{
 				zoomButtonWidth = Math.min(this.zoomButton.measuredWidth, unscaledWidth / 2);
 				this.zoomButton.setActualSize(zoomButtonWidth, unscaledHeight);
-				this.zoomButton.move(unscaledWidth - zoomButtonWidth, 0);
+				var zoomButtonX:Number = Math.max(0, unscaledWidth - zoomButtonWidth);
+				this.zoomButton.move(zoomButtonX, 0);
 			}
 			
-			var selectionButtonWidth:Number = unscaledWidth - zoomButtonWidth;
+			var selectionButtonWidth:Number = Math.max(0, unscaledWidth - zoomButtonWidth);
 			this.selectionButton.move(0, 0);
 			this.selectionButton.setActualSize(selectionButtonWidth, unscaledHeight);
 			
 			this.label.autoSize = TextFieldAutoSize.NONE;
-			var labelHeight:Number = Math.min(this.label.measuredHeight + paddingTop + paddingBottom, unscaledHeight); 
-			this.label.setActualSize(this.selectionButton.width - paddingLeft - paddingRight, labelHeight);
+			var labelWidth:Number = Math.max(0, this.selectionButton.width - paddingLeft - paddingRight);
+			var labelHeight:Number = Math.max(0, Math.min(this.label.measuredHeight + paddingTop + paddingBottom, unscaledHeight - paddingTop - paddingBottom));
+			this.label.setActualSize(labelWidth, labelHeight);
 			this.label.x = paddingLeft;
 			this.label.y = paddingTop + (this.selectionButton.height - this.label.height) / 2;
 		}

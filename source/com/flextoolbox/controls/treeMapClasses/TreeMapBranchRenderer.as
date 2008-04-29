@@ -336,14 +336,14 @@ include "../../styles/metadata/PaddingStyles.inc"
 			if(this.border && this.border is RectangularBorder)
 			{
 				var rectBorder:RectangularBorder = this.border as RectangularBorder;
-				paddingLeft += rectBorder.borderMetrics.left;
+				/*paddingLeft += rectBorder.borderMetrics.left;
 				paddingTop += rectBorder.borderMetrics.top;
 				paddingRight += rectBorder.borderMetrics.right;
-				paddingBottom += rectBorder.borderMetrics.bottom;
+				paddingBottom += rectBorder.borderMetrics.bottom;*/
 			}
 			
-			var boundsX:Number = paddingLeft;
-			var boundsY:Number = headerHeight + paddingTop;
+			var boundsX:Number = Math.min(unscaledWidth, paddingLeft);
+			var boundsY:Number = Math.min(unscaledHeight, headerHeight + paddingTop);
 			var boundsW:Number = Math.max(0, unscaledWidth - boundsX - paddingRight);
 			var boundsH:Number = Math.max(0, unscaledHeight - boundsY - paddingBottom);
 			boundsX += this.x;

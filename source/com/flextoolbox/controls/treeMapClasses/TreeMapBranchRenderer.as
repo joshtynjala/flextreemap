@@ -289,8 +289,8 @@ include "../../styles/metadata/PaddingStyles.inc"
 					IDataRenderer(this.header).data = this;
 				}
 			
-				this.header.enabled = this.enabled && (!this.treeMapBranchData || this.treeMapBranchData.displaySimple);
-				this.header.visible = this.treeMapBranchData.closed || this.treeMapBranchData.displaySimple;
+				this.header.enabled = this.enabled && (!this.treeMapBranchData || !this.treeMapBranchData.displaySimple);
+				this.header.visible = this.treeMapBranchData.closed || !this.treeMapBranchData.displaySimple;
 			}
 		}
 		
@@ -308,7 +308,7 @@ include "../../styles/metadata/PaddingStyles.inc"
 				{
 					headerHeight = unscaledHeight;
 				}
-				else if(this.treeMapBranchData.displaySimple)
+				else if(!this.treeMapBranchData.displaySimple)
 				{	
 					headerHeight = Math.min(unscaledHeight, this.header.getExplicitOrMeasuredHeight());
 				}

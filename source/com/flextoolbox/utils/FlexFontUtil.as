@@ -24,19 +24,23 @@
 
 package com.flextoolbox.utils
 {
+	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
-	import mx.core.UITextField;
+	import mx.core.UIComponent;
 	
 	/**
-	 * Utility methods for use with the TextField class.
+	 * Utility methods for use with fonts in Flex.
 	 * 
 	 * @author Josh Tynjala
 	 * @see flash.text.TextField
 	 */
-	public class UITextFieldUtil
+	public class FlexFontUtil
 	{
-		private static const TEXTFIELD_VERTICAL_MARGIN:Number = 4;
+		/**
+		 * @private
+		 */
+		public static const TEXTFIELD_VERTICAL_MARGIN:Number = 4;
 		
 		/**
 		 * @private
@@ -44,18 +48,16 @@ package com.flextoolbox.utils
 		 * 
 		 * @see FontSizeMode
 		 */
-		public static function autoAdjustFontSize(textField:UITextField, originalSize:Number = 1, mode:String = "noChange"):void
+		public static function autoAdjustFontSize(textField:TextField, mode:String = "noChange"):void
 		{
-			var format:TextFormat = textField.getTextFormat();
-			format.size = originalSize;
-			textField.setTextFormat(format);
-			textField.validateNow();
-			
 			if(mode == FontSizeMode.NO_CHANGE || textField.length == 0 ||
 				textField.width == 0 || textField.height == 0)
 			{
 				return;
 			}
+			
+			var format:TextFormat = textField.getTextFormat();
+			var originalSize:Number = format.size as Number;
 			
 			//increase font size to fit in bounds. stop if the text grows larger than the bounds
 			var currentSize:Number = originalSize;
@@ -83,7 +85,6 @@ package com.flextoolbox.utils
 				currentSize++;
 				format.size = currentSize;
 				textField.setTextFormat(format);
-				textField.validateNow();
 				
 				//special case when we don't want words to break in the middle
 				if(mode == FontSizeMode.FIT_TO_BOUNDS_WITHOUT_BREAKS && textField.numLines > 1)
@@ -102,10 +103,9 @@ package com.flextoolbox.utils
 						{
 							//why do I have to subtract 2 here?
 							//same reason as with the same height flag above?
-							currentSize -= 2;
+							currentSize -= 1;
 							format.size = currentSize;
 							textField.setTextFormat(format);
-							textField.validateNow();
 							return;
 						}
 					}
@@ -118,9 +118,47 @@ package com.flextoolbox.utils
 				currentSize--;
 				format.size = currentSize;
 				textField.setTextFormat(format);
-				textField.validateNow();
 			}
 		}
+
+		/**
+	     * Returns the TextFormat object that represents 
+	     * character formatting information for the label.
+	     *
+	     * @return		A TextFormat object. 
+	     *
+	     * @see		flash.text.TextFormat
+	     */
+	    public static function applyTextStyles(target:TextField, source:UIComponent):void
+	    {
+	        var textFormat:TextFormat = new TextFormat();
+
+	        textFormat.font = source.getStyle("fontFamily");
+	        textFormat.size = source.getStyle("fontSize");
+			if(source.enabled)
+	        {
+	            textFormat.color = source.getStyle("color");
+	        }
+	        else
+	        {
+	            textFormat.color = source.getStyle("disabledColor");
+	        }
+	        textFormat.bold = source.getStyle("fontWeight") == "bold";
+	        textFormat.italic = source.getStyle("fontStyle") == "italic";
+	        textFormat.underline = source.getStyle("textDecoration") == "underline";
+	        textFormat.align = source.getStyle("textAlign");
+
+	        textFormat.leading = source.getStyle("leading");
+	        textFormat.kerning = source.getStyle("kerning");
+	        textFormat.letterSpacing = source.getStyle("letterSpacing");
+	        textFormat.indent = source.getStyle("textIndent");
+
+	        target.setTextFormat(textFormat);
+	        target.antiAliasType = source.getStyle("fontAntiAliasType");
+	        target.gridFitType = source.getStyle("fontGridFitType");
+	        target.sharpness = source.getStyle("fontSharpness");
+	        target.thickness = source.getStyle("fontThickness");
+	    }
 		
 	}
 }

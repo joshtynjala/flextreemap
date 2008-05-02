@@ -255,7 +255,10 @@ package com.flextoolbox.controls.treeMapClasses
 					{
 						ratio = 1 / dataInRow.length;
 					}
-					else ratio = 0;
+					else
+					{
+						ratio = 0;
+					}
 				}
 				
 				var lengthOfShorterSide:Number = this._shorterSide * ratio;
@@ -272,11 +275,9 @@ package com.flextoolbox.controls.treeMapClasses
 				{
 					currentData.x = mapBounds.x + currentDistance;
 					currentData.y = mapBounds.y;
-					currentData.width = Math.max(0, lengthOfShorterSide);
-					currentData.height = Math.max(0, lengthOfLongerSide);
+					currentData.width = lengthOfShorterSide;
+					currentData.height = lengthOfLongerSide;
 				}
-				currentData.x;
-				currentData.y;
 				currentDistance += lengthOfShorterSide;
 				this._numDrawnNodes++;
 			}
@@ -293,12 +294,12 @@ package com.flextoolbox.controls.treeMapClasses
 			if(mapBounds.width > mapBounds.height)
 			{
 				mapBounds.x += modifier;
-				mapBounds.width -= modifier;
+				mapBounds.width = Math.max(0, mapBounds.width - modifier);
 			}
 			else
 			{
 				mapBounds.y += modifier;
-				mapBounds.height -= modifier;
+				mapBounds.height = Math.max(0, mapBounds.height - modifier);
 			}
 			
 			return mapBounds;

@@ -24,13 +24,14 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	import com.flextoolbox.utils.FlexFontUtil;
 	import com.flextoolbox.utils.FlexGraphicsUtil;
-	import com.flextoolbox.utils.UITextFieldUtil;
 	
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	
 	import mx.core.UIComponent;
-	import mx.core.UITextField;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	
@@ -76,13 +77,14 @@ package com.flextoolbox.controls.treeMapClasses
 				this.autoFitText = "none";
 				this.color = 0xffffff;
 				this.cornerRadius = 0;
-				this.borderColor = 0xcccccc;//0x676a6c;
+				this.borderColor = 0x676a6c;
+				this.borderThickness = 1;
 				this.textAlign = "center";
 				this.paddingLeft = 0;
 				this.paddingRight = 0;
 				this.paddingTop = 0;
 				this.paddingBottom = 0;
-				this.rollOverColor = 0x7FCEFF;
+				this.rollOverColor = 0x009DFF;
 			}
 			
 			StyleManager.setStyleDeclaration("LiteTreeMapLeafRenderer", selector, false);
@@ -111,7 +113,7 @@ package com.flextoolbox.controls.treeMapClasses
 		 * @private
 		 * The TextField used to display the leaf's label.
 		 */
-		protected var textField:UITextField;
+		protected var textField:TextField;
 		
 		private var _treeMapLeafData:TreeMapLeafData;
 		
@@ -194,8 +196,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			if(!this.textField)
 			{
-				this.textField = new UITextField();
-				this.textField.styleName = this;
+				this.textField = new TextField();
 				this.textField.multiline = true;
 				this.textField.wordWrap = true;
 				this.textField.selectable = false;
@@ -223,6 +224,7 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				this.textField.text = label;
 			}
+			FlexFontUtil.applyTextStyles(this.textField, this);
 		}
 		
 		/**
@@ -238,42 +240,44 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 			
 			var backgroundColor:uint = this._treeMapLeafData.color;
-			var borderColor:uint = this.getStyle("borderColor") as uint;
 			
 			this.graphics.clear();
 			this.graphics.beginFill(backgroundColor, 1);
 			this.graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
 			this.graphics.endFill();
 			
-			if(this.treeMapData.owner.selectable && (this.selected || this.highlighted))
+			var borderColor:uint = this.getStyle("borderColor") as uint;
+			var indicatorColor:uint = borderColor;
+			if(this.selected)
 			{
-				var themeColor:uint = this.getStyle("themeColor");
-				var indicatorColor:uint = themeColor;
-				if(this.highlighted)
-				{
-					var rollOverColor:uint = this.getStyle("rollOverColor");
-					indicatorColor = rollOverColor;
-				}
-				FlexGraphicsUtil.drawBorder(this.graphics, 0, 0, unscaledWidth, unscaledHeight, indicatorColor, indicatorColor, 2, 1);
+				indicatorColor = this.getStyle("themeColor");
 			}
+			if(this.highlighted)
+			{
+				indicatorColor = this.getStyle("rollOverColor");
+			}
+			var borderThickness:uint = this.getStyle("borderThickness");
+			FlexGraphicsUtil.drawBorder(this.graphics, 0, 0, unscaledWidth, unscaledHeight,
+				indicatorColor, indicatorColor, Math.min(unscaledWidth / 2, unscaledHeight / 2, borderThickness), 1);
 			
 			var paddingTop:Number = this.getStyle("paddingTop");
 			var paddingBottom:Number = this.getStyle("paddingBottom");
 			var paddingLeft:Number = this.getStyle("paddingLeft");
 			var paddingRight:Number = this.getStyle("paddingRight");
 			
-	        var viewWidth:Number = unscaledWidth - paddingLeft - paddingRight;
-    	    var viewHeight:Number = unscaledHeight - paddingTop - paddingBottom;
+	        var viewWidth:Number = Math.max(0, unscaledWidth - paddingLeft - paddingRight);
+    	    var viewHeight:Number = Math.max(0, unscaledHeight - paddingTop - paddingBottom);
 			
 			//width must always be maximum to handle alignment
-			this.textField.width = Math.max(0, viewWidth);
-			this.textField.height = Math.max(0, viewHeight);
-				
-			var fontSizeMode:String = this.getStyle("fontSizeMode");
-			UITextFieldUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSize"), fontSizeMode);
+			this.textField.width = viewWidth;
+			
+			this.textField.autoSize = TextFieldAutoSize.LEFT;
+			FlexFontUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSizeMode"));
+			var textFieldHeight:Number = this.textField.height;
+			this.textField.autoSize = TextFieldAutoSize.NONE;
 			
 			//we want to center vertically, so resize if needed
-			this.textField.height = Math.min(this.textField.height, this.textField.textHeight + 4);
+			this.textField.height = Math.min(viewHeight, this.textField.height);
 			
 			//center the text field
 			this.textField.x = (unscaledWidth - this.textField.width) / 2;

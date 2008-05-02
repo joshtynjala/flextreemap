@@ -1207,8 +1207,8 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function branchToChildren(branch:Object):ICollectionView
 		{
-			var uid:String = this.itemToUID(branch);
-			return this._uidToChildren[uid];
+			var uid:String = this.itemToUID(branch) as String;
+			return ICollectionView(this._uidToChildren[uid]);
 		}
 		
 		/**
@@ -1225,7 +1225,8 @@ include "../styles/metadata/TextStyles.inc"
 			
 			//if something has changed in the data provider,
 			//we need to update/create/destroy item renderers
-			if(this.dataProviderChanged || this.zoomChanged)
+			if(this._dataProvider.length > 0 &&
+				(this.dataProviderChanged || this.zoomChanged || this.leafRendererChanged || this.branchRendererChanged))
 			{
 				this._displayedRoot = this._discoveredRoot;
 				if(this.zoomedBranch)
@@ -1233,19 +1234,20 @@ include "../styles/metadata/TextStyles.inc"
 					this._displayedRoot = this.zoomedBranch;
 				}
 				this.createCache();
-				if(this.dataProvider)
-				{
-					this.rootBranchRenderer = this.getBranchRenderer();
-					this.refreshBranchChildRenderers(this.rootBranchRenderer, this._displayedRoot, 0);
-				}
+				this.rootBranchRenderer = this.getBranchRenderer();
+				this.refreshBranchChildRenderers(this.rootBranchRenderer, this._displayedRoot, 0);
 				this.clearCache();
+			
+				this.dataProviderChanged = false;
+				this.zoomChanged = false;
 			}
-			this.commitBranchProperties(this._displayedRoot, 0);
+			
+			if(this._dataProvider.length > 0)
+			{
+				this.commitBranchProperties(this._displayedRoot, 0);
+			}
 
 			this.commitSelection();
-			
-			this.dataProviderChanged = false;
-			this.zoomChanged = false;
 		}
 		
 		/**
@@ -1291,11 +1293,6 @@ include "../styles/metadata/TextStyles.inc"
 			this._uidToDepth = {};
 			this._uidToWeight = {};
 			
-			if(!this._dataProvider)
-			{
-				return;
-			}
-			
 			//we want to find the root of the tree. it might be the data provider
 			//but if the data provider has only a single child and that's a branch,
 			//then the real root of the tree is that child branch
@@ -1321,7 +1318,16 @@ include "../styles/metadata/TextStyles.inc"
 		private function initializeBranch(branch:Object, depth:int):void
 		{
 			var uid:String = this.itemToUID(branch);
-			var children:ICollectionView = this.dataDescriptor.getChildren(branch);
+			var children:ICollectionView;
+			if(branch is ICollectionView)
+			{
+				children = ICollectionView(branch);
+			}
+			else
+			{
+				children = this.dataDescriptor.getChildren(branch);
+			}
+			
 			this._uidToChildren[uid] = children;
 			this._uidToDepth[uid] = depth;
 			
@@ -1384,8 +1390,12 @@ include "../styles/metadata/TextStyles.inc"
 					return;
 				}
 			}
-			
 			var children:ICollectionView = this.branchToChildren(branch);
+			if(!children)
+			{
+				return;
+			}
+			
 			var iterator:IViewCursor = children.createCursor();
 			while(!iterator.afterLast)
 			{
@@ -1551,11 +1561,11 @@ include "../styles/metadata/TextStyles.inc"
 			//or if the root is a true root and showRoot == true
 			if(this.itemIsRoot(branch) && (!this.hasRoot || !this.showRoot))
 			{
-				branchData.displaySimple = false;
+				branchData.displaySimple = true;
 			}
 			else
 			{
-				branchData.displaySimple = true;
+				branchData.displaySimple = false;
 			}
 			
 			var branchDepth:int = this._uidToDepth[branch];
@@ -1581,8 +1591,11 @@ include "../styles/metadata/TextStyles.inc"
 		{
 			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(this.itemToItemRenderer(branch));
 			branchRenderer.removeAllItems(); //start fresh
-			
 			var children:ICollectionView = this.branchToChildren(branch);
+			if(!children)
+			{
+				return;
+			}
 			var iterator:IViewCursor = children.createCursor();
 			while(!iterator.afterLast)
 			{

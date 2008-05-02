@@ -24,14 +24,14 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	import com.flextoolbox.utils.FlexFontUtil;
 	import com.flextoolbox.utils.FontSizeMode;
-	import com.flextoolbox.utils.UITextFieldUtil;
 	
-	import flash.text.TextFormat;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	
 	import mx.controls.Button;
 	import mx.core.UIComponent;
-	import mx.core.UITextField;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 
@@ -106,7 +106,7 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 	
 		protected var background:Button;
-		protected var textField:UITextField;
+		protected var textField:TextField;
 		
 		private var _treeMapLeafData:TreeMapLeafData;
 		
@@ -191,8 +191,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			if(!this.textField)
 			{
-				this.textField = new UITextField();
-				this.textField.styleName = this;
+				this.textField = new TextField();
 				this.textField.multiline = true;
 				this.textField.wordWrap = true;
 				this.textField.selectable = false;
@@ -219,6 +218,7 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				this.textField.text = label;
 			}
+			FlexFontUtil.applyTextStyles(this.textField, this);
 			
 			this.background.selected = this.selected;
 		}
@@ -238,14 +238,15 @@ package com.flextoolbox.controls.treeMapClasses
     	    var viewHeight:Number = Math.max(0, unscaledHeight - paddingTop - paddingBottom);
 			
 			//width must always be maximum to handle alignment
-			this.textField.width = Math.max(0, viewWidth);
-			this.textField.height = Math.max(0, viewHeight);
-				
-			var fontSizeMode:String = this.getStyle("fontSizeMode");
-			UITextFieldUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSize"), fontSizeMode);
+			this.textField.width = viewWidth;
+			
+			this.textField.autoSize = TextFieldAutoSize.LEFT;
+			FlexFontUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSizeMode"));
+			var textFieldHeight:Number = this.textField.height;
+			this.textField.autoSize = TextFieldAutoSize.NONE;
 			
 			//we want to center vertically, so resize if needed
-			this.textField.height = Math.min(this.textField.height, this.textField.textHeight + 4);
+			this.textField.height = Math.min(viewHeight, this.textField.height);
 			
 			//center the text field
 			this.textField.x = (unscaledWidth - this.textField.width) / 2;

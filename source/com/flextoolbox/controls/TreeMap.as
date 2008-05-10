@@ -1629,8 +1629,11 @@ include "../styles/metadata/TextStyles.inc"
 			treeMapData.uid = uid;
 			treeMapData.depth = depth;
 			treeMapData.weight = this.itemToWeight(item);
-			treeMapData.label = this.itemToLabel(item);
-			treeMapData.dataTip = this.itemToDataTip(item);
+			if(!(treeMapData is TreeMapBranchData) || !TreeMapBranchData(treeMapData).displaySimple)
+			{
+				treeMapData.label = this.itemToLabel(item);
+				treeMapData.dataTip = this.itemToDataTip(item);
+			}
 			
 			var renderer:ITreeMapItemRenderer = this.itemToItemRenderer(item);
 			if(renderer is IDropInTreeMapItemRenderer)

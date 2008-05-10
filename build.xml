@@ -6,6 +6,9 @@
 	<target name="build-all" depends="prepare,build-lib,build-docs,build-examples,cleanup"/>
 	
 	<target name="prepare">
+		<!-- delete old build -->
+		<delete dir="${output}" includeemptydirs="true"/>
+	
 		<!-- copy required source files -->
 		<copy overwrite="true" todir="${source.output}">
 			<fileset dir="${source}"/>

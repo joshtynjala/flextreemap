@@ -255,7 +255,6 @@ include "../../styles/metadata/TextStyles.inc"
 			
 			if(allStyles || styleProp == "resizeIcon")
 			{
-				this.refreshResizeIcon();
 				this.invalidateDisplayList();
 			}
 		}
@@ -294,7 +293,6 @@ include "../../styles/metadata/TextStyles.inc"
 				this.label.selectable = false;
 				this.addChild(this.label);
 			}
-			this.refreshResizeIcon();
 		}
 		
 		override protected function commitProperties():void
@@ -359,7 +357,6 @@ include "../../styles/metadata/TextStyles.inc"
 				
 			var showResizeIndicator:Boolean = width < this.measuredWidth || height < this.measuredHeight;
 			this.zoomButton.visible = this.zoomEnabled && !showResizeIndicator;
-			this.resizeIndicator.visible = showResizeIndicator;
 			if(showResizeIndicator)
 			{
 				//reset the scroll rect so that width and height appear correctly
@@ -378,6 +375,11 @@ include "../../styles/metadata/TextStyles.inc"
 				this.zoomButton.scrollRect = new Rectangle(0, 0, zoomButtonWidth, height);
 				var zoomButtonX:Number = Math.max(0, width - zoomButtonWidth);
 				this.zoomButton.move(zoomButtonX, 0);
+			}
+			
+			if(this.resizeIndicator)
+			{
+				this.resizeIndicator.visible = showResizeIndicator;
 			}
 			
 			var selectionButtonWidth:Number = Math.max(0, width - ((!showResizeIndicator && this.zoomEnabled) ? this.zoomButton.scrollRect.width : 0));

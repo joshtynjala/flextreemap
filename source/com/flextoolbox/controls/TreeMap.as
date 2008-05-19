@@ -1453,13 +1453,13 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				renderer = ITreeMapLeafRenderer(this.leafRenderer.newInstance());
 				renderer.styleName = this.getStyle("leafStyleName");
-				renderer.addEventListener(MouseEvent.CLICK, leafClickHandler);
-				renderer.addEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler);
-				renderer.addEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler);
-				renderer.addEventListener(MouseEvent.ROLL_OUT, leafRollOutHandler);
 				this.addChild(UIComponent(renderer));
 			}
 			
+			renderer.addEventListener(MouseEvent.CLICK, leafClickHandler);
+			renderer.addEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler);
+			renderer.addEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler);
+			renderer.addEventListener(MouseEvent.ROLL_OUT, leafRollOutHandler);
 			this.leafRenderers.push(renderer);
 			this.itemRenderers.push(renderer);
 			return renderer;
@@ -1497,28 +1497,25 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function clearCache():void
 		{
-			//optimization when maxDepth is defined. we keep renderers
-			//around even if they aren't being used. saves display list
-			//manipulations. if the data provider changes, then we start
-			//from scratch because it could have been a major change
-			if(this.isMaxDepthActive())
+			var itemCount:int = this._branchRendererCache.length;
+			for(var i:int = 0; i < itemCount; i++)
 			{
-				var itemCount:int = this._branchRendererCache.length;
-				for(var i:int = 0; i < itemCount; i++)
-				{
-					var extraRenderer:UIComponent = UIComponent(this._branchRendererCache[i]);
-					extraRenderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
-					extraRenderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
-					extraRenderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
-					extraRenderer.visible = false;
-				}
-				
-				itemCount = this._leafRendererCache.length;
-				for(i = 0; i < itemCount; i++)
-				{
-					extraRenderer = UIComponent(this._leafRendererCache[i]);
-					extraRenderer.visible = false;
-				}
+				var extraRenderer:UIComponent = UIComponent(this._branchRendererCache[i]);
+				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
+				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
+				extraRenderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
+				extraRenderer.visible = false;
+			}
+			
+			itemCount = this._leafRendererCache.length;
+			for(i = 0; i < itemCount; i++)
+			{
+				extraRenderer = UIComponent(this._leafRendererCache[i]);
+				extraRenderer.removeEventListener(MouseEvent.CLICK, leafClickHandler);
+				extraRenderer.removeEventListener(MouseEvent.DOUBLE_CLICK, leafDoubleClickHandler);
+				extraRenderer.removeEventListener(MouseEvent.ROLL_OVER, leafRollOverHandler);
+				extraRenderer.removeEventListener(MouseEvent.ROLL_OUT, leafRollOutHandler);
+				extraRenderer.visible = false;
 			}
 			
 			if(!this.dataProviderChanged)

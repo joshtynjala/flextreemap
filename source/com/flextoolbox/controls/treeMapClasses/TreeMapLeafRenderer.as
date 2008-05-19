@@ -44,7 +44,12 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 	//  Styles
 	//--------------------------------------
-
+	
+include "../../styles/metadata/FocusStyles.inc"
+include "../../styles/metadata/LeadingStyle.inc"
+include "../../styles/metadata/PaddingStyles.inc"
+include "../../styles/metadata/SkinStyles.inc"
+include "../../styles/metadata/TextStyles.inc"
 
 	/**
 	 * The default leaf renderer for the TreeMap control.
@@ -170,6 +175,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			if(allStyles || styleProp == "fontSizeMode")
 			{
+				this.invalidateProperties();
 				this.invalidateDisplayList();
 			}
 		}
@@ -218,7 +224,6 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				this.textField.text = label;
 			}
-			FlexFontUtil.applyTextStyles(this.textField, this);
 			
 			this.background.selected = this.selected;
 		}
@@ -239,14 +244,13 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			//width must always be maximum to handle alignment
 			this.textField.width = viewWidth;
+			this.textField.height = viewHeight;
 			
-			this.textField.autoSize = TextFieldAutoSize.LEFT;
+			FlexFontUtil.applyTextStyles(this.textField, this);
 			FlexFontUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSizeMode"));
-			var textFieldHeight:Number = this.textField.height;
-			this.textField.autoSize = TextFieldAutoSize.NONE;
 			
 			//we want to center vertically, so resize if needed
-			this.textField.height = Math.min(viewHeight, this.textField.height);
+			this.textField.height = Math.min(viewHeight, this.textField.textHeight + FlexFontUtil.TEXTFIELD_VERTICAL_MARGIN);
 			
 			//center the text field
 			this.textField.x = (unscaledWidth - this.textField.width) / 2;

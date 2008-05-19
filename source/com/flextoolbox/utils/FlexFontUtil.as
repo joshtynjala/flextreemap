@@ -99,20 +99,34 @@ package com.flextoolbox.utils
 						var beginningOfLine:String = textField.text.charAt(lineOffset);
 						var endOfPreviousLine:String = textField.text.charAt(lineOffset - 1);
 						
-						if(endOfPreviousLine != " " && endOfPreviousLine != "-" && textField.numLines > 1 && currentSize > 1)
+						var loopRun:Boolean = false;
+						while(endOfPreviousLine != " " && endOfPreviousLine != "-" && textField.numLines > i && currentSize > originalSize)
 						{
-							//why do I have to subtract 2 here?
-							//same reason as with the same height flag above?
-							currentSize -= 1;
+							loopRun = true;
+							
+							currentSize--;
 							format.size = currentSize;
 							textField.setTextFormat(format);
+							
+							//similar to above, if the height doesn't change between point sizes
+							//we need to run it again. this sucks.
+							if(textField.numLines > i)
+							{
+								lineOffset = textField.getLineOffset(i);
+								beginningOfLine = textField.text.charAt(lineOffset);
+								endOfPreviousLine = textField.text.charAt(lineOffset - 1);
+							}
+							
+						}
+						if(loopRun)
+						{
 							return;
 						}
 					}
 				}
 			}
 			
-			//decrease font size to fit in bounds. stop if the font size reaches 1
+			//decrease font size to fit in bounds. stop if the font size reaches original size
 			while(currentSize > originalSize && textField.textHeight > (textField.height - TEXTFIELD_VERTICAL_MARGIN))
 			{
 				currentSize--;

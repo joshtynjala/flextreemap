@@ -56,6 +56,8 @@ package com.flextoolbox.controls.treeMapClasses
 		public function set data(value:Object):void
 		{
 			this._data = value;
+			this.invalidateProperties();
+			this.invalidateDisplayList();
 		}
 		
 		private var _selected:Boolean = false;

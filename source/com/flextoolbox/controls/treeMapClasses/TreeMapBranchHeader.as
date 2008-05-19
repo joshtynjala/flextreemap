@@ -28,6 +28,7 @@ package com.flextoolbox.controls.treeMapClasses
 	import com.flextoolbox.events.TreeMapEvent;
 	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
 	import com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin;
+	import com.flextoolbox.skins.halo.TreeMapResizeIcon;
 	import com.flextoolbox.skins.halo.TreeMapZoomInIcon;
 	import com.flextoolbox.skins.halo.TreeMapZoomOutIcon;
 	import com.flextoolbox.utils.FlexFontUtil;
@@ -98,10 +99,12 @@ include "../../styles/metadata/TextStyles.inc"
 				//TODO: Define all styles with metadata
 				this.selectionButtonStyleName = SELECTION_BUTTON_STYLE_NAME;
 				this.zoomButtonStyleName = ZOOM_BUTTON_STYLE_NAME;
+				this.resizeIcon = TreeMapResizeIcon;
 				this.paddingTop = 2;
 				this.paddingRight = 6;
 				this.paddingBottom = 2;
 				this.paddingLeft = 6;
+				this.horizontalGap = 6;
  				this.textAlign = "left";
  				this.fontWeight = "bold";
 			}
@@ -123,6 +126,7 @@ include "../../styles/metadata/TextStyles.inc"
 				this.selectedDownSkin = TreeMapBranchHeaderSkin;
 				this.selectedOverSkin = TreeMapBranchHeaderSkin;
 				this.selectedDisabledSkin = TreeMapBranchHeaderSkin;
+				this.labelPlacement = "right";
 			};
 			StyleManager.setStyleDeclaration("." + SELECTION_BUTTON_STYLE_NAME, selector, false);
 			
@@ -178,6 +182,8 @@ include "../../styles/metadata/TextStyles.inc"
 	
 		protected var selectionButton:Button;
 		protected var zoomButton:Button;
+		
+		protected var resizeIndicator:DisplayObject;
 		
 		/**
 		 * @private
@@ -246,6 +252,12 @@ include "../../styles/metadata/TextStyles.inc"
 					this.zoomButton.styleName = this.getStyle("zoomButtonStyleName");
 				}
 			}
+			
+			if(allStyles || styleProp == "resizeIcon")
+			{
+				this.refreshResizeIcon();
+				this.invalidateDisplayList();
+			}
 		}
 	
     //----------------------------------
@@ -282,6 +294,7 @@ include "../../styles/metadata/TextStyles.inc"
 				this.label.selectable = false;
 				this.addChild(this.label);
 			}
+			this.refreshResizeIcon();
 		}
 		
 		override protected function commitProperties():void
@@ -341,15 +354,25 @@ include "../../styles/metadata/TextStyles.inc"
 			var paddingBottom:Number = this.getStyle("paddingBottom");
 			var paddingLeft:Number = this.getStyle("paddingLeft");
 			
-			var zoomButtonWidth:Number = 0;
-			if(this.zoomEnabled)
+			var contentWidth:Number = Math.max(0, width - paddingLeft - paddingRight);
+			var contentHeight:Number = Math.max(0, height - paddingTop - paddingBottom);
+				
+			var showResizeIndicator:Boolean = width < this.measuredWidth || height < this.measuredHeight;
+			this.zoomButton.visible = this.zoomEnabled && !showResizeIndicator;
+			this.resizeIndicator.visible = showResizeIndicator;
+			if(showResizeIndicator)
 			{
-				zoomButtonWidth = Math.min(this.zoomButton.measuredWidth, width / 2);
-				if(width < this.measuredWidth)
-				{
-					//hide the zoom button if it's too small
-					zoomButtonWidth = 0;
-				}
+				//reset the scroll rect so that width and height appear correctly
+				this.refreshResizeIcon();
+				this.resizeIndicator.x = Math.max(paddingLeft, width - this.resizeIndicator.width - paddingRight);
+				this.resizeIndicator.y = Math.max(paddingTop, (height - this.resizeIndicator.height) / 2);
+				this.resizeIndicator.scrollRect = new Rectangle(0, 0,
+					Math.min(this.resizeIndicator.width, contentWidth), Math.min(this.resizeIndicator.height, contentHeight));
+			}
+			else if(this.zoomEnabled)
+			{
+				this.zoomButton.scrollRect = null;
+				var zoomButtonWidth:Number = Math.min(this.zoomButton.measuredWidth, width / 2);
 				this.zoomButton.setActualSize(zoomButtonWidth, height);
 				//since the zoom button may get very small, we need to clip it in case the icon is larger
 				this.zoomButton.scrollRect = new Rectangle(0, 0, zoomButtonWidth, height);
@@ -357,15 +380,32 @@ include "../../styles/metadata/TextStyles.inc"
 				this.zoomButton.move(zoomButtonX, 0);
 			}
 			
-			var selectionButtonWidth:Number = Math.max(0, width - zoomButtonWidth);
+			var selectionButtonWidth:Number = Math.max(0, width - ((!showResizeIndicator && this.zoomEnabled) ? this.zoomButton.scrollRect.width : 0));
 			this.selectionButton.move(0, 0);
 			this.selectionButton.setActualSize(selectionButtonWidth, height);
 			
-			this.label.width = Math.max(0, this.selectionButton.width - paddingLeft - paddingRight);
-			this.label.height = Math.max(0, Math.min(this.label.textHeight + paddingTop + paddingBottom, unscaledHeight - paddingTop - paddingBottom));
+			var resizeIndicatorWidth:Number = showResizeIndicator ? (this.resizeIndicator.scrollRect.width + this.getStyle("horizontalGap")) : 0;
+			this.label.width = Math.max(0, this.selectionButton.width - paddingLeft - paddingRight - resizeIndicatorWidth);
+			this.label.height = Math.max(0, Math.min(this.label.textHeight + paddingTop + paddingBottom, contentHeight));
 			
 			this.label.x = paddingLeft;
-			this.label.y = Math.max(paddingTop, (this.selectionButton.height - this.label.height) / 2);
+			this.label.y = Math.max(0, (this.selectionButton.height - this.label.height) / 2);
+		}
+		
+		protected function refreshResizeIcon():void
+		{
+			if(this.resizeIndicator)
+			{
+				this.removeChild(this.resizeIndicator);
+				this.resizeIndicator = null;
+			}
+			
+			var resizeIcon:Class = this.getStyle("resizeIcon");
+			if(resizeIcon)
+			{
+				this.resizeIndicator = new resizeIcon();
+				this.addChild(this.resizeIndicator);
+			}
 		}
 	
     //----------------------------------

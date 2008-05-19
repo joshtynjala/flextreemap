@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2008 Josh Tynjala
 //
@@ -26,13 +26,13 @@ package com.flextoolbox.skins.halo
 {
 	import mx.core.SpriteAsset;
 
-	[Embed(source="/assets/Assets.swf",symbol="TreeMapZoomOutIcon")]
-	/**
-	 * The default icon for zoom-out operations on the TreeMap control.
-	 * 
-	 * @see com.flextoolbox.controls.TreeMap
-	 */
-	public class TreeMapZoomOutIcon extends SpriteAsset
+	[Embed(source="/assets/Assets.swf",symbol="TreeMapResizeIconEnabled")]
+	public class TreeMapResizeIcon extends SpriteAsset
 	{
+		public function TreeMapResizeIcon()
+		{
+			super();
+		}
+		
 	}
 }

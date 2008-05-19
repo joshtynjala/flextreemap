@@ -31,15 +31,24 @@ package com.flextoolbox.controls.treeMapClasses
 	import com.flextoolbox.skins.halo.TreeMapZoomInIcon;
 	import com.flextoolbox.skins.halo.TreeMapZoomOutIcon;
 	import com.flextoolbox.utils.FlexFontUtil;
+	import com.yahoo.astra.utils.DisplayObjectUtil;
 	
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.DropShadowFilter;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	
 	import mx.controls.Button;
 	import mx.core.IDataRenderer;
 	import mx.core.UIComponent;
+	import mx.effects.IEffect;
+	import mx.effects.Move;
+	import mx.effects.Parallel;
+	import mx.effects.Resize;
+	import mx.managers.PopUpManager;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	
@@ -160,6 +169,7 @@ include "../../styles/metadata/TextStyles.inc"
 		{
 			super();
 			this.tabEnabled = false;
+			this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler);
 		}
 	
     //----------------------------------
@@ -204,6 +214,9 @@ include "../../styles/metadata/TextStyles.inc"
 		}
 	
 		protected var zoomEnabled:Boolean = false;
+		
+		private var _oldParent:UIComponent;
+		private var _oldBounds:Rectangle;
 	
     //----------------------------------
 	//  Public Methods
@@ -318,7 +331,11 @@ include "../../styles/metadata/TextStyles.inc"
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-			
+			this.layoutContents(unscaledWidth, unscaledHeight);
+		}
+		
+		protected function layoutContents(width:Number, height:Number):void
+		{
 			var paddingTop:Number = this.getStyle("paddingTop");
 			var paddingRight:Number = this.getStyle("paddingRight");
 			var paddingBottom:Number = this.getStyle("paddingBottom");
@@ -327,17 +344,22 @@ include "../../styles/metadata/TextStyles.inc"
 			var zoomButtonWidth:Number = 0;
 			if(this.zoomEnabled)
 			{
-				zoomButtonWidth = Math.min(this.zoomButton.measuredWidth, unscaledWidth / 2);
-				this.zoomButton.setActualSize(zoomButtonWidth, unscaledHeight);
+				zoomButtonWidth = Math.min(this.zoomButton.measuredWidth, width / 2);
+				if(width < this.measuredWidth)
+				{
+					//hide the zoom button if it's too small
+					zoomButtonWidth = 0;
+				}
+				this.zoomButton.setActualSize(zoomButtonWidth, height);
 				//since the zoom button may get very small, we need to clip it in case the icon is larger
-				this.zoomButton.scrollRect = new Rectangle(0, 0, zoomButtonWidth, unscaledHeight);
-				var zoomButtonX:Number = Math.max(0, unscaledWidth - zoomButtonWidth);
+				this.zoomButton.scrollRect = new Rectangle(0, 0, zoomButtonWidth, height);
+				var zoomButtonX:Number = Math.max(0, width - zoomButtonWidth);
 				this.zoomButton.move(zoomButtonX, 0);
 			}
 			
-			var selectionButtonWidth:Number = Math.max(0, unscaledWidth - zoomButtonWidth);
+			var selectionButtonWidth:Number = Math.max(0, width - zoomButtonWidth);
 			this.selectionButton.move(0, 0);
-			this.selectionButton.setActualSize(selectionButtonWidth, unscaledHeight);
+			this.selectionButton.setActualSize(selectionButtonWidth, height);
 			
 			this.label.width = Math.max(0, this.selectionButton.width - paddingLeft - paddingRight);
 			this.label.height = Math.max(0, Math.min(this.label.textHeight + paddingTop + paddingBottom, unscaledHeight - paddingTop - paddingBottom));
@@ -350,6 +372,136 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Protected Event Handlers
     //----------------------------------
 		
+		protected function rollOverHandler(event:MouseEvent):void
+		{
+			if(this.unscaledWidth < this.measuredWidth || this.unscaledHeight < this.measuredHeight)
+			{
+				//stop listening for roll over events while we're in pop up mode
+				this.removeEventListener(MouseEvent.ROLL_OVER, rollOverHandler);
+				
+				//a drop shadow helps to distinguish this header from any others
+				//that are displayed in the treemap
+				this._dropShadow = new DropShadowFilter(2, 45, 0, 1, 25, 25, 1);
+				var filters:Array = this.filters;
+				filters.push(this._dropShadow);
+				this.filters = filters;
+				
+				this._oldParent = UIComponent(this.parent);
+				this._oldBounds = new Rectangle(this.x, this.y, this.unscaledWidth, this.unscaledHeight);
+				
+				var startPosition:Point = DisplayObjectUtil.localToLocal(new Point(this.x, this.y), this.parent, DisplayObject(this.systemManager));
+				var globalBounds:Rectangle = this.calculateGlobalBounds();
+				PopUpManager.addPopUp(this, this.parent);
+				
+				this.x = startPosition.x;
+				this.y = startPosition.y;
+				this.width = this._oldBounds.width;
+				this.height = this._oldBounds.height;
+				
+				//if the resize effect is running, we need to stop it so that it
+				//doesn't conflict with the new resize effect
+				if(this._openEffect && this._openEffect.isPlaying)
+				{
+					this._openEffect.pause();
+				}
+				
+				var parallel:Parallel = new Parallel(this);
+				parallel.duration = 150;
+				
+				this._resize = new Resize();
+				this._resize.widthTo = globalBounds.width;
+				this._resize.heightTo = globalBounds.height;
+				parallel.addChild(this._resize);
+				
+				this._move = new Move();
+				this._move.xTo = globalBounds.x;
+				this._move.yTo = globalBounds.y;
+				parallel.addChild(this._move);
+				
+				this._openEffect = parallel;
+				this._openEffect.play();
+				
+				this.systemManager.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler, false, 0, true);
+			}
+		}
+		
+		private var _openEffect:IEffect;
+		private var _resize:Resize;
+		private var _move:Move;
+		private var _dropShadow:DropShadowFilter;
+		
+		protected function calculateGlobalBounds():Rectangle
+		{	
+			var newWidth:Number = Math.max(this.unscaledWidth, this.measuredWidth);
+			var newHeight:Number = Math.max(this.unscaledHeight, this.measuredHeight);
+				
+			var branchRenderer:ITreeMapBranchRenderer = this.data as ITreeMapBranchRenderer;
+			var treeMap:TreeMap = branchRenderer.owner as TreeMap;
+			
+			var treeMapPosition:Point = DisplayObjectUtil.localToLocal(new Point(this.x, this.y), this.parent, treeMap);
+			
+			var xPosition:Number = treeMapPosition.x;
+			if(xPosition + newWidth > treeMap.width)
+			{
+				xPosition -= ((xPosition + newWidth) - treeMap.width);
+			}
+			if(xPosition < 0)
+			{
+				xPosition = 0;
+			}
+			
+			var yPosition:Number = treeMapPosition.y;
+			if(yPosition + newHeight > treeMap.height)
+			{
+				yPosition -= ((yPosition + newHeight) - treeMap.height);
+			}
+			if(yPosition < 0)
+			{
+				yPosition = 0;
+			}
+			
+			var globalPosition:Point = DisplayObjectUtil.localToLocal(new Point(xPosition, yPosition), treeMap, DisplayObject(this.systemManager));
+			return new Rectangle(globalPosition.x, globalPosition.y, newWidth, newHeight);
+		}
+		
+		protected function mouseMoveHandler(event:MouseEvent):void
+		{
+			var bounds:Rectangle = new Rectangle(this._move.xTo, this._move.yTo, this._resize.widthTo, this._resize.heightTo);
+			if(!bounds.contains(event.stageX, event.stageY))
+			{
+				this.closePopUp();
+			}
+		}
+		
+		protected function closePopUp():void
+		{
+			if(this.parent is ITreeMapBranchRenderer)
+			{
+				return;
+			}
+			
+			if(this._openEffect && this._openEffect.isPlaying)
+			{
+				this._openEffect.pause();
+				this._openEffect = null;
+			}
+			
+			var filters:Array = this.filters;
+			filters.splice(this.filters.indexOf(this._dropShadow), 1);
+			this.filters = filters;
+			
+			this.systemManager.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+			this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler);
+			
+			PopUpManager.removePopUp(this);
+			this._oldParent.addChild(this);
+			this.x = this._oldBounds.x;
+			this.y = this._oldBounds.y;
+			this.width = NaN;
+			this.height = NaN;
+			this.setActualSize(this._oldBounds.width, this._oldBounds.height);
+		}
+		
 		protected function selectionButtonClickHandler(event:Event):void
 		{
 			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_SELECT));
@@ -357,6 +509,7 @@ include "../../styles/metadata/TextStyles.inc"
 		
 		protected function zoomButtonClickHandler(event:MouseEvent):void
 		{
+			this.closePopUp();
 			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM));
 		}
 	}

@@ -43,6 +43,8 @@ package com.flextoolbox.controls
 	import mx.core.UIComponent;
 	import mx.events.CollectionEvent;
 	import mx.events.FlexEvent;
+	import mx.styles.CSSStyleDeclaration;
+	import mx.styles.StyleManager;
 	import mx.utils.UIDUtil;
 
 	//--------------------------------------
@@ -103,6 +105,12 @@ include "../styles/metadata/TextStyles.inc"
 	[Style(name="branchStyleName", type="String", inherit="no")]
 	
 	/**
+	 * The default "color" value of an item in the treemap. Used if no color
+	 * provided or the data is invalid;
+	 */
+	[Style(name="itemDefaultColor", type="uint", inherit="no")]
+	
+	/**
 	 * A treemap is a space-constrained visualization of hierarchical
 	 * structures. It is very effective in showing attributes of leaf nodes
 	 * using size and color coding.
@@ -142,7 +150,16 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		public static function initializeStyles():void
 		{
-			//TODO: add defaults that may be different than the framework's defaults
+			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMap");
+			if(!selector)
+			{
+				selector = new CSSStyleDeclaration();
+			}
+			selector.defaultFactory = function():void
+			{
+				this.itemDefaultColor = 0x000000;
+			}
+			StyleManager.setStyleDeclaration("TreeMap", selector, false);
 		}
 		initializeStyles();
 		
@@ -1040,7 +1057,11 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		public function itemToColor(item:Object):uint
 		{
-			if(item === null) return 0x000000;
+			var itemDefaultColor:uint = this.getStyle("itemDefaultColor");
+			if(item === null)
+			{
+				return itemDefaultColor;
+			}
 			
 			if(this.colorFunction != null)
 			{
@@ -1051,7 +1072,7 @@ include "../styles/metadata/TextStyles.inc"
 				return item[this.colorField];
 			}
 			
-			return 0x000000;
+			return itemDefaultColor;
 		}
 	
 		/**

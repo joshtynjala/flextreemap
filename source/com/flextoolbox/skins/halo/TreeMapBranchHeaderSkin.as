@@ -153,8 +153,8 @@ package com.flextoolbox.skins.halo
 			if(!selectedFillColors)
 			{
 				selectedFillColors = []; // So we don't clobber the original...
-				selectedFillColors[0] = ColorUtil.adjustBrightness2(themeColor, 55);
-				selectedFillColors[1] = ColorUtil.adjustBrightness2(themeColor, 10);
+				selectedFillColors[0] = ColorUtil.adjustBrightness2(themeColor, 75);
+				selectedFillColors[1] = ColorUtil.adjustBrightness2(themeColor, 40);
 			}
 			
 			// Derivative styles.

@@ -14,7 +14,7 @@ Project Page:
    * http://flex2treemap.googlecode.com/
    
 API Documentation:
-   * http://www.flextoolbox.com/documentation/treemap/index.html
+   * http://www.flextoolbox.com/documentation/treemap/2/index.html
 
 Getting Started:
    * http://code.google.com/p/flex2treemap/wiki/GettingStarted
@@ -26,14 +26,16 @@ Author's Blog:
 Release Notes:
 ---------------------------------------------------------------------------------
 
-05/16/2008 - 2.0.0 BETA
+05/26/2008 - 2.0.0 BETA
+   * Many public APIs have been renamed to clarify purpose.
    * Refactored renderer and layout system to improve performance.
-   * Inclusion of "lite" renderers.
+   * Special "lite" renderers are available to match classic treemap style.
    * Branches may be selected. See branchesAreSelectable property.
    * Header now includes a zoom button. Main header button controls selection.
    * Support for showRoot and hasRoot like Flex Tree.
-   * Many properties have been renamed. Will require code changes to migrate.
-   * Branch headers are now renderers.
+   * Branch headers are now created with IFactory renderers and may be replaced.
+   * Default branch header exposes zoom button.
+   * Default branch header has resize transition to display truncated text.
    * Requires at least Flex 3.0.0.
 
 01/21/2008 - 1.0.1

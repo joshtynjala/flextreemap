@@ -48,76 +48,16 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Properties
 	//--------------------------------------
 		
-		private var _data:Object = 0;
+		public var data:Object = 0;
 		
-		public function get data():Object
-		{
-			return this._data;
-		}
-		
-		public function set data(value:Object):void
-		{
-			this._data = value;
-		}
-		
-		private var _weight:Number = 0;
-		
-		public function get weight():Number
-		{
-			return this._weight;
-		}
-		
-		public function set weight(value:Number):void
-		{
-			this._weight = value;
-		}
+		public var weight:Number = 0;
 	
-		private var _x:Number = 0;
+		public var x:Number = 0;
 		
-		public function get x():Number
-		{
-			return this._x;
-		}
+		public var y:Number = 0;
 		
-		public function set x(value:Number):void
-		{
-			this._x = value;
-		}
+		public var width:Number = 0;
 		
-		private var _y:Number = 0;
-		
-		public function get y():Number
-		{
-			return this._y;
-		}
-		
-		public function set y(value:Number):void
-		{
-			this._y = value;
-		}
-		
-		private var _width:Number = 0;
-		
-		public function get width():Number
-		{
-			return this._width;
-		}
-		
-		public function set width(value:Number):void
-		{
-			this._width = value;
-		}
-		
-		private var _height:Number = 0;
-		
-		public function get height():Number
-		{
-			return this._height;
-		}
-		
-		public function set height(value:Number):void
-		{
-			this._height = value;
-		}
+		public var height:Number = 0;
 	}
 }

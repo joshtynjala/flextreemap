@@ -1019,13 +1019,13 @@ include "../styles/metadata/TextStyles.inc"
 		{
 			if(item === null) return "";
 			
-			if(this.labelFunction != null)
+			if(this._labelFunction != null)
 			{
-				return this.labelFunction(item);
+				return this._labelFunction(item);
 			}
-			else if(item.hasOwnProperty(this.labelField))
+			else if(item.hasOwnProperty(this._labelField))
 			{
-				return item[this.labelField];
+				return item[this._labelField];
 			}
 			return item.toString();
 		}
@@ -1038,13 +1038,13 @@ include "../styles/metadata/TextStyles.inc"
 		{
 			if(item === null) return "";
 			
-			if(this.dataTipFunction != null)
+			if(this._dataTipFunction != null)
 			{
-				return this.dataTipFunction(item);
+				return this._dataTipFunction(item);
 			}
-			else if(item.hasOwnProperty(this.dataTipField))
+			else if(item.hasOwnProperty(this._dataTipField))
 			{
-				return item[this.dataTipField];
+				return item[this._dataTipField];
 			}
 			//normally, I'd do toString(), but I think an
 			//empty string makes sense so that there's no dataTip.
@@ -1063,13 +1063,13 @@ include "../styles/metadata/TextStyles.inc"
 				return itemDefaultColor;
 			}
 			
-			if(this.colorFunction != null)
+			if(this._colorFunction != null)
 			{
-				return this.colorFunction(item);
+				return this._colorFunction(item);
 			}
-			else if(item.hasOwnProperty(this.colorField))
+			else if(item.hasOwnProperty(this._colorField))
 			{
-				return item[this.colorField];
+				return item[this._colorField];
 			}
 			
 			return itemDefaultColor;
@@ -1103,13 +1103,13 @@ include "../styles/metadata/TextStyles.inc"
 						iterator.moveNext();
 					}
 				}
-				else if(this.weightFunction != null)
+				else if(this._weightFunction != null)
 				{
-					weight = this.weightFunction(item);
+					weight = this._weightFunction(item);
 				}
-				else if(item.hasOwnProperty(this.weightField))
+				else if(item.hasOwnProperty(this._weightField))
 				{
-					weight = item[this.weightField];
+					weight = item[this._weightField];
 				}
 				else
 				{

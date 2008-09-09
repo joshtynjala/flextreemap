@@ -26,10 +26,10 @@ package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.utils.FlexFontUtil;
 	import com.flextoolbox.utils.FlexGraphicsUtil;
+	import com.flextoolbox.utils.FontSizeMode;
 	
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
 	
 	import mx.core.UIComponent;
 	import mx.styles.CSSStyleDeclaration;
@@ -74,7 +74,7 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			selector.defaultFactory = function():void
 			{
-				this.autoFitText = "none";
+				this.fontSizeMode = FontSizeMode.NO_CHANGE;
 				this.color = 0xffffff;
 				this.cornerRadius = 0;
 				this.borderColor = 0x676a6c;

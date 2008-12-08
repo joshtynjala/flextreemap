@@ -90,7 +90,7 @@ package com.flextoolbox.controls.treeMapClasses
 		function removeAllItems():void;
 		
 		/**
-		 * Returns an Array containing all items within this branch.
+		 * Returns an Array containing all TreeMapItemLayoutData instances displayed by this branch.
 		 */
 		function itemsToArray():Array;
 	}

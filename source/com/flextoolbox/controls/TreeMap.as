@@ -28,6 +28,7 @@ package com.flextoolbox.controls
 	import com.flextoolbox.events.TreeMapEvent;
 	import com.flextoolbox.events.TreeMapLayoutEvent;
 	
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.xml.XMLNode;
@@ -1659,7 +1660,13 @@ include "../styles/metadata/TextStyles.inc"
 				IDropInTreeMapItemRenderer(renderer).treeMapData = treeMapData;
 			}
 			renderer.visible = this.isDepthVisible(zoomDepth);
-			this.setChildIndex(UIComponent(renderer), this.numChildren - 1);
+			
+			var displayRenderer:DisplayObject = DisplayObject(renderer);
+			var index:int = this.numChildren - 1;
+			if(this.getChildIndex(displayRenderer) != index)
+			{
+				this.setChildIndex(displayRenderer, index);
+			}
 		}
 		
 		/**

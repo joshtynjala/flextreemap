@@ -24,22 +24,16 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	
-	import mx.collections.ArrayCollection;
-	import mx.collections.ICollectionView;
-	import mx.collections.IViewCursor;
-	import mx.collections.Sort;
-	import mx.collections.SortField;
-	
+
 	/**
-	 * Squarify layout algorithm for the TreeMap component. The squarify
-	 * algorithm creates nodes that are unordered, with the lowest aspect
-	 * ratios, and medium stability of node positioning.
+	 * The squarify treemap layout algorithm creates nodes that are unordered,
+	 * with the lowest possible aspect ratios, and medium stability of node
+	 * positions. In short, the algorithm attempts to make all the nodes into
+	 * squares.
 	 *  
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class SquarifyLayout implements ITreeMapLayoutStrategy
 	{
@@ -58,76 +52,25 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 	//  Properties
 	//--------------------------------------
-		
+	
 		/**
 		 * @private
-		 * Storage for the length of the shorter side of the remaining unfilled space.
+		 * The sum of the weight values for the remaining items that have not
+		 * yet been positioned and sized.
 		 */
-		private var _shorterSide:Number;
-		
-		/**
-		 * @private
-		 * Storage for the length of the longer side of the remaining unfilled space.
-		 */
-		private var _longerSide:Number;
-		
-		/**
-		 * @private
-		 * The number of nodes that have been drawn during a layout update.
-		 */
-		private var _numDrawnNodes:int;
-		
-		/**
-		 * @private
-		 * Storage for the target's data provider.
-		 */
-		private var _dataProvider:ICollectionView;
-		
-		/**
-		 * @private
-		 * Iterator for the target's data provider.
-		 */
-		private var _dataIterator:IViewCursor;
-				
+		private var _totalRemainingWeightSum:Number = 0;
+
 	//--------------------------------------
 	//  Public Methods
 	//--------------------------------------
-		
+	
 		/**
-		 * @copy ITreeMapLayoutStrategy#updateLayout()
+		 * @inheritDoc
 		 */
 		public function updateLayout(branchRenderer:ITreeMapBranchRenderer, bounds:Rectangle):void
 		{
-			//there's no point in trying to layout nothing
-			if(branchRenderer.itemCount == 0)
-			{
-				return;
-			}
-			
-			this._dataProvider = new ArrayCollection(branchRenderer.itemsToArray());
-			var weightSum:Number = this.calculateTotalWeightSum(this._dataProvider);
-			
-			var sortWeights:Sort = new Sort();
-			var weightField:SortField = new SortField(null, true, true, true);
-			weightField.compareFunction = this.compareWeights;
-			sortWeights.fields = [weightField];
-
-			this._dataProvider.sort = sortWeights;
-			this._dataProvider.refresh();
-			
-			//the starting bounds are based on the map's calculated content area
-			this._longerSide = Math.max(bounds.width, bounds.height);
-			this._shorterSide = Math.min(bounds.width, bounds.height);
-			
-			this._numDrawnNodes = 0;
-			this._dataIterator = this._dataProvider.createCursor();
-			if(!this._dataIterator.afterLast)
-			{
-				this.squarify([this._dataIterator.current], weightSum, bounds.clone());
-			}
-			
-			this._dataProvider.sort = null;
-			this._dataProvider.refresh();
+			var items:Array = branchRenderer.itemsToArray();
+			this.squarify(items, bounds.clone());
 		}
 		
 	//--------------------------------------
@@ -136,216 +79,55 @@ package com.flextoolbox.controls.treeMapClasses
 		
 		/**
 		 * @private
-		 * Calculates the sum of item weights.
+		 * The main squarify algorithm.
 		 */
-		private function calculateTotalWeightSum(data:ICollectionView):Number
+		private function squarify(items:Array, bounds:Rectangle):void
 		{
-			var sum:Number = 0;
-			var iterator:IViewCursor = data.createCursor();
+			items = items.sort(compareWeights, Array.DESCENDING);
+			this._totalRemainingWeightSum = this.sumWeights(items);
+			var lastAspectRatio:Number = Number.MAX_VALUE;
+			var lengthOfShorterEdge:Number = Math.min(bounds.width, bounds.height);
+			var row:Array = [];
 			do
 			{
-				var currentData:TreeMapItemLayoutData = iterator.current;
-				var weight:Number = currentData.weight;
-				sum += weight;
-			}
-			while(iterator.moveNext());
-			return sum;
-		}
-		
-		/**
-		 * @private
-		 * Called recursively to calculate the <code>TreeMap</code>'s layout.
-		 */
-		private function squarify(dataInCurrentRow:Array, sumOfRemaining:Number, mapBounds:Rectangle):void
-		{
-			var sumOfCurrentRow:Number = this.sumWeights(dataInCurrentRow);
-			
-			//make a copy of the data in the current row, then add the next piece of unused data
-			if(this._dataIterator.moveNext())
-			{
-				var dataWithExtraNode:Array = dataInCurrentRow.concat();
-				var temp:TreeMapItemLayoutData = TreeMapItemLayoutData(this._dataIterator.current);
-				dataWithExtraNode.push(temp);
-				
-				var extraWeight:Number = temp.weight;
-				
-				if(this.aspectRatio(dataInCurrentRow, sumOfCurrentRow, sumOfRemaining) 
-					>= this.aspectRatio(dataWithExtraNode, sumOfCurrentRow + extraWeight, sumOfRemaining))
+				var nextItem:TreeMapItemLayoutData = TreeMapItemLayoutData(items.shift());
+				row.push(nextItem);
+				var drawRow:Boolean = true;
+				var aspectRatio:Number = this.calculateWorstAspectRatioInRow(row, lengthOfShorterEdge, bounds);
+				if(lastAspectRatio >= aspectRatio)
 				{
-					this.squarify(dataWithExtraNode, sumOfRemaining, mapBounds);
-					return;
-				}
-				this._dataIterator.movePrevious();
-			}
+					lastAspectRatio = aspectRatio;
 					
-			//draw the row and make new bounds for the next row
-			mapBounds = this.drawRow(dataInCurrentRow, sumOfCurrentRow, sumOfRemaining, mapBounds);
-			
-			//start a new row if we still have data
-			if(this._dataIterator.moveNext())
-			{
-				sumOfRemaining -= sumOfCurrentRow;
-			
-				//generate the distances needed for calculation of the bounds for each child
-				this._shorterSide = Math.min(mapBounds.width, mapBounds.height);
-				this._longerSide = Math.max(mapBounds.width, mapBounds.height);
-				
-				this.squarify([this._dataIterator.current], sumOfRemaining, mapBounds);
-			}
-
-		}
-		
-		/**
-		 * @private
-		 * Determines the worst (maximum) aspect ratio of a row if it contained a specific set of data.
-		 * 
-		 * @param dataInRow		the data for which to calculate the worst aspect ratio for a row
-		 * @param sumOfRow			a precalculated sum of the data in the row
-		 * @param sumOfRemaining	a precalculated sum of the remaining data to be drawn
-		 * @return					the worst aspect ratio for the data in the row
-		 */
-		private function aspectRatio(dataInRow:Array, sumOfRow:Number, sumOfRemaining:Number):Number
-		{
-			var lengthOfLongerSide:Number = this.calculateLengthOfLongerSide(dataInRow, sumOfRow, sumOfRemaining);
-			
-			//special case
-			if(sumOfRemaining == 0)
-			{
-				var value:Number = Math.max(this._shorterSide / dataInRow.length, dataInRow.length / this._shorterSide);
-				return Math.max(value / lengthOfLongerSide, lengthOfLongerSide / value);
-			}
-			
-			var layoutData:TreeMapItemLayoutData = TreeMapItemLayoutData(dataInRow[0]);
-			var weight:Number = layoutData.weight;
-			var minValue:Number = weight;
-			var maxValue:Number = weight;
-			var rowCount:int = dataInRow.length;
-			for(var i:int = 1; i < rowCount; i++)
-			{
-				layoutData = TreeMapItemLayoutData(dataInRow[i]);
-				weight = layoutData.weight;
-				minValue = Math.min(minValue, weight);
-				maxValue = Math.max(maxValue, weight);
-			}
-			
-			value = Math.max((this._shorterSide * maxValue) / sumOfRow, sumOfRow / (this._shorterSide * minValue));
-			return Math.max(value / lengthOfLongerSide, lengthOfLongerSide / value);
-		}
-		
-		/**
-		 * @private
-		 * Draws a single row of nodes.
-		 */
-		private function drawRow(dataInRow:Array, sumOfRow:Number, sumOfRemaining:Number, mapBounds:Rectangle):Rectangle
-		{
-			var lengthOfLongerSide:Number = this.calculateLengthOfLongerSide(dataInRow, sumOfRow, sumOfRemaining);
-			
-			var currentDistance:Number = 0;
-			var rowCount:int = dataInRow.length;
-			for(var i:int = 0; i < rowCount; i++)
-			{	
-				var currentData:TreeMapItemLayoutData = TreeMapItemLayoutData(dataInRow[i]);
-				var currentWeight:Number = currentData.weight;
-				
-				var ratio:Number = currentWeight / sumOfRow;
-				//if all nodes in a row have a weight of zero, give them the same area
-				if(isNaN(ratio))
-				{
-					if(sumOfRow == 0 || isNaN(sumOfRow))
-					{
-						ratio = 1 / dataInRow.length;
-					}
-					else
-					{
-						ratio = 0;
-					}
-				}
-				
-				var lengthOfShorterSide:Number = this._shorterSide * ratio;
-				
-				var position:Point;
-				if(mapBounds.width > mapBounds.height)
-				{
-					currentData.x = mapBounds.x;
-					currentData.y = mapBounds.y + currentDistance;
-					currentData.width = Math.max(0, lengthOfLongerSide);
-					currentData.height = Math.max(0, lengthOfShorterSide);
+					//if this is the last item, force the row to draw
+					drawRow = items.length == 0;
 				}
 				else
 				{
-					currentData.x = mapBounds.x + currentDistance;
-					currentData.y = mapBounds.y;
-					currentData.width = lengthOfShorterSide;
-					currentData.height = lengthOfLongerSide;
+					//put the item back if the aspect ratio is worse than the previous one
+					//we want to draw, of course
+					items.unshift(row.pop());
 				}
-				currentDistance += lengthOfShorterSide;
-				this._numDrawnNodes++;
-			}
-			
-			return this.updateBoundsForNextRow(mapBounds, lengthOfLongerSide);
-		}
-		
-		/**
-		 * @private
-		 * After a row is drawn, the bounds are modified to fit the smaller region.
-		 */
-		private function updateBoundsForNextRow(mapBounds:Rectangle, modifier:Number):Rectangle
-		{
-			if(mapBounds.width > mapBounds.height)
-			{
-				mapBounds.x += modifier;
-				mapBounds.width = Math.max(0, mapBounds.width - modifier);
-			}
-			else
-			{
-				mapBounds.y += modifier;
-				mapBounds.height = Math.max(0, mapBounds.height - modifier);
-			}
-			
-			return mapBounds;
-		}
-		
-		/**
-		 * @private
-		 * Determines the portion of the longer remaining side that will be used for a set of data.
-		 */
-		private function calculateLengthOfLongerSide(dataInRow:Array, sumOfRow:Number, sumOfRemaining:Number):Number
-		{
-			var lengthOfLongerSide:Number = this._longerSide * (sumOfRow / sumOfRemaining);
-			if(isNaN(lengthOfLongerSide))
-			{
-				//if all remaining weights are zero, give each row an equal size
-				if(sumOfRemaining == 0 || isNaN(sumOfRemaining))
+				
+				if(drawRow)
 				{
-					lengthOfLongerSide = this._longerSide * (dataInRow.length / (this._dataProvider.length - this._numDrawnNodes));
+					bounds = this.layoutRow(row, lengthOfShorterEdge, bounds);
+					
+					//reset for the next pass
+					lastAspectRatio = Number.MAX_VALUE;
+					lengthOfShorterEdge = Math.min(bounds.width, bounds.height);
+					row = [];
 				}
-				else lengthOfLongerSide = 0;
 			}
-			return lengthOfLongerSide;
-		}
-	
-		/**
-		 * @private
-		 * Adds the weight value from each item in the TreeMap's data provider.
-		 */
-		private function sumWeights(q:Array):Number
-		{
-			var sum:Number = 0;
-			var qCount:int = q.length;
-			for(var i:int = 0; i < qCount; i++)
-			{
-				var currentItem:TreeMapItemLayoutData = TreeMapItemLayoutData(q[i]);
-				sum += currentItem.weight;
-			}
-			return sum;
+			while(items.length > 0);
 		}
 		
 		/**
 		 * @private
-		 * Compares the weights from two items in the TreeMap's data provider.
+		 * Compares the weight values of TreeMapItemLayoutData instances.
 		 */
-		private function compareWeights(a:TreeMapItemLayoutData, b:TreeMapItemLayoutData, fields:Array = null):int
+		private function compareWeights(a:TreeMapItemLayoutData, b:TreeMapItemLayoutData):int
 		{
+			//first check for nulls
 			if(a == null && b == null)
 			{
 				return 0;
@@ -365,6 +147,142 @@ package com.flextoolbox.controls.treeMapClasses
 			if(weightA < weightB) return -1;
 			if(weightA > weightB) return 1;
 			return 0;
+		}
+		
+		/**
+		 * @private
+		 * Determines the worst (maximum) aspect ratio of the items in a row.
+		 * 
+		 * @param row						a row of items for which to calculate the worst aspect ratio
+		 * @param lengthOfShorterEdge		the length, in pixels, of the edge of the remaining bounds on which to draw the row (the shorter one)
+		 * @return							the worst aspect ratio for the items in the row
+		 */
+		private function calculateWorstAspectRatioInRow(row:Array, lengthOfShorterEdge:Number, bounds:Rectangle):Number
+		{
+			if(row.length == 0 || lengthOfShorterEdge <= 0)
+			{
+				throw new ArgumentError("Row must contain at least one item, and the length of the row must be greater than zero.");
+			}
+			
+			var totalArea:Number = bounds.width * bounds.height;
+			
+			var maxArea:Number = Number.MIN_VALUE;
+			var minArea:Number = Number.MAX_VALUE;
+			var sumOfAreas:Number = 0;
+			for each(var data:TreeMapItemLayoutData in row)
+			{
+				var area:Number = totalArea * (data.weight / this._totalRemainingWeightSum);
+				minArea = Math.min(area, minArea);
+				maxArea = Math.max(area, maxArea);
+				sumOfAreas += area;
+			}
+			
+			// max(w^2 * r+ / s^2, s^2 / (w^2 / r-))
+			var sumSquared:Number = sumOfAreas * sumOfAreas;
+			var lengthSquared:Number = lengthOfShorterEdge * lengthOfShorterEdge;
+			return Math.max(lengthSquared * maxArea / sumSquared, sumSquared / (lengthSquared * minArea));
+		}
+		
+		/**
+		 * @private
+		 * Draws a row of items
+		 * 
+		 * @param row						The items in the row
+		 * @param lengthOfShorterEdge		the length, in pixels, of the edge of the remaining bounds on which to draw the row (the shorter one)
+		 * @param bounds					The remaining bounds into which to draw items
+		 */
+		private function layoutRow(row:Array, lengthOfShorterEdge:Number, bounds:Rectangle):Rectangle
+		{
+			var horizontal:Boolean = lengthOfShorterEdge == bounds.width;
+			var lengthOfLongerEdge:Number = horizontal ? bounds.height : bounds.width;
+			var sumOfRowWeights:Number = this.sumWeights(row);
+			
+			var lengthOfCommonItemEdge:Number = lengthOfLongerEdge * (sumOfRowWeights / this._totalRemainingWeightSum);
+			if(isNaN(lengthOfCommonItemEdge))
+			{
+				lengthOfCommonItemEdge = 0;
+			}
+			
+			var rowCount:int = row.length;
+			var position:Number = 0;
+			for(var i:int = 0; i < rowCount; i++)
+			{
+				var item:TreeMapItemLayoutData = TreeMapItemLayoutData(row[i]);
+				var weight:Number = item.weight;
+				
+				var ratio:Number = weight / sumOfRowWeights;
+				//if all nodes in a row have a weight of zero, give them the same area
+				if(isNaN(ratio))
+				{
+					if(sumOfRowWeights == 0 || isNaN(sumOfRowWeights))
+					{
+						ratio = 1 / row.length;
+					}
+					else
+					{
+						ratio = 0;
+					}
+				}
+				
+				var lengthOfItemEdge:Number = lengthOfShorterEdge * ratio;
+				
+				if(horizontal)
+				{
+					item.x = bounds.x + position;
+					item.y = bounds.y;
+					item.width = lengthOfItemEdge;
+					item.height = lengthOfCommonItemEdge;
+				}
+				else
+				{
+					item.x = bounds.x;
+					item.y = bounds.y + position;
+					item.width = Math.max(0, lengthOfCommonItemEdge);
+					item.height = Math.max(0, lengthOfItemEdge);
+				}
+				position += lengthOfItemEdge;
+			}
+			
+			this._totalRemainingWeightSum -= sumOfRowWeights;
+			return this.updateBoundsForNextRow(bounds, lengthOfCommonItemEdge);
+		}
+		
+		/**
+		 * @private
+		 * After a row is drawn, the bounds must be made smaller to draw the
+		 * next row.
+		 */
+		private function updateBoundsForNextRow(bounds:Rectangle, modifier:Number):Rectangle
+		{
+			if(bounds.width > bounds.height)
+			{
+				var newWidth:Number = Math.max(0, bounds.width - modifier);
+				bounds.x -= (newWidth - bounds.width);
+				bounds.width = newWidth;
+			}
+			else
+			{
+				var newHeight:Number = Math.max(0, bounds.height - modifier);
+				bounds.y -= (newHeight - bounds.height);
+				bounds.height = newHeight;
+			}
+			
+			return bounds;
+		}
+	
+		/**
+		 * @private
+		 * Calculates the sum of weight values in an Array of
+		 * TreeMapItemLayoutData instances.
+		 */
+		private function sumWeights(source:Array):Number
+		{
+			var sum:Number = 0;
+			for each(var item:TreeMapItemLayoutData in source)
+			{
+				sum += item.weight;
+			}
+			return sum;
 		}
 		
 	}

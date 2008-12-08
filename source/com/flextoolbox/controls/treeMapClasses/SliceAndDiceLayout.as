@@ -26,17 +26,13 @@ package com.flextoolbox.controls.treeMapClasses
 {
 	import flash.geom.Rectangle;
 	
-	import mx.collections.ArrayCollection;
-	import mx.collections.ICollectionView;
-	import mx.collections.IViewCursor;
-	
 	/**
 	 * Slice-and-dice layout algorithm for the TreeMap component. The slice-and-
 	 * dice algorithm creates nodes that are ordered, with very high aspect
-	 * ratios, but stable node positioning.
+	 * ratios, but stable node positions.
 	 *  
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class SliceAndDiceLayout implements ITreeMapLayoutStrategy
 	{
@@ -57,7 +53,7 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 	
 		/**
-		 * @copy ITreeMapLayoutStrategy#updateLayout()
+		 * @inheritDoc
 		 */
 		public function updateLayout(branchRenderer:ITreeMapBranchRenderer, bounds:Rectangle):void
 		{	
@@ -68,23 +64,22 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			var items:Array = branchRenderer.itemsToArray();
 			var totalWeight:Number = this.sumWeights(items);
-			var dataProvider:ICollectionView = new ArrayCollection(items);
-			var dataIterator:IViewCursor = dataProvider.createCursor();
 			
 			var lengthOfLongSide:Number = Math.max(bounds.width, bounds.height);
 			var lengthOfShortSide:Number = Math.min(bounds.width, bounds.height);
 			
 			var position:Number = 0;
-			while(!dataIterator.afterLast)
+			var itemCount:int = items.length;
+			for(var i:int = 0; i < itemCount; i++)
 			{
-				var currentData:TreeMapItemLayoutData = TreeMapItemLayoutData(dataIterator.current);
+				var currentData:TreeMapItemLayoutData = TreeMapItemLayoutData(items[i]);
 				var currentWeight:Number = currentData.weight;
 				var oppositeLength:Number = lengthOfLongSide * (currentWeight / totalWeight);
 				if(isNaN(oppositeLength))
 				{
-					if(totalWeight == 0)
+					if(totalWeight == 0 || isNaN(totalWeight))
 					{
-						oppositeLength = lengthOfLongSide * 1 / dataProvider.length; 
+						oppositeLength = lengthOfLongSide * 1 / itemCount; 
 					}
 					else
 					{
@@ -92,7 +87,6 @@ package com.flextoolbox.controls.treeMapClasses
 					}
 				}
 				
-				var nodeBounds:Rectangle;
 				if(lengthOfLongSide == bounds.width)
 				{
 					currentData.x = bounds.left + position;
@@ -109,7 +103,6 @@ package com.flextoolbox.controls.treeMapClasses
 				}
 				
 				position += oppositeLength;
-				dataIterator.moveNext()
 			}
 		}
 		
@@ -121,14 +114,12 @@ package com.flextoolbox.controls.treeMapClasses
 		 * @private
 		 * Calculates the sum of item weights.
 		 */
-		private function sumWeights(data:Array):Number
+		private function sumWeights(source:Array):Number
 		{
 			var sum:Number = 0;
-			var itemCount:int = data.length;
-			for(var i:int = 0; i < itemCount; i++)
+			for each (var item:TreeMapItemLayoutData in source)
 			{
-				var currentData:TreeMapItemLayoutData = TreeMapItemLayoutData(data[i]);
-				sum += currentData.weight;
+				sum += item.weight;
 			}
 			return sum;
 		}

@@ -1054,7 +1054,9 @@ include "../styles/metadata/TextStyles.inc"
 	
 		/**
 		 * Determines the color value for an item from the data provider.
-		 * If color not available, returns black (0x000000).
+		 * If color not available, returns the value of the
+		 * <code>itemDefaultColor</code> style. The default value of this style
+		 * is black (0x000000).
 		 */
 		public function itemToColor(item:Object):uint
 		{

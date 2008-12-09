@@ -85,10 +85,10 @@ package com.flextoolbox.controls.treeMapClasses
 		{
 			items = items.sortOn("weight", Array.DESCENDING | Array.NUMERIC);
 			this._totalRemainingWeightSum = this.sumWeights(items);
-			var lastAspectRatio:Number = Number.MAX_VALUE;
+			var lastAspectRatio:Number = Number.POSITIVE_INFINITY;
 			var lengthOfShorterEdge:Number = Math.min(bounds.width, bounds.height);
 			var row:Array = [];
-			do
+			while(items.length > 0)
 			{
 				var nextItem:TreeMapItemLayoutData = TreeMapItemLayoutData(items.shift());
 				row.push(nextItem);
@@ -109,16 +109,15 @@ package com.flextoolbox.controls.treeMapClasses
 				}
 				
 				if(drawRow)
-				{
+				{	
 					bounds = this.layoutRow(row, lengthOfShorterEdge, bounds);
 					
 					//reset for the next pass
-					lastAspectRatio = Number.MAX_VALUE;
+					lastAspectRatio = Number.POSITIVE_INFINITY;
 					lengthOfShorterEdge = Math.min(bounds.width, bounds.height);
 					row = [];
 				}
 			}
-			while(items.length > 0);
 		}
 		
 		/**
@@ -131,19 +130,28 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		private function calculateWorstAspectRatioInRow(row:Array, lengthOfShorterEdge:Number, bounds:Rectangle):Number
 		{
-			if(row.length == 0 || lengthOfShorterEdge <= 0)
+			if(row.length == 0)
 			{
-				throw new ArgumentError("Row must contain at least one item, and the length of the row must be greater than zero.");
+				throw new ArgumentError("Row must contain at least one item. If you see this message, please file a bug report.");
+			}
+			
+			if(lengthOfShorterEdge == 0)
+			{
+				return Number.MAX_VALUE;
 			}
 			
 			var totalArea:Number = bounds.width * bounds.height;
 			
-			var maxArea:Number = Number.MIN_VALUE;
-			var minArea:Number = Number.MAX_VALUE;
+			var firstItem:TreeMapItemLayoutData = TreeMapItemLayoutData(row[0]);
+			var firstItemArea:Number = totalArea * (firstItem.weight / this._totalRemainingWeightSum);
+			var maxArea:Number = firstItemArea;
+			var minArea:Number = firstItemArea;
 			var sumOfAreas:Number = 0;
-			for each(var data:TreeMapItemLayoutData in row)
+			var rowCount:int = row.length;
+			for(var i:int = 1; i < rowCount; i++)
 			{
-				var area:Number = totalArea * (data.weight / this._totalRemainingWeightSum);
+				var item:TreeMapItemLayoutData = TreeMapItemLayoutData(row[i]);
+				var area:Number = totalArea * (item.weight / this._totalRemainingWeightSum);
 				minArea = Math.min(area, minArea);
 				maxArea = Math.max(area, maxArea);
 				sumOfAreas += area;

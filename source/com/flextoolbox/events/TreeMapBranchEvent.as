@@ -26,21 +26,45 @@ package com.flextoolbox.events
 {
 	import flash.events.Event;
 
-	public class TreeMapLayoutEvent extends Event
+	/**
+	 * Event used by branch renderers to indicate certain changes.
+	 * 
+	 * @see com.flextoolbox.controls.treeMapClasses.ITreeMapBranchRenderer
+	 * @author Josh Tynjala
+	 */
+	public class TreeMapBranchEvent extends Event
 	{
-		public static const BRANCH_LAYOUT_CHANGE:String = "branchLayoutChange";
 		
-		public function TreeMapLayoutEvent(type:String, branch:Object)
+	//--------------------------------------
+	//  Static Properties
+	//--------------------------------------
+	
+		public static const LAYOUT_COMPLETE:String = "layoutComplete";
+		public static const REQUEST_ZOOM:String = "requestZoom";
+		public static const REQUEST_SELECT:String = "requestSelect";
+		
+	//--------------------------------------
+	//  Constructor
+	//--------------------------------------
+	
+		/**
+		 * Constructor.
+		 */
+		public function TreeMapBranchEvent(type:String)
 		{
-			super(type);
-			this.branch = branch;
+			super(type, false, false);
 		}
 		
-		public var branch:Object;
+	//--------------------------------------
+	//  Public Methods
+	//--------------------------------------
 		
+		/**
+		 * @private
+		 */
 		override public function clone():Event
 		{
-			return new TreeMapLayoutEvent(this.type, this.branch);
+			return new TreeMapBranchEvent(this.type);
 		}
 		
 	}

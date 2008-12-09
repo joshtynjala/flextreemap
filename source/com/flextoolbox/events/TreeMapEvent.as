@@ -65,11 +65,6 @@ package com.flextoolbox.events
 		 * Dispatched when the user zooms a branch item in the TreeMap component.
 		 */
 		public static const BRANCH_ZOOM:String = "branchZoom";
-		
-		/**
-		 * Dispatched when the user selects a branch item in the TreeMap component.
-		 */
-		public static const BRANCH_SELECT:String = "branchSelect";
 	
 	//--------------------------------------
 	//  Constructor
@@ -89,7 +84,9 @@ package com.flextoolbox.events
 	//--------------------------------------
 		
 		/**
-		 * The item renderer to which the event is associated.
+		 * The item renderer to which the event is associated. This value may
+		 * be <code>null</code> if the event wasn't dispatched as a result of
+		 * user interaction.
 		 */
 		public var itemRenderer:ITreeMapItemRenderer;
 		

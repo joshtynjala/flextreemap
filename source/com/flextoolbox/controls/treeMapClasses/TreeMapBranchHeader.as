@@ -25,6 +25,7 @@
 package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.controls.TreeMap;
+	import com.flextoolbox.events.TreeMapBranchEvent;
 	import com.flextoolbox.events.TreeMapEvent;
 	import com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin;
 	import com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin;
@@ -59,15 +60,24 @@ package com.flextoolbox.controls.treeMapClasses
 	
 include "../../styles/metadata/TextStyles.inc"
 
+	/**
+	 * The icon for the zoom button when clicking the button causes the branch
+	 * to zoom in.
+	 */
 	[Style(name="zoomInIcon", type="Class", inherit="no")]
+
+	/**
+	 * The icon for the zoom button when clicking the button causes the branch
+	 * to zoom out.
+	 */
 	[Style(name="zoomOutIcon", type="Class", inherit="no")]
     
 	/**
 	 * The TreeMapBranchHeader class defines the appearance of the header buttons
 	 * of the branches in a TreeMap.
 	 * 
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class TreeMapBranchHeader extends UIComponent implements IDataRenderer
 	{
@@ -76,7 +86,16 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Static Properties
     //----------------------------------
 		
+		/**
+		 * @private
+		 * The default style name for the selection button.
+		 */
 		private static const SELECTION_BUTTON_STYLE_NAME:String = "com_flextoolbox_TreeMapBranchHeaderSelectionButton";
+		
+		/**
+		 * @private
+		 * The default style name for the zoom button.
+		 */
 		private static const ZOOM_BUTTON_STYLE_NAME:String = "com_flextoolbox_TreeMapBranchHeaderZoomButton";
 		
     //----------------------------------
@@ -180,9 +199,22 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Properties
     //----------------------------------
 	
+		/**
+		 * @private
+		 * The button that, when clicked, selects the parent branch.
+		 */
 		protected var selectionButton:Button;
+		
+		/**
+		 * @private
+		 * The button that, when clicked, zooms the parent branch.
+		 */
 		protected var zoomButton:Button;
 		
+		/**
+		 * @private
+		 * An indicator that the header may be resized to show more.
+		 */
 		protected var resizeIndicator:DisplayObject;
 		
 		/**
@@ -219,10 +251,44 @@ include "../../styles/metadata/TextStyles.inc"
 			this.invalidateDisplayList();
 		}
 	
+		/**
+		 * @private
+		 * Flag indicating that it is possible to zoom.
+		 */
 		protected var zoomEnabled:Boolean = false;
 		
+		/**
+		 * @private
+		 * Storage for the parent in popup mode.
+		 */
 		private var _oldParent:UIComponent;
+		
+		/**
+		 * @private
+		 * Storage for the bounds in popup mode.
+		 */
 		private var _oldBounds:Rectangle;
+		
+		/**
+		 * @private
+		 */
+		private var _openEffect:IEffect;
+		
+		/**
+		 * @private
+		 */
+		private var _resize:Resize;
+		
+		/**
+		 * @private
+		 */
+		private var _move:Move;
+		
+		/**
+		 * @private
+		 * A drop shadow to make the popup more prominent.
+		 */
+		private var _dropShadow:DropShadowFilter;
 	
     //----------------------------------
 	//  Public Methods
@@ -295,6 +361,9 @@ include "../../styles/metadata/TextStyles.inc"
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		override protected function commitProperties():void
 		{
 			super.commitProperties();
@@ -320,6 +389,9 @@ include "../../styles/metadata/TextStyles.inc"
 			FlexFontUtil.applyTextStyles(this.label, this);
 		}
 		
+		/**
+		 * @private
+		 */
 		override protected function measure():void
 		{
 			super.measure();
@@ -339,12 +411,18 @@ include "../../styles/metadata/TextStyles.inc"
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 			this.layoutContents(unscaledWidth, unscaledHeight);
 		}
 		
+		/**
+		 * @private
+		 */
 		protected function layoutContents(width:Number, height:Number):void
 		{
 			var paddingTop:Number = this.getStyle("paddingTop");
@@ -394,6 +472,10 @@ include "../../styles/metadata/TextStyles.inc"
 			this.label.y = Math.max(0, (this.selectionButton.height - this.label.height) / 2);
 		}
 		
+		/**
+		 * @private
+		 * Updates the resize indicator when it changes.
+		 */
 		protected function refreshResizeIcon():void
 		{
 			if(this.resizeIndicator)
@@ -414,6 +496,10 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Protected Event Handlers
     //----------------------------------
 		
+		/**
+		 * @private
+		 * Displays the popup when the mouse is over the header.
+		 */
 		protected function rollOverHandler(event:MouseEvent):void
 		{
 			if(this.unscaledWidth < this.measuredWidth || this.unscaledHeight < this.measuredHeight)
@@ -467,11 +553,10 @@ include "../../styles/metadata/TextStyles.inc"
 			}
 		}
 		
-		private var _openEffect:IEffect;
-		private var _resize:Resize;
-		private var _move:Move;
-		private var _dropShadow:DropShadowFilter;
-		
+		/**
+		 * @private
+		 * Figures out the location for the popup.
+		 */
 		protected function calculateGlobalBounds():Rectangle
 		{	
 			var newWidth:Number = Math.max(this.unscaledWidth, this.measuredWidth);
@@ -506,6 +591,10 @@ include "../../styles/metadata/TextStyles.inc"
 			return new Rectangle(globalPosition.x, globalPosition.y, newWidth, newHeight);
 		}
 		
+		/**
+		 * @private
+		 * Close the popup if the mouse moves outside the stage.
+		 */
 		protected function mouseMoveHandler(event:MouseEvent):void
 		{
 			var bounds:Rectangle = new Rectangle(this._move.xTo, this._move.yTo, this._resize.widthTo, this._resize.heightTo);
@@ -515,6 +604,10 @@ include "../../styles/metadata/TextStyles.inc"
 			}
 		}
 		
+		/**
+		 * @private
+		 * Removes the special growing popup.
+		 */
 		protected function closePopUp():void
 		{
 			if(this.parent is ITreeMapBranchRenderer)
@@ -544,15 +637,24 @@ include "../../styles/metadata/TextStyles.inc"
 			this.setActualSize(this._oldBounds.width, this._oldBounds.height);
 		}
 		
+		/**
+		 * @private
+		 * If the header is clicked, request a selection.
+		 */
 		protected function selectionButtonClickHandler(event:Event):void
 		{
-			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_SELECT));
+			this.dispatchEvent(new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_SELECT));
 		}
 		
+		/**
+		 * @private
+		 * If the zoom button is clicked, close the pop up if it is open and
+		 * request a zoom.
+		 */
 		protected function zoomButtonClickHandler(event:MouseEvent):void
 		{
 			this.closePopUp();
-			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM));
+			this.dispatchEvent(new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_ZOOM));
 		}
 	}
 }

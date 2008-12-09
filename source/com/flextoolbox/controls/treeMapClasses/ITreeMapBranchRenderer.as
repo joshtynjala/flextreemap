@@ -31,19 +31,25 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 
 	/**
-	 * TODO: Document this!
+	 * Event type that is dispatched when the user selects the branch.
+	 * Implementations of branch renderers may provide different UIs for this
+	 * interaction.
 	 */
-	[Event(name="branchSelect", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="requestSelect", type="com.flextoolbox.events.TreeMapBranchEvent")]
+
 
 	/**
-	 * TODO: Document this!
+	 * Event type that is dispatched when the user zooms the branch.
+	 * Implementations of branch renderers may provide different UIs for this
+	 * interaction.
 	 */
-	[Event(name="branchZoom", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="requestZoom", type="com.flextoolbox.events.TreeMapBranchEvent")]
 
 	/**
-	 * TODO: Document this!
+	 * Event type that is dispatched when the branch renderer finishes drawing
+	 * itself and its children are sized and positioned.
 	 */
-	[Event(name="branchLayoutChange", type="com.flextoolbox.events.TreeMapLayoutEvent")]
+	[Event(name="layoutComplete", type="com.flextoolbox.events.TreeMapBranchEvent")]
 	
 	/**
 	 * The interface that defines functionality required for a TreeMap control's

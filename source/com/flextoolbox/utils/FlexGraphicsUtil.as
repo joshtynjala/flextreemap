@@ -26,22 +26,27 @@ package com.flextoolbox.utils
 	public class FlexGraphicsUtil
 	{
 		/**
-		 * Draws a border using a series of rectangular fills.
+		 * Draws a border using a series of rectangular fills. Should be used
+		 * instead of a stroke since strokes "bleed" into and out of fills.
 		 */	
 		public static function drawBorder(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
 									color1:Number, color2:Number, thickness:Number, alpha:Number):void
 		{
+			//ensure that the thickness doesn't extend outside the width and height
+			var wThickness:Number = Math.min(thickness, w / 2);
+			var hThickness:Number = Math.min(thickness, h / 2);
+			
 			// border line on the left side
-			drawFill(graphics, x, y, thickness, h, color1, alpha);
+			drawFill(graphics, x, y, wThickness, h, color1, alpha);
 		
 			// border line on the top side
-			drawFill(graphics, x, y, w, thickness, color1, alpha);
+			drawFill(graphics, x, y, w, hThickness, color1, alpha);
 		
 			// border line on the right side
-			drawFill(graphics, x + (w - thickness), y, thickness, h, color2, alpha);
+			drawFill(graphics, x + (w - wThickness), y, wThickness, h, color2, alpha);
 		
 			// border line on the bottom side
-			drawFill(graphics, x, y + (h - thickness), w, thickness, color2, alpha);
+			drawFill(graphics, x, y + (h - hThickness), w, hThickness, color2, alpha);
 		}
 			
 		/**

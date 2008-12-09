@@ -24,6 +24,7 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	import com.flextoolbox.events.TreeMapBranchEvent;
 	import com.flextoolbox.events.TreeMapEvent;
 	
 	import flash.display.DisplayObject;
@@ -46,14 +47,14 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 
 	/**
-	 * @copy ITreeMapBranchRenderer#branchSelect
+	 * @copy ITreeMapBranchRenderer#requestSelect
 	 */
-	[Event(name="branchSelect", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="requestSelect", type="com.flextoolbox.events.TreeMapBranchEvent")]
 
 	/**
-	 * @copy ITreeMapBranchRenderer#branchZoom
+	 * @copy ITreeMapBranchRenderer#requestZoom
 	 */
-	[Event(name="branchZoom", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="requestZoom", type="com.flextoolbox.events.TreeMapBranchEvent")]
 	
 	//--------------------------------------
 	//  Styles
@@ -75,8 +76,8 @@ include "../../styles/metadata/PaddingStyles.inc"
 	 * The default branch renderer for the TreeMap control. Includes a header
 	 * with a label and a zoom button.
 	 * 
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class TreeMapBranchRenderer extends BaseTreeMapBranchRenderer
 	{
@@ -262,8 +263,8 @@ include "../../styles/metadata/PaddingStyles.inc"
 			{
 				if(this.header)
 				{
-					this.header.removeEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
-					this.header.removeEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
+					this.header.removeEventListener(TreeMapBranchEvent.REQUEST_ZOOM, headerZoomHandler);
+					this.header.removeEventListener(TreeMapBranchEvent.REQUEST_SELECT, headerSelectHandler);
 					this.removeChild(this.header);
 					this.header = null;
 				}
@@ -274,8 +275,8 @@ include "../../styles/metadata/PaddingStyles.inc"
 				if(this.header)
 				{
 					this.header.styleName = headerStyleName;
-					this.header.addEventListener(TreeMapEvent.BRANCH_SELECT, headerSelectHandler);
-					this.header.addEventListener(TreeMapEvent.BRANCH_ZOOM, headerZoomHandler);
+					this.header.addEventListener(TreeMapBranchEvent.REQUEST_SELECT, headerSelectHandler);
+					this.header.addEventListener(TreeMapBranchEvent.REQUEST_ZOOM, headerZoomHandler);
 					this.addChild(this.header);
 				}
 				
@@ -357,11 +358,12 @@ include "../../styles/metadata/PaddingStyles.inc"
 	//--------------------------------------
 	
 		/**
-		 * Handles selecte events from the header.
+		 * @private
+		 * Handles select events from the header.
 		 */
 		protected function headerSelectHandler(event:Event):void
 		{
-			var select:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_SELECT, this);
+			var select:TreeMapBranchEvent = new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_SELECT);
 			this.dispatchEvent(select);
 		}
 	
@@ -371,7 +373,7 @@ include "../../styles/metadata/PaddingStyles.inc"
 		 */
 		protected function headerZoomHandler(event:Event):void
 		{
-			var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);
+			var zoom:TreeMapBranchEvent = new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_ZOOM);
 			this.dispatchEvent(zoom);
 		}
 	}

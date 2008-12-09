@@ -40,14 +40,14 @@ package com.flextoolbox.controls.treeMapClasses
 	//--------------------------------------
 
 	/**
-	 * @copy ITreeMapBranchRenderer#branchSelect
+	 * @copy ITreeMapBranchRenderer#requestSelect
 	 */
-	[Event(name="branchSelect", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="requestSelect", type="com.flextoolbox.events.TreeMapBranchEvent")]
 
 	/**
-	 * @copy ITreeMapBranchRenderer#branchZoom
+	 * @copy ITreeMapBranchRenderer#requestZoom
 	 */
-	[Event(name="branchZoom", type="com.flextoolbox.events.TreeMapEvent")]
+	[Event(name="requestZoom", type="com.flextoolbox.events.TreeMapBranchEvent")]
 	
 	//--------------------------------------
 	//  Styles
@@ -65,8 +65,8 @@ include "../../styles/metadata/TextStyles.inc"
 	 * branch. If the TreeMap has zoom enabled, double clicking or ctrl-clicking
 	 * the branch renderer will zoom the branch.
 	 *  
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class LiteTreeMapBranchRenderer extends BaseTreeMapBranchRenderer
 	{
@@ -116,6 +116,9 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Constructor
 	//--------------------------------------
 	
+		/**
+		 * Constructor.
+		 */
 		public function LiteTreeMapBranchRenderer()
 		{
 			super();
@@ -132,17 +135,44 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Properties
 	//--------------------------------------
 	
+		/**
+		 * @private
+		 * The textField that displays the text for the header.
+		 */
 		protected var headerText:TextField;
 		
+		/**
+		 * @private
+		 */
 		override public function set selected(value:Boolean):void
 		{
 			super.selected = value;
 			this.invalidateDisplayList();
 		}
 		
-		protected var mouseIsOver:Boolean = false;
+		/**
+		 * @private
+		 * Storage for the mouseIsOver property.
+		 */
+		private var _mouseIsOver:Boolean = false;
 		
-		protected var zoomCursorID:int = 0;
+		/**
+		 * @private
+		 * Flag that indicates that the mouse is over the branch.
+		 */
+		protected function get mouseIsOver():Boolean
+		{
+			return this._mouseIsOver;
+		}
+		
+		/**
+		 * @private
+		 */
+		protected function set mouseIsOver(value:Boolean):void
+		{
+			this._mouseIsOver = value;
+			this.invalidateDisplayList();
+		}
 	
 	//--------------------------------------
 	//  Protected Methods
@@ -251,6 +281,11 @@ include "../../styles/metadata/TextStyles.inc"
 	//  Protected Event Handlers
 	//--------------------------------------
 		
+		/**
+		 * @private
+		 * Either zooms or selects the branch when clicked, depending on if the
+		 * ctrl key is pressed.
+		 */
 		protected function clickHandler(event:MouseEvent):void
 		{
 			if(event.ctrlKey)
@@ -265,22 +300,32 @@ include "../../styles/metadata/TextStyles.inc"
 			}
 		}
 		
+		/**
+		 * @private
+		 * Zooms the branch when double clicked.
+		 */
 		protected function doubleClickHandler(event:MouseEvent):void
 		{
 			var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);
 			this.dispatchEvent(zoom);
 		}
 		
+		/**
+		 * @private
+		 * Sets the flag to change appearance when the mouse is over.
+		 */
 		protected function rollOverHandler(event:MouseEvent):void
 		{
 			this.mouseIsOver = true;
-			this.invalidateDisplayList();
 		}
 		
+		/**
+		 * @private
+		 * Clears the flag to change appearance when the mouse is over.
+		 */
 		protected function rollOutHandler(event:MouseEvent):void
 		{
-			this.mouseIsOver = false;
-			this.invalidateDisplayList();
+			this.mouseIsOver = false;;
 		}
 	}
 }

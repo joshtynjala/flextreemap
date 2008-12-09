@@ -25,8 +25,8 @@
 package com.flextoolbox.controls
 {
 	import com.flextoolbox.controls.treeMapClasses.*;
+	import com.flextoolbox.events.TreeMapBranchEvent;
 	import com.flextoolbox.events.TreeMapEvent;
-	import com.flextoolbox.events.TreeMapLayoutEvent;
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -899,7 +899,7 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		private var _zoomedBranches:Array = [];
 		
-		[Bindable("zoomChange")]
+		[Bindable("branchZoom")]
 		/**
 		 * The currently zoomed branch.
 		 */
@@ -925,7 +925,7 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				this._zoomedBranches = [];
 			}
-			this.dispatchEvent(new Event("zoomChange"));
+			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM));
 			this.zoomChanged = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
@@ -1489,9 +1489,9 @@ include "../styles/metadata/TextStyles.inc"
 				this.addChild(UIComponent(renderer));
 			}
 			
-			renderer.addEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
-			renderer.addEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
-			renderer.addEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
+			renderer.addEventListener(TreeMapBranchEvent.REQUEST_ZOOM, branchZoomHandler);
+			renderer.addEventListener(TreeMapBranchEvent.REQUEST_SELECT, branchSelectHandler);
+			renderer.addEventListener(TreeMapBranchEvent.LAYOUT_COMPLETE, branchLayoutChangeHandler);
 			this.branchRenderers.push(renderer);
 			this.itemRenderers.push(renderer);
 			return renderer;
@@ -1507,9 +1507,9 @@ include "../styles/metadata/TextStyles.inc"
 			for(var i:int = 0; i < itemCount; i++)
 			{
 				var extraRenderer:UIComponent = UIComponent(this._branchRendererCache[i]);
-				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
-				extraRenderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
-				extraRenderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
+				extraRenderer.removeEventListener(TreeMapBranchEvent.REQUEST_ZOOM, branchZoomHandler);
+				extraRenderer.removeEventListener(TreeMapBranchEvent.REQUEST_SELECT, branchSelectHandler);
+				extraRenderer.removeEventListener(TreeMapBranchEvent.LAYOUT_COMPLETE, branchLayoutChangeHandler);
 				extraRenderer.visible = false;
 			}
 			
@@ -1543,9 +1543,9 @@ include "../styles/metadata/TextStyles.inc"
 			for(var i:int = 0; i < itemCount; i++)
 			{
 				var renderer:ITreeMapItemRenderer = ITreeMapItemRenderer(this._branchRendererCache.pop());
-				renderer.removeEventListener(TreeMapEvent.BRANCH_ZOOM, branchZoomHandler);
-				renderer.removeEventListener(TreeMapEvent.BRANCH_SELECT, branchSelectHandler);
-				renderer.removeEventListener(TreeMapLayoutEvent.BRANCH_LAYOUT_CHANGE, branchLayoutChangeHandler);
+				renderer.removeEventListener(TreeMapBranchEvent.REQUEST_ZOOM, branchZoomHandler);
+				renderer.removeEventListener(TreeMapBranchEvent.REQUEST_SELECT, branchSelectHandler);
+				renderer.removeEventListener(TreeMapBranchEvent.LAYOUT_COMPLETE, branchLayoutChangeHandler);
 				this.removeChild(UIComponent(renderer));
 			}
 		}
@@ -1860,7 +1860,7 @@ include "../styles/metadata/TextStyles.inc"
 		 * @private
 		 * Handles a zoom request from a branch.
 		 */
-		protected function branchZoomHandler(event:TreeMapEvent):void
+		protected function branchZoomHandler(event:TreeMapBranchEvent):void
 		{
 			if(!this.zoomEnabled)
 			{
@@ -1907,7 +1907,7 @@ include "../styles/metadata/TextStyles.inc"
 				}
 			}
 			
-			this.dispatchEvent(new Event("zoomChange"));
+			var zoomEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, renderer);
 			
 			this.zoomChanged = true;
 			this.invalidateProperties();
@@ -1918,7 +1918,7 @@ include "../styles/metadata/TextStyles.inc"
 		 * @private
 		 * Handles a selection request from a branch.
 		 */
-		protected function branchSelectHandler(event:TreeMapEvent):void
+		protected function branchSelectHandler(event:TreeMapBranchEvent):void
 		{
 			if(this.branchesSelectable)
 			{
@@ -1927,7 +1927,12 @@ include "../styles/metadata/TextStyles.inc"
 			}
 		}
 		
-		protected function branchLayoutChangeHandler(event:TreeMapLayoutEvent):void
+		/**
+		 * @private
+		 * When the branch updates its layout, the TreeMap must resize and
+		 * change the positions of its child renderers.
+		 */
+		protected function branchLayoutChangeHandler(event:TreeMapBranchEvent):void
 		{
 			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(event.target);
 			

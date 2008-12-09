@@ -30,28 +30,24 @@ package com.flextoolbox.controls.treeMapClasses
 	
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	import mx.core.UIComponent;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.StyleManager;
 	
-	
-	//--------------------------------------
-	//  Events
-	//--------------------------------------
-	
-	
 	//--------------------------------------
 	//  Styles
 	//--------------------------------------
 	
-	
+include "../../styles/metadata/PaddingStyles.inc"
+include "../../styles/metadata/TextStyles.inc"
 	
 	/**
 	 * A very simple leaf renderer for the TreeMap component.
 	 * 
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class LiteTreeMapLeafRenderer extends UIComponent implements ITreeMapLeafRenderer, IDropInTreeMapItemRenderer
 	{
@@ -111,12 +107,26 @@ package com.flextoolbox.controls.treeMapClasses
 		
 		/**
 		 * @private
+		 * Flag indicating that a font-related style has changed. Used to
+		 * maximize performance.
+		 */
+		protected var textStylesChanged:Boolean = true;
+		
+		/**
+		 * @private
 		 * The TextField used to display the leaf's label.
 		 */
 		protected var textField:TextField;
 		
+		/**
+		 * @private
+		 * Storage for the treeMapData property.
+		 */
 		private var _treeMapLeafData:TreeMapLeafData;
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function get treeMapData():BaseTreeMapData
 		{
 			return this._treeMapLeafData;
@@ -132,8 +142,15 @@ package com.flextoolbox.controls.treeMapClasses
 			this.invalidateDisplayList();
 		}
 		
+		/**
+		 * @private
+		 * Storage for the data property.
+		 */
 		private var _data:Object;
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function get data():Object
 		{
 			return this._data;
@@ -149,13 +166,23 @@ package com.flextoolbox.controls.treeMapClasses
 			this.invalidateDisplayList();
 		}
 		
+		/**
+		 * @private
+		 * Storage for the selected property.
+		 */
 		private var _selected:Boolean = false;
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function get selected():Boolean
 		{
 			return this._selected;
 		}
 		
+		/**
+		 * @private
+		 */
 		public function set selected(value:Boolean):void
 		{
 			if(this._selected != value)
@@ -165,12 +192,36 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 		}
 		
-		protected var highlighted:Boolean = false;
+		/**
+		 * @private
+		 * Storage for the highlighted property.
+		 */
+		private var _highlighted:Boolean = false;
+		
+		/**
+		 * Flag that indicates that the renderer is highlighted
+		 */
+		protected function get mouseIsOver():Boolean
+		{
+			return this._highlighted;
+		}
+		
+		/**
+		 * @private
+		 */
+		protected function set mouseIsOver(value:Boolean):void
+		{
+			this._highlighted = value;
+			this.invalidateDisplayList();
+		}
 		
 	//--------------------------------------
 	//  Public Methods
 	//--------------------------------------
 	
+		/**
+		 * @private
+		 */
 		override public function styleChanged(styleProp:String):void
 		{
 			super.styleChanged(styleProp);
@@ -180,6 +231,12 @@ package com.flextoolbox.controls.treeMapClasses
 			if(allStyles || styleProp == "fontSizeMode")
 			{
 				this.invalidateDisplayList();
+			}
+			
+			if(allStyles || styleProp.indexOf("font") || styleProp.indexOf("text"))
+			{
+				this.textStylesChanged = true;
+				this.invalidateProperties();
 			}
 		}
 		
@@ -224,6 +281,12 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				this.textField.text = label;
 			}
+			
+			if(labelChanged || this.textStylesChanged)
+			{
+				FlexFontUtil.applyTextStyles(this.textField, this);
+				this.textStylesChanged = false;
+			}
 		}
 		
 		/**
@@ -251,7 +314,7 @@ package com.flextoolbox.controls.treeMapClasses
 			{
 				indicatorColor = this.getStyle("themeColor");
 			}
-			if(this.highlighted)
+			if(this.mouseIsOver)
 			{
 				indicatorColor = this.getStyle("rollOverColor");
 			}
@@ -266,33 +329,42 @@ package com.flextoolbox.controls.treeMapClasses
 			
 	        var viewWidth:Number = Math.max(0, unscaledWidth - paddingLeft - paddingRight);
     	    var viewHeight:Number = Math.max(0, unscaledHeight - paddingTop - paddingBottom);
-			
+    	    
 			//width must always be maximum to handle alignment
 			this.textField.width = viewWidth;
 			this.textField.height = viewHeight;
 			
-			FlexFontUtil.applyTextStyles(this.textField, this);
+			//we're only applying the font's size here. the rest happens up
+			//in commitProperties()
+			var format:TextFormat = this.textField.getTextFormat();
+			format.size = this.getStyle("fontSize");
+			this.textField.setTextFormat(format);
 			FlexFontUtil.autoAdjustFontSize(this.textField, this.getStyle("fontSizeMode"));
 			
 			//we want to center vertically, so resize if needed
 			this.textField.height = Math.min(viewHeight, this.textField.textHeight + FlexFontUtil.TEXTFIELD_VERTICAL_MARGIN);
-			
 			
 			//center the text field
 			this.textField.x = (unscaledWidth - this.textField.width) / 2;
 			this.textField.y = (unscaledHeight - this.textField.height) / 2;
 		}
 		
+		/**
+		 * @private
+		 * Sets the mouse over flag.
+		 */
 		protected function rollOverHandler(event:MouseEvent):void
 		{
-			this.highlighted = true;
+			this.mouseIsOver = true;
 			this.invalidateDisplayList();
 		}
 		
+		/**
+		 * Clears the mouse over flag.
+		 */
 		protected function rollOutHandler(event:MouseEvent):void
 		{
-			this.highlighted = false;
-			this.invalidateDisplayList();
+			this.mouseIsOver = false;
 		}
 		
 	}

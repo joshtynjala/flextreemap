@@ -1091,7 +1091,7 @@ include "../styles/metadata/TextStyles.inc"
 			if(isNaN(weight))
 			{
 				//automatically determine branch weight from sum of children
-				if(this.dataDescriptor.isBranch(item))
+				if(this._dataDescriptor.isBranch(item))
 				{
 					weight = 0;
 					
@@ -1260,7 +1260,10 @@ include "../styles/metadata/TextStyles.inc"
 				this.refreshBranchChildRenderers(this.rootBranchRenderer, this._displayedRoot, 0);
 				this.clearCache();
 			
+				//reset flags
 				this.dataProviderChanged = false;
+				this.leafRendererChanged = false;
+				this.branchRendererChanged = false;
 				this.zoomChanged = false;
 			}
 			
@@ -1570,8 +1573,10 @@ include "../styles/metadata/TextStyles.inc"
 		protected function commitBranchProperties(branch:Object, zoomDepth:int):void
 		{
 			var branchRenderer:ITreeMapBranchRenderer = ITreeMapBranchRenderer(this.itemToItemRenderer(branch));
+			this.setChildIndex(DisplayObject(branchRenderer), this.branchRenderers.indexOf(branchRenderer));
 			
-			var branchData:TreeMapBranchData = new TreeMapBranchData(this);
+			var branchData:TreeMapBranchData = new TreeMapBranchData();
+			branchData.owner = this;
 			branchData.layoutStrategy = this.layoutStrategy;
 			branchData.closed = this.isDepthClosed(zoomDepth);
 			branchData.zoomed = branch == this.zoomedBranch;
@@ -1625,7 +1630,8 @@ include "../styles/metadata/TextStyles.inc"
 				}
 				else
 				{
-					var leafData:TreeMapLeafData = new TreeMapLeafData(this);
+					var leafData:TreeMapLeafData = new TreeMapLeafData();
+					leafData.owner = this;
 					leafData.color = this.itemToColor(item);
 					this.commitItemProperties(item, leafData, depth, zoomDepth);
 				}
@@ -1663,10 +1669,6 @@ include "../styles/metadata/TextStyles.inc"
 			
 			var displayRenderer:DisplayObject = DisplayObject(renderer);
 			var index:int = this.numChildren - 1;
-			if(this.getChildIndex(displayRenderer) != index)
-			{
-				this.setChildIndex(displayRenderer, index);
-			}
 		}
 		
 		/**

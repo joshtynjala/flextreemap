@@ -83,7 +83,7 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		private function squarify(items:Array, bounds:Rectangle):void
 		{
-			items = items.sort(compareWeights, Array.DESCENDING);
+			items = items.sortOn("weight", Array.DESCENDING | Array.NUMERIC);
 			this._totalRemainingWeightSum = this.sumWeights(items);
 			var lastAspectRatio:Number = Number.MAX_VALUE;
 			var lengthOfShorterEdge:Number = Math.min(bounds.width, bounds.height);
@@ -119,34 +119,6 @@ package com.flextoolbox.controls.treeMapClasses
 				}
 			}
 			while(items.length > 0);
-		}
-		
-		/**
-		 * @private
-		 * Compares the weight values of TreeMapItemLayoutData instances.
-		 */
-		private function compareWeights(a:TreeMapItemLayoutData, b:TreeMapItemLayoutData):int
-		{
-			//first check for nulls
-			if(a == null && b == null)
-			{
-				return 0;
-			}
-			if(a == null)
-			{
-				return 1;
-			}
-			if(b == null)
-			{
-				return -1;
-			}
-                 
-			var weightA:Number = a.weight;
-			var weightB:Number = b.weight;
-
-			if(weightA < weightB) return -1;
-			if(weightA > weightB) return 1;
-			return 0;
 		}
 		
 		/**

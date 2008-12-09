@@ -115,8 +115,7 @@ package com.flextoolbox.controls.treeMapClasses
 			var weightSum:Number = this.calculateTotalWeightSum(this._dataProvider);
 			
 			var sortWeights:Sort = new Sort();
-			var weightField:SortField = new SortField(null, true, true, true);
-			weightField.compareFunction = this.compareWeights;
+			var weightField:SortField = new SortField("weight", false, true, true);
 			sortWeights.fields = [weightField];
 
 			this._dataProvider.sort = sortWeights;
@@ -295,7 +294,7 @@ package com.flextoolbox.controls.treeMapClasses
 		 * @private
 		 * After a row is drawn, the bounds are modified to fit the smaller region.
 		 */
-		private function updateBoundsForNextRow(mapBounds:Rectangle, modifier:Number):Rectangle
+		private function updateBoundsForNextRow(bounds:Rectangle, modifier:Number):Rectangle
 		{
 			if(bounds.width > bounds.height)
 			{
@@ -310,7 +309,7 @@ package com.flextoolbox.controls.treeMapClasses
 				bounds.height = newHeight;
 			}
 			
-			return mapBounds;
+			return bounds;
 		}
 		
 		/**
@@ -346,33 +345,6 @@ package com.flextoolbox.controls.treeMapClasses
 				sum += currentItem.weight;
 			}
 			return sum;
-		}
-		
-		/**
-		 * @private
-		 * Compares the weights from two items in the TreeMap's data provider.
-		 */
-		private function compareWeights(a:TreeMapItemLayoutData, b:TreeMapItemLayoutData, fields:Array = null):int
-		{
-			if(a == null && b == null)
-			{
-				return 0;
-			}
-			if(a == null)
-			{
-				return 1;
-			}
-			if(b == null)
-			{
-				return -1;
-			}
-                 
-			var weightA:Number = a.weight;
-			var weightB:Number = b.weight;
-
-			if(weightA < weightB) return -1;
-			if(weightA > weightB) return 1;
-			return 0;
 		}
 		
 	}

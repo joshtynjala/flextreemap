@@ -29,8 +29,8 @@ package com.flextoolbox.controls.treeMapClasses
 	/**
 	 * The data passed to drop-in TreeMap branch renderers.
 	 * 
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class TreeMapBranchData extends BaseTreeMapData
 	{
@@ -39,65 +39,37 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Constructor
 	//--------------------------------------
 	
-		public function TreeMapBranchData(owner:TreeMap)
+		/**
+		 * Constructor.
+		 */
+		public function TreeMapBranchData()
 		{
-			super(owner);
 		}
 		
 	//--------------------------------------
 	//  Properties
 	//--------------------------------------
 		
-		private var _layoutStrategy:ITreeMapLayoutStrategy;
-		
-		public function get layoutStrategy():ITreeMapLayoutStrategy
-		{
-			return this._layoutStrategy;
-		}
-		
-		public function set layoutStrategy(value:ITreeMapLayoutStrategy):void
-		{
-			this._layoutStrategy = value;
-		}
-		
-		private var _displaySimple:Boolean = true;
+		/**
+		 * The layout strategy to be used by the branch renderer to position
+		 * and size its children.
+		 */
+		public var layoutStrategy:ITreeMapLayoutStrategy;
 		
 		/**
 		 * Does not display addition information to the user, such as a label.
 		 */
-		public function get displaySimple():Boolean
-		{
-			return this._displaySimple;
-		}
+		public var displaySimple:Boolean;
 		
-		public function set displaySimple(value:Boolean):void
-		{
-			this._displaySimple = value;
-		}
+		/**
+		 * If true, the branch will not position its children.
+		 */
+		public var closed:Boolean = false;
 		
-		private var _closed:Boolean = false;
-		
-		public function get closed():Boolean
-		{
-			return this._closed;
-		}
-		
-		public function set closed(value:Boolean):void
-		{
-			this._closed = value;
-		}
-		
-		private var _zoomed:Boolean = false;
-		
-		public function get zoomed():Boolean
-		{
-			return this._zoomed;
-		}
-		
-		public function set zoomed(value:Boolean):void
-		{
-			this._zoomed = value;
-		}
+		/**
+		 * If true, the branch is displayed at full size over the whole treemap.
+		 */
+		public var zoomed:Boolean = false;
 		
 	}
 }

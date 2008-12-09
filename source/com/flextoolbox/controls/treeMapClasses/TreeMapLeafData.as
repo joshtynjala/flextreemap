@@ -39,26 +39,15 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Constructor
 	//--------------------------------------
 	
-		public function TreeMapLeafData(owner:TreeMap)
+		public function TreeMapLeafData()
 		{
-			super(owner);
 		}
 		
 	//--------------------------------------
 	//  Properties
 	//--------------------------------------
 		
-		private var _color:uint = 0x000000;
-		
-		public function get color():uint
-		{
-			return this._color;
-		}
-		
-		public function set color(value:uint):void
-		{
-			this._color = value;
-		}
+		public var color:uint = 0x000000;
 		
 	}
 }

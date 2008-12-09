@@ -39,9 +39,8 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Constructor
 	//--------------------------------------
 	
-		public function BaseTreeMapData(owner:TreeMap)
+		public function BaseTreeMapData()
 		{
-			this._owner = owner;
 		}
 		
 	//--------------------------------------
@@ -53,59 +52,16 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		public var uid:String;
 		
-		private var _owner:TreeMap;
-		
-		public function get owner():TreeMap
-		{
-			return this._owner;
-		}
+		public var owner:TreeMap;
 		
 		private var _depth:int = 0;
 		
-		public function get depth():int
-		{
-			return this._depth;
-		}
+		public var depth:int;
 		
-		public function set depth(value:int):void
-		{
-			this._depth = value;
-		}
+		public var weight:Number = 0
 		
-		private var _weight:Number = 0;
+		public var label:String = "";
 		
-		public function get weight():Number
-		{
-			return this._weight;
-		}
-		
-		public function set weight(value:Number):void
-		{
-			this._weight = value;
-		}
-		
-		private var _label:String = "";
-		
-		public function get label():String
-		{
-			return this._label;
-		}
-		
-		public function set label(value:String):void
-		{
-			this._label = value;
-		}
-		
-		private var _dataTip:String = "";
-		
-		public function get dataTip():String
-		{
-			return this._dataTip;
-		}
-		
-		public function set dataTip(value:String):void
-		{
-			this._dataTip = value;
-		}
+		public var dataTip:String = "";
 	}
 }

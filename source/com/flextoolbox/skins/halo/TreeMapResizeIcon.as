@@ -27,6 +27,11 @@ package com.flextoolbox.skins.halo
 	import mx.core.SpriteAsset;
 
 	[Embed(source="/assets/Assets.swf",symbol="TreeMapResizeIconEnabled")]
+	/**
+	 * Icon used when the treemap branch header can be resized.
+	 * 
+	 * @author Josh Tynjala
+	 */
 	public class TreeMapResizeIcon extends SpriteAsset
 	{
 		public function TreeMapResizeIcon()

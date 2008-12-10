@@ -1,40 +1,64 @@
 <!-- saved from url=(0014)about:internet -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
+	<title>Getting Started - An example of the TreeMap control for Adobe Flex</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<title>Open Source Flex TreeMap Component - Getting Started Example</title>
-	<script type="text/javascript" src="../swfobject.js"></script>
-	<style type="text/css">
-		html, body, #flashcontent
-		{
-			margin: 0px;
-			padding: 0px;
-			width: 100%;
-			height: 100%;
-		}
-		
-		html
-		{
-			overflow: hidden;
-		}
-	</style>
-</head>
 
-<body>
-	<div id="flashcontent">
-		<h1>Warning!</h1>
-		<p>This content requires the <a href="http://www.adobe.com/go/getflashplayer/">Adobe Flash Player</a>. You might not have it installed, or your current installation may be an older version.</p>
-		<p>Please <a href="http://www.adobe.com/go/getflash/">download Flash</a> to view this page. If you think we may have incorrectly detected Flash, you may <a href="?detectflash=false">bypass this check to view the Flash content</a>.</p>
-	</div>
-	
+	<style type="text/css" media="screen"> 
+		html, body	{ height:100%; }
+		body { margin:0; padding:0; overflow:hidden; }   
+		#flashContent { display:none; }
+	</style> 
+	    
+	<script type="text/javascript" src="scripts/swfobject.js"></script>
 	<script type="text/javascript">
-		// <![CDATA[
+		var swfVersionStr = "9.0.124";
+		var xiSwfUrlStr = "playerProductInstall.swf";
+		var flashvars = {};
 		
-		var swfobj = new SWFObject("GettingStarted.swf", "example", "100%", "100%", "9");
-		swfobj.write("flashcontent");
+		var params = {};
+		params.quality = "high";
+		params.bgcolor = "#869ca7";
+		params.allowscriptaccess = "sameDomain";
 		
-		// ]]>
+		var attributes = {};
+		attributes.id = "GettingStarted";
+		attributes.name = "GettingStarted";
+		attributes.align = "middle";
+        
+		swfobject.embedSWF("GettingStarted.swf", "flashContent", "100%", "100%", 
+			swfVersionStr, xiSwfUrlStr, flashvars, params, attributes);
+		swfobject.createCSS("#flashContent", "display:block");
 	</script>
+</head>
+<body>
+	<div id="flashContent">
+		<p>To view this page ensure that Adobe Flash Player version 9.0.124 or greater is installed.</p>
+		<a href="http://www.adobe.com/go/getflashplayer">
+			<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+		</a>
+	</div>
+
+	<noscript>
+		<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="IntroductionToJacks">
+			<param name="movie" value="GettingStarted.swf" />
+			<param name="quality" value="high" />
+			<param name="bgcolor" value="#869ca7" />
+			<param name="allowScriptAccess" value="sameDomain" />
+			<!--[if !IE]>-->
+				<object type="application/x-shockwave-flash" data="GettingStarted.swf" width="100%" height="100%">
+					<param name="quality" value="high" />
+					<param name="bgcolor" value="#869ca7" />
+					<param name="allowScriptAccess" value="sameDomain" />
+			<!--<![endif]-->
+				<a href="http://www.adobe.com/go/getflashplayer">
+			    	<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+				</a>
+			<!--[if !IE]>-->
+				</object>
+			<!--<![endif]-->
+		</object>
+	</noscript>		
 </body>
 </html>

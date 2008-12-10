@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml"
+	layout="absolute" initialize="init()">
+	
+	<mx:Label styleName="instructions" horizontalCenter="0" top="10">
+		<mx:htmlText><![CDATA[<b>Instructions:</b> Click a language to select it.]]></mx:htmlText>
+	</mx:Label>
+	
+	<mx:HBox top="35" horizontalCenter="0">
+	
+		<!-- the TreeMap itself. notice that it is selectable, and many of the
+			display properties have been customized based on the expected XML
+			data format. -->
+		<toolbox:TreeMap id="treemap" width="500" height="400" 
+			selectable="true" leafStyleName="treeMapLeaf"
+			dataProvider="{indexData}"
+			labelField="@name" branchLabelField="@source" weightField="@value"
+			dataTipFunction="{itemToDataTip}" branchDataTipFunction="{branchToDataTip}"
+			colorFunction="{itemToColor}"/>
+		
+		<!-- when a TreeMap leaf is selected, the data for the item will be
+			displayed in this form -->
+		<mx:Form height="100%" visible="{treemap.selectedItem != null}">
+			<mx:FormItem label="Language">
+				<mx:Label text="{treemap.selectedItem.@name}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Rank">
+				<mx:Label text="{treemap.selectedItem.@position}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Previous Rank">
+				<mx:Label text="{treemap.selectedItem.@last}"/>
+			</mx:FormItem>
+			<mx:FormItem label="Value">
+				<mx:Label text="{treemap.selectedItem.@value}%"/>
+			</mx:FormItem>
+			<mx:FormItem label="Change since 2007">
+				<mx:Label text="{treemap.selectedItem.@change}%"/>
+			</mx:FormItem>
+		</mx:Form>
+		
+	</mx:HBox>
+	
+	<!-- a message to display while the data file is loading -->
+	<mx:Label id="status" horizontalCenter="0" verticalCenter="0"
+		text="Loading Data" visible="{this.indexData == null}"/>
+	
+	<!-- just a link back to the project page -->
+	<mx:LinkButton bottom="10" right="10"
+		label="powered by flextreemap" click="linkClickHandler(event)"/>
+	
+	<mx:Script><![CDATA[
+		import flash.net.navigateToURL;
+		import mx.utils.ColorUtil;
+		
+		[Bindable]
+		/**
+		 * @private
+		 * This is where the data is stored after loading it from the external
+		 * XML file.
+		 */
+		protected var indexData:XML;
+		
+		/**
+		 * @private
+		 * This value is used to calculate the leaf colors. It is the maximum
+		 * absolute value from among the @change attribute in the data provider.
+		 */
+		private var _colorRange:Number = 0;
+		
+		/**
+		 * @private
+		 * Loads the XML data file right away.
+		 */
+		private function init():void
+		{
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, dataLoadCompleteHandler);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, dataLoadErrorHandler);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, dataLoadErrorHandler);
+			loader.load(new URLRequest("data/tiobe-12-2008.xml"));
+		}
+		
+		/**
+		 * @private
+		 * Determines the color of a leaf in the TreeMap.
+		 */
+		private function itemToColor(item:XML):uint
+		{
+			var changeValue:Number = parseFloat(item.@change.toString());
+			var percent:Number = Math.abs(changeValue) / this._colorRange;
+			
+			if(changeValue >= 0)
+			{
+				return this.blendColors(0x009900, 0x000000, percent);
+			}
+			return this.blendColors(0x990000, 0x000000, percent);
+		}
+		
+		/**
+		 * @private
+		 * Determines the data tip text for an item in the TreeMap.
+		 */
+		private function itemToDataTip(item:XML):String
+		{
+			return item.@name + "\nRank: #" + item.@position + "\nRating: " + item.@value + "%\nChange: " + item.@change + "%";
+		}
+		
+		/**
+		 * @private
+		 * Determines the data tip text for a branch in the TreeMap.
+		 */
+		private function branchToDataTip(branch:XML):String
+		{
+			return "Source: " + branch.@url;
+		}
+		
+		/**
+		 * @private
+		 * Determines the blended color between two separate colors using a
+		 * range from 0 to 1 where a value of 0 returns 100% of the first color
+		 * and a value of 1 return 100% of the second color.
+		 */
+		private function blendColors(color1:uint, color2:uint, percent:Number = 0.5):uint
+		{
+			var remaining:Number = 1 - percent;
+			
+			var red1:uint = (color1 >> 16) & 0xff;
+			var green1:uint = (color1 >> 8) & 0xff;
+			var blue1:uint = color1 & 0xff;
+			
+			var red2:uint = (color2 >> 16) & 0xff;
+			var green2:uint = (color2 >> 8) & 0xff;
+			var blue2:uint = color2 & 0xff;
+			 
+			color1 = ((red1 * percent) << 16) + ((green1 * percent) << 8) + blue1 * percent;
+			color2 = ((red2 * remaining) << 16) + ((green2 * remaining) << 8) + blue2 * remaining;
+
+			return color1 + color2;
+		}
+		
+		/**
+		 * @private
+		 * When the data finishes loading, save it in the local variable that
+		 * is bound to the TreeMap. Then parse the data to determine the maximum
+		 * value of the @change attribute.
+		 */
+		private function dataLoadCompleteHandler(event:Event):void
+		{
+			var loader:URLLoader = URLLoader(event.currentTarget);
+			loader.removeEventListener(Event.COMPLETE, dataLoadCompleteHandler);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, dataLoadErrorHandler);
+			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, dataLoadErrorHandler);
+			
+			this.indexData = new XML(loader.data);
+			
+			var range:Number = 0;
+			var changes:XMLList = this.indexData.language.@change;
+			for each(var changeValue:XML in changes)
+			{
+				range = Math.max(range, Math.abs(parseFloat(changeValue)));
+			}
+			
+			this._colorRange = range;
+		}
+		
+		/**
+		 * @private
+		 * If there is a problem loading the data, display a message for the
+		 * user.
+		 */
+		private function dataLoadErrorHandler(event:ErrorEvent):void
+		{
+			var loader:URLLoader = URLLoader(event.currentTarget);
+			loader.removeEventListener(Event.COMPLETE, dataLoadCompleteHandler);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, dataLoadErrorHandler);
+			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, dataLoadErrorHandler);
+			
+			this.status.text = "Error: Could not load data.";
+		}
+		
+		/**
+		 * @private
+		 * Just a link back to the TreeMap project page.
+		 */
+		private function linkClickHandler(event:MouseEvent):void
+		{
+			navigateToURL(new URLRequest("http://code.google.com/p/flex2treemap/"));
+		}
+			
+	]]></mx:Script>
+	
+	<mx:Style>
+		LinkButton
+		{
+			fontSize: 8;
+		}
+
+		FormItem
+		{
+			labelStyleName: formItemLabel;
+		}
+		
+		.instructions
+		{
+			color: #ffffff;
+		}
+		
+		.formItemLabel
+		{
+			color: #2B535C;
+			fontWeight: bold;
+		}
+		
+		.treeMapLeaf
+		{
+			/* tells the leaf renderer to size its label to fill as much space
+			as it can. it should try to avoid creating line breaks in the middle
+			of words */
+			fontSizeMode: fitToBoundsWithoutBreaks;
+			
+			/* sets the minimum font size value used by the fontSizeMode
+			specified above */
+			fontSize: 4;
+		}
+	</mx:Style>
+</mx:Application>

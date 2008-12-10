@@ -1164,6 +1164,11 @@ include "../styles/metadata/TextStyles.inc"
 		 * <code>branchLabelFunction</code> is defined, then those values take
 		 * precedence over the standard <code>labelField</code> and
 		 * <code>labelFunction</code> values.</p>
+		 * 
+		 * @param item			The item from the data provider for which to
+		 * 						generate the label.
+		 * 
+		 * @return		The item's label
 		 */
 		public function itemToLabel(item:Object):String
 		{
@@ -1195,6 +1200,11 @@ include "../styles/metadata/TextStyles.inc"
 		/**
 		 * Determines the datatip text for an item from the data provider.
 		 * If no datatip is specified, returns an empty string.
+		 * 
+		 * @param item			The item from the data provider for which to
+		 * 						generate the data tip.
+		 * 
+		 * @return		The item's data tip
 		 */
 		public function itemToDataTip(item:Object):String
 		{
@@ -1231,6 +1241,11 @@ include "../styles/metadata/TextStyles.inc"
 		 * If color not available, returns the value of the
 		 * <code>itemDefaultColor</code> style. The default value of this style
 		 * is black (0x000000).
+		 * 
+		 * @param item			The item from the data provider for which to
+		 * 						generate the color.
+		 * 
+		 * @return		The item's color
 		 */
 		public function itemToColor(item:Object):uint
 		{
@@ -1254,6 +1269,11 @@ include "../styles/metadata/TextStyles.inc"
 	
 		/**
 		 * Determines the weight value for an item from the data provider.
+		 * 
+		 * @param item			The item from the data provider for which to
+		 * 						generate the weight.
+		 * 
+		 * @return		The item's weight
 		 */
 		public function itemToWeight(item:Object):Number
 		{

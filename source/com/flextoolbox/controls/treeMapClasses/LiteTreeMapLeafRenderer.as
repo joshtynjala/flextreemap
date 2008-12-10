@@ -26,7 +26,6 @@ package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.utils.FlexFontUtil;
 	import com.flextoolbox.utils.FlexGraphicsUtil;
-	import com.flextoolbox.utils.FontSizeMode;
 	
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
@@ -42,6 +41,14 @@ package com.flextoolbox.controls.treeMapClasses
 	
 include "../../styles/metadata/PaddingStyles.inc"
 include "../../styles/metadata/TextStyles.inc"
+
+/**
+ *  Name of the class to use as the skin for the background and border
+ *  when a toggle button is selected and disabled.
+ * 
+ *  @default "noChange"
+ */
+[Style(name="fontSizeMode", type="String", enumeration="noChange,fitToBounds,fitToBoundsWithoutBreaks", inherit="no")]
 	
 	/**
 	 * A very simple leaf renderer for the TreeMap component.
@@ -70,7 +77,7 @@ include "../../styles/metadata/TextStyles.inc"
 			
 			selector.defaultFactory = function():void
 			{
-				this.fontSizeMode = FontSizeMode.NO_CHANGE;
+				this.fontSizeMode = FlexFontUtil.SIZE_MODE_NO_CHANGE;
 				this.color = 0xffffff;
 				this.cornerRadius = 0;
 				this.borderColor = 0x676a6c;

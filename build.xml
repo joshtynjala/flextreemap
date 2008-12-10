@@ -14,11 +14,7 @@
 		<!-- copy required source files -->
 		<copy overwrite="true" todir="${source.output}">
 			<fileset dir="${source}"/>
-		</copy>
-		<copy overwrite="true" todir="${examples.output}">
-			<fileset dir="${examples}"/>
-		</copy>
-				
+		</copy>				
 		<!-- copy informational files -->
 		<copy overwrite="true" todir="${output}">
 			<fileset dir="${basedir}">
@@ -74,29 +70,21 @@
 	</target>
 	
 	<target name="build-examples" depends="build-lib">
-		<ant antfile="${examples.output}/GettingStarted/build.xml" target="build">
-			<property name="basedir" value="${examples.output}/GettingStarted"/>
+		<ant antfile="${examples}/GettingStarted/build.xml" target="build">
+			<property name="basedir" value="${examples}/GettingStarted"/>
+			<property name="output" value="${examples.output}/GettingStarted"/>
+			<property name="libs" value="${build.output}"/>
 		</ant>
-		<ant antfile="${examples.output}/LayoutModes/build.xml" target="build">
-			<property name="basedir" value="${examples.output}/LayoutModes"/>
+		<ant antfile="${examples}/IntroToTreeMap/build.xml" target="build">
+			<property name="basedir" value="${examples}/IntroToTreeMap"/>
+			<property name="output" value="${examples.output}/IntroToTreeMap"/>
+			<property name="libs" value="${build.output}"/>
 		</ant>
-		<ant antfile="${examples.output}/TextModes/build.xml" target="build">
-			<property name="basedir" value="${examples.output}/TextModes"/>
+		<ant antfile="${examples}/LayoutModes/build.xml" target="build">
+			<property name="basedir" value="${examples}/LayoutModes"/>
+			<property name="output" value="${examples.output}/LayoutModes"/>
+			<property name="libs" value="${build.output}"/>
 		</ant>
-		<ant antfile="${examples.output}/TreeComparison/build.xml" target="build">
-			<property name="basedir" value="${examples.output}/TreeComparison"/>
-		</ant>
-		<ant antfile="${examples.output}/SelectableNodes/build.xml" target="build">
-			<property name="basedir" value="${examples.output}/SelectableNodes"/>
-		</ant>
-		<ant antfile="${examples.output}/StockMarket/build.xml" target="build">
-			<property name="basedir" value="${examples.output}/StockMarket"/>
-		</ant>
-		
-		<!-- get rid of the example build.xml files -->
-		<delete>
-			<fileset dir="${output}" includes="**/build.xml"/>
-		</delete>
 	</target>
 	
 	<target name="package">

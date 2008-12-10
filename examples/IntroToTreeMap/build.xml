@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="TreeMap Layout Modes Example" default="build">
+<project name="Intro to TreeMap Example" default="build">
 
 	<property file="../../sdk.properties"/>
 	
@@ -18,12 +18,13 @@
 			<fileset dir="${basedir}">
 			
 				<!-- main source files -->
-				<include name="LayoutModes.mxml"/>
+				<include name="IntroToTreeMap.mxml"/>
 								
 				<!-- supporting files -->
-				<include name="LayoutModes.html"/>
+				<include name="IntroToTreeMap.html"/>
 				<include name="playerProductInstall.swf"/>
 				<include name="scripts/swfobject.js"/>		
+				<include name="data/tiobe-12-2008.xml"/>		
 			</fileset>
 		</copy>
 	</target>
@@ -36,8 +37,8 @@
 		-->
 		<exec executable="${mxmlc}" failonerror="true">
 			<arg line="--library-path+='${libs}'"/>
-			<arg line="--output '${output}/LayoutModes.swf'"/>
-			<arg line="'${output}/LayoutModes.mxml'"/>
+			<arg line="--output '${output}/IntroToTreeMap.swf'"/>
+			<arg line="'${output}/IntroToTreeMap.mxml'"/>
 		</exec>
 	</target>
 	

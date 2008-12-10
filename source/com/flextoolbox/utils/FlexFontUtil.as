@@ -38,19 +38,46 @@ package com.flextoolbox.utils
 	public class FlexFontUtil
 	{
 		/**
-		 * @private
+		 * The extra vertical margin around text in a TextField (the difference
+		 * between height and textHeight, if the TextField is set to auto size).
 		 */
 		public static const TEXTFIELD_VERTICAL_MARGIN:Number = 4;
+		
+		/**
+		 * Mode setting for the <code>autoAdjustFontSize()</code> function to
+		 * specify that the font size should not be changed.
+		 */
+		public static const SIZE_MODE_NO_CHANGE:String = "noChange";
+		
+		/**
+		 * Mode setting for the <code>autoAdjustFontSize()</code> function to
+		 * specify that the font size should be increased to fill the maximum
+		 * amount of space in the TextField.
+		 */
+		public static const SIZE_MODE_FIT_TO_BOUNDS:String = "fitToBounds";
+		
+		/**
+		 * Mode setting for the <code>autoAdjustFontSize()</code> function to
+		 * specify that the font size should be increased to fill the maximum
+		 * amount of space in the TextField. Additionally, if possible, words
+		 * should not be broken apart onto multiple lines.
+		 */
+		public static const SIZE_MODE_FIT_TO_BOUNDS_WITHOUT_BREAKS:String = "fitToBoundsWithoutBreaks";
 		
 		/**
 		 * @private
 		 * Increases or decreases the font size until the text fills the bounds.
 		 * 
-		 * @see FontSizeMode
+		 * @param textField		The TextField of which to change the font size
+		 * @param mode			The mode used to change the font size.
+		 * 
+		 * @see #SIZE_MODE_NO_CHANGE
+		 * @see #SIZE_MODE_FIT_TO_BOUNDS
+		 * @see #SIZE_MODE_FIT_TO_BOUNDS_WITHOUT_BREAKS
 		 */
 		public static function autoAdjustFontSize(textField:TextField, mode:String = "noChange"):void
 		{
-			if(mode == FontSizeMode.NO_CHANGE || textField.length == 0 ||
+			if(mode == SIZE_MODE_NO_CHANGE || textField.length == 0 ||
 				textField.width == 0 || textField.height == 0)
 			{
 				return;
@@ -87,7 +114,7 @@ package com.flextoolbox.utils
 				textField.setTextFormat(format);
 				
 				//special case when we don't want words to break in the middle
-				if(mode == FontSizeMode.FIT_TO_BOUNDS_WITHOUT_BREAKS && textField.numLines > 1)
+				if(mode == SIZE_MODE_FIT_TO_BOUNDS_WITHOUT_BREAKS && textField.numLines > 1)
 				{
 					//minimize words being broken into multiple lines
 					//note: it can still happen if the min font size is too big!
@@ -136,10 +163,12 @@ package com.flextoolbox.utils
 		}
 
 		/**
-	     * Returns the TextFormat object that represents 
-	     * character formatting information for the label.
+	     * Returns the TextFormat object that represents character formatting
+	     * information for the label.
 	     *
-	     * @return		A TextFormat object. 
+	     * @param target		The TextField to which we'll apply the text styles.
+	     * @param source		The source of the styles.
+	     * @return				A TextFormat object. 
 	     *
 	     * @see		flash.text.TextFormat
 	     */

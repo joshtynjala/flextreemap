@@ -11,7 +11,7 @@ Links:
 ---------------------------------------------------------------------------------
 
 Project Page:
-   * http://flex2treemap.googlecode.com/
+   * http://code.google.com/p/flex2treemap/
    
 API Documentation:
    * http://www.flextoolbox.com/documentation/treemap/2/index.html
@@ -20,13 +20,31 @@ Getting Started:
    * http://code.google.com/p/flex2treemap/wiki/GettingStarted
 
 Author's Blog:
-   * http://www.zeuslabs.us/
+   * http://joshblog.net/
 
 ---------------------------------------------------------------------------------
 Release Notes:
 ---------------------------------------------------------------------------------
 
-05/26/2008 - 2.0.0 BETA
+12/10/2008 - 2.1.0
+   * Reduced the number of display list manipulations in every redraw to improve
+     performance.
+   * Performance improvements in the skinning and font style code for
+     TreeMapLeafRenderer.
+   * Refactored SquarifyLayout to use a non-recursive algorithm. Now supports
+     larger data sets.
+   * Moved old implementation of SquarifyLayout to RecursiveSquarifyLayout.
+   * TreeMap now dispatches TreeMapEvent.BRANCH_ZOOM when the zoomedBranch
+     property changes.
+   * Added ASDoc comments where they were missing. Some branch and leaf renderer
+     styles may not yet be documented.
+   * The appearance of selected leaf nodes has been tweaked.
+   * TreeMap now behaves correctly when enabled is set to false.
+   * Added branchLabelField, branchLabelFunction, branchDataTipField, and
+     branchDataTipFunction properties.
+   * Requires at least Flex 3.2.0.
+
+05/26/2008 - 2.0.0
    * Many public APIs have been renamed to clarify purpose.
    * Refactored renderer and layout system to improve performance.
    * Special "lite" renderers are available to match classic treemap style.
@@ -39,7 +57,8 @@ Release Notes:
    * Requires at least Flex 3.0.0.
 
 01/21/2008 - 1.0.1
-   * Renamed the headerStyleName style to branchHeaderStyleName to avoid conflicts
+   * Renamed the headerStyleName style to branchHeaderStyleName to avoid
+     conflicts with other Flex components.
    * Updated build to use Flex SWCs external libraries to reduce build file size
 
 11/11/2007 - 1.0.0

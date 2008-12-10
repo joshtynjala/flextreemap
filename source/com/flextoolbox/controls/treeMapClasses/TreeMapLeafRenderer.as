@@ -26,7 +26,6 @@ package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.skins.halo.TreeMapLeafRendererSkin;
 	import com.flextoolbox.utils.FlexFontUtil;
-	import com.flextoolbox.utils.FontSizeMode;
 	import com.flextoolbox.utils.TheInstantiator;
 	
 	import flash.display.DisplayObject;
@@ -137,6 +136,14 @@ include "../../styles/metadata/TextStyles.inc"
  */
 [Style(name="selectedDisabledSkin", type="Class", inherit="no")]
 
+/**
+ *  Name of the class to use as the skin for the background and border
+ *  when a toggle button is selected and disabled.
+ * 
+ *  @default "noChange"
+ */
+[Style(name="fontSizeMode", type="String", enumeration="noChange,fitToBounds,fitToBoundsWithoutBreaks", inherit="no")]
+
 
 	/**
 	 * The default leaf renderer for the TreeMap control.
@@ -169,7 +176,7 @@ include "../../styles/metadata/TextStyles.inc"
 				this.cornerRadius = 0;
 				this.fillAlphas = [0, 0];
 				this.fillColors = [0xff00ff, 0xff00ff]; // if you see pink, there's a problem!
-				this.fontSizeMode = FontSizeMode.NO_CHANGE;
+				this.fontSizeMode = FlexFontUtil.SIZE_MODE_NO_CHANGE;
 				this.highlightAlphas = [0.2, 0];
 				this.paddingLeft = 2;
 				this.paddingRight = 2;
@@ -258,7 +265,7 @@ include "../../styles/metadata/TextStyles.inc"
 		private var _data:Object;
 		
 		/**
-		 * @inheritDoc
+		 * @private
 		 */
 		public function get data():Object
 		{

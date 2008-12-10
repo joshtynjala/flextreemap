@@ -23,11 +23,27 @@ package com.flextoolbox.utils
 {
 	import flash.display.Graphics;
 	
+	/**
+	 * Utility functions for drawing Flex graphical assets (in particular,
+	 * Halo-style skins).
+	 * 
+	 * @author Josh Tynjala, based on code written by Adobe Systems, Inc.
+	 */
 	public class FlexGraphicsUtil
 	{
 		/**
 		 * Draws a border using a series of rectangular fills. Should be used
 		 * instead of a stroke since strokes "bleed" into and out of fills.
+		 * 
+		 * @param graphics		The Graphics instance to which to draw.
+		 * @param x				The starting x position.
+		 * @param y				The starting y position.
+		 * @param w				The width of the border.
+		 * @param h				The height of the border.
+		 * @param color1		The color of the top and left sides.
+		 * @param color2		The color of the bottom and right sides.
+		 * @param thickness		The thickness of the border.
+		 * @param alpha			The alpha of the border. 
 		 */	
 		public static function drawBorder(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
 									color1:Number, color2:Number, thickness:Number, alpha:Number):void
@@ -51,6 +67,14 @@ package com.flextoolbox.utils
 			
 		/**
 		 * Draws a rectangular fill.
+		 * 
+		 * @param graphics		The Graphics instance to which to draw.
+		 * @param x				The starting x position.
+		 * @param y				The starting y position.
+		 * @param w				The width of the fill.
+		 * @param h				The height of the fill.
+		 * @param color1		The color of the fill.
+		 * @param color2		The alpha of the fill.
 		 */	
 		public static function drawFill(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
 								  color:Number, alpha:Number):void
@@ -63,6 +87,14 @@ package com.flextoolbox.utils
 		
 		/**
 		 * Draws an arrow pointing down.
+		 * 
+		 * @param graphics		The Graphics instance to which to draw.
+		 * @param x				The starting x position.
+		 * @param y				The starting y position.
+		 * @param w				The width of the arrow.
+		 * @param h				The height of the arrow.
+		 * @param color			The color of the arrow.
+		 * @param alpha			The transparency of the arrow.
 		 */	
 		public static function drawDownArrow(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
 								   color:Number, alpha:Number):void
@@ -77,6 +109,14 @@ package com.flextoolbox.utils
 		
 		/**
 		 * Draws an arrow pointing up.
+		 * 
+		 * @param graphics		The Graphics instance to which to draw.
+		 * @param x				The starting x position.
+		 * @param y				The starting y position.
+		 * @param w				The width of the arrow.
+		 * @param h				The height of the arrow.
+		 * @param color			The color of the arrow.
+		 * @param alpha			The transparency of the arrow.
 		 */	
 		public static function drawUpArrow(graphics:Graphics, x:Number, y:Number, w:Number, h:Number,
 								   color:Number, alpha:Number):void

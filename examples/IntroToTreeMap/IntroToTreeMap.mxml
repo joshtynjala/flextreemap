@@ -21,7 +21,8 @@
 		
 		<!-- when a TreeMap leaf is selected, the data for the item will be
 			displayed in this form -->
-		<mx:Form height="100%" visible="{treemap.selectedItem != null}">
+		<mx:Form width="300" height="100%"
+			visible="{treemap.selectedItem != null}">
 			<mx:FormItem label="Language">
 				<mx:Label text="{treemap.selectedItem.@name}"/>
 			</mx:FormItem>

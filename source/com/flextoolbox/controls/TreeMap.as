@@ -87,6 +87,13 @@ package com.flextoolbox.controls
 	 * @eventType com.flextoolbox.events.TreeMapEvent.LEAF_DOUBLE_CLICK
 	 */
 	[Event(name="leafDoubleClick", type="com.flextoolbox.events.TreeMapEvent")]
+	
+	/**
+	 * Dispatched the zoomed branch changes.
+	 *
+	 * @eventType com.flextoolbox.events.TreeMapEvent.BRANCH_ZOOM
+	 */
+	[Event(name="branchZoom", type="com.flextoolbox.events.TreeMapEvent")]
 
 	//--------------------------------------
 	//  Styles

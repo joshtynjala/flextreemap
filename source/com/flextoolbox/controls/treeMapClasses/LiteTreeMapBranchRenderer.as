@@ -289,6 +289,10 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function clickHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
 			if(event.ctrlKey)
 			{
 				var zoom:TreeMapBranchEvent = new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_ZOOM);
@@ -307,6 +311,10 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function doubleClickHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
 			var zoom:TreeMapBranchEvent = new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_ZOOM);
 			this.dispatchEvent(zoom);
 		}
@@ -317,6 +325,10 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function rollOverHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
 			this.mouseIsOver = true;
 		}
 		
@@ -326,6 +338,10 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function rollOutHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
 			this.mouseIsOver = false;
 		}
 	}

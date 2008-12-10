@@ -24,10 +24,10 @@
 
 package com.flextoolbox.controls.treeMapClasses
 {
+	import com.flextoolbox.skins.halo.TreeMapLeafRendererSkin;
 	import com.flextoolbox.utils.FlexFontUtil;
 	import com.flextoolbox.utils.FontSizeMode;
 	import com.flextoolbox.utils.TheInstantiator;
-	import com.flextoolbox.skins.halo.TreeMapLeafRendererSkin;
 	
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
@@ -38,6 +38,7 @@ package com.flextoolbox.controls.treeMapClasses
 	import mx.core.IInvalidating;
 	import mx.core.IStateClient;
 	import mx.core.UIComponent;
+	import mx.events.SandboxMouseEvent;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.ISimpleStyleClient;
 	import mx.styles.StyleManager;
@@ -197,7 +198,6 @@ include "../../styles/metadata/TextStyles.inc"
 			this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler);
 			this.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler);
 			this.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-			this.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 		}
 		
 	//--------------------------------------
@@ -362,6 +362,12 @@ include "../../styles/metadata/TextStyles.inc"
 			this.invalidateProperties();
 			this.invalidateDisplayList();
 		}
+		
+		/**
+		 * @private
+		 * Special flag to reset mouseIsDown.
+		 */
+		protected var mouseWasDown:Boolean = false; 
 		
 		/**
 		 * @private
@@ -627,8 +633,13 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		private function rollOverHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
+			
 			this.mouseIsOver = true;
-			this.mouseIsDown = event.buttonDown;
+			this.mouseIsDown = this.mouseWasDown && event.buttonDown;
 		}
 		
 		/**
@@ -637,6 +648,11 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		private function rollOutHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
+			
 			this.mouseIsOver = false;
 			this.mouseIsDown = false;
 		}
@@ -647,7 +663,15 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		private function mouseDownHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
 			this.mouseIsDown = true;
+			this.mouseWasDown = true;
+			
+			this.systemManager.getSandboxRoot().addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler, true);
+			this.systemManager.getSandboxRoot().addEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, mouseUpHandler);
 		}
 		
 		/**
@@ -656,7 +680,14 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		private function mouseUpHandler(event:MouseEvent):void
 		{
+			event.currentTarget.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+			event.currentTarget.removeEventListener(SandboxMouseEvent.MOUSE_UP_SOMEWHERE, mouseUpHandler);
+			if(!this.enabled)
+			{
+				return;
+			}
 			this.mouseIsDown = false;
+			this.mouseWasDown = false;
 		}
 		
 	}

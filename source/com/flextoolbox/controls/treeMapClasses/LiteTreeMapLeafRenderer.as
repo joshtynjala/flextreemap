@@ -355,6 +355,10 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function rollOverHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
 			this.mouseIsOver = true;
 			this.invalidateDisplayList();
 		}
@@ -364,6 +368,10 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function rollOutHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
 			this.mouseIsOver = false;
 		}
 		

@@ -386,6 +386,9 @@ include "../../styles/metadata/TextStyles.inc"
 				this.zoomButton.selected = branch == treeMap.zoomedBranch;
 			}
 			
+			this.selectionButton.enabled = this.enabled;
+			this.zoomButton.enabled = this.enabled;
+			
 			FlexFontUtil.applyTextStyles(this.label, this);
 		}
 		

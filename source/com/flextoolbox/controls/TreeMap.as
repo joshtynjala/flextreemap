@@ -1667,7 +1667,13 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				IDropInTreeMapItemRenderer(renderer).treeMapData = treeMapData;
 			}
-			renderer.visible = this.isDepthVisible(zoomDepth);
+			var rendererVisible:Boolean = this.isDepthVisible(zoomDepth);
+			if(renderer.visible != rendererVisible)
+			{
+				//only change when needed... should improve performance
+				renderer.visible = rendererVisible;
+			} 
+			renderer.enabled = this.enabled;
 			
 			var displayRenderer:DisplayObject = DisplayObject(renderer);
 			var index:int = this.numChildren - 1;
@@ -1815,6 +1821,11 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function leafClickHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
+			
 			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
 			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_CLICK, renderer);
 			this.dispatchEvent(leafEvent);
@@ -1831,6 +1842,11 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function leafDoubleClickHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
+			
 			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
 			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_DOUBLE_CLICK, renderer);
 			this.dispatchEvent(leafEvent);
@@ -1841,6 +1857,11 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function leafRollOverHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
+			
 			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
 			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_ROLL_OVER, renderer);
 			this.dispatchEvent(leafEvent);
@@ -1851,6 +1872,11 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function leafRollOutHandler(event:MouseEvent):void
 		{
+			if(!this.enabled)
+			{
+				return;
+			}
+			
 			var renderer:ITreeMapLeafRenderer = ITreeMapLeafRenderer(event.currentTarget);
 			var leafEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.LEAF_ROLL_OUT, renderer);
 			this.dispatchEvent(leafEvent);
@@ -1862,7 +1888,7 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function branchZoomHandler(event:TreeMapBranchEvent):void
 		{
-			if(!this.zoomEnabled)
+			if(!this.enabled || !this.zoomEnabled)
 			{
 				return;
 			}
@@ -1920,11 +1946,13 @@ include "../styles/metadata/TextStyles.inc"
 		 */
 		protected function branchSelectHandler(event:TreeMapBranchEvent):void
 		{
-			if(this.branchesSelectable)
+			if(!this.enabled || !this.branchesSelectable)
 			{
-				this.selectedItem = ITreeMapBranchRenderer(event.target).data;
-				this.dispatchEvent(new Event(Event.CHANGE));
+				return;
 			}
+			
+			this.selectedItem = ITreeMapBranchRenderer(event.target).data;
+			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 		/**

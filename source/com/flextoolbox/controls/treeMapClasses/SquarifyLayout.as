@@ -146,7 +146,7 @@ package com.flextoolbox.controls.treeMapClasses
 			var firstItemArea:Number = totalArea * (firstItem.weight / this._totalRemainingWeightSum);
 			var maxArea:Number = firstItemArea;
 			var minArea:Number = firstItemArea;
-			var sumOfAreas:Number = 0;
+			var sumOfAreas:Number = firstItemArea;
 			var rowCount:int = row.length;
 			for(var i:int = 1; i < rowCount; i++)
 			{

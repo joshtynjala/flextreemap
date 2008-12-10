@@ -27,6 +27,7 @@ package com.flextoolbox.controls.treeMapClasses
 	import com.flextoolbox.utils.FlexFontUtil;
 	import com.flextoolbox.utils.FontSizeMode;
 	import com.flextoolbox.utils.TheInstantiator;
+	import com.flextoolbox.skins.halo.TreeMapLeafRendererSkin;
 	
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
@@ -37,7 +38,6 @@ package com.flextoolbox.controls.treeMapClasses
 	import mx.core.IInvalidating;
 	import mx.core.IStateClient;
 	import mx.core.UIComponent;
-	import mx.skins.halo.ButtonSkin;
 	import mx.styles.CSSStyleDeclaration;
 	import mx.styles.ISimpleStyleClient;
 	import mx.styles.StyleManager;
@@ -55,14 +55,14 @@ include "../../styles/metadata/TextStyles.inc"
 /**
  *  Text color of the label as the user moves the mouse pointer over the button.
  *  
- *  @default 0x2B333C
+ *  @default 0xffffff
  */
 [Style(name="textRollOverColor", type="uint", format="Color", inherit="yes")]
 
 /**
  *  Text color of the label as the user presses it.
  *  
- *  @default 0x000000
+ *  @default 0x2b333c
  */
 [Style(name="textSelectedColor", type="uint", format="Color", inherit="yes")]
 
@@ -167,16 +167,16 @@ include "../../styles/metadata/TextStyles.inc"
 				this.color = 0xffffff;
 				this.cornerRadius = 0;
 				this.fillAlphas = [0, 0];
-				this.fillColors = [0xff0000, 0x000000];
+				this.fillColors = [0xff00ff, 0xff00ff]; // if you see pink, there's a problem!
 				this.fontSizeMode = FontSizeMode.NO_CHANGE;
-				this.highlightAlphas = [0.3, 0];
+				this.highlightAlphas = [0.2, 0];
 				this.paddingLeft = 0;
 				this.paddingRight = 0;
 				this.paddingTop = 0;
 				this.paddingBottom = 0;
 				this.textRollOverColor = 0xffffff;
 				this.textSelectedColor = 0x2b333c;
-				this.skin = ButtonSkin;
+				this.skin = TreeMapLeafRendererSkin;
 				this.textAlign = "center";
 			}
 			
@@ -519,6 +519,7 @@ include "../../styles/metadata/TextStyles.inc"
 		{
 			var oldBackgroundSkin:DisplayObject = this.backgroundSkin;
 				
+			//skin state behavior adapted from mx.controls.Button
 			var skinState:String = this.selected ? "selectedUp" : "up";
 			if(!this.enabled)
 			{
@@ -601,6 +602,9 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		private function getLabelColor():uint
 		{
+			//behavior copied from mx.controls.Button
+			//there's so much more that could be customized.
+			//can't wait for Gumbo.
 			var labelColor:uint = this.getStyle("color");
 			if(!this.enabled)
 			{

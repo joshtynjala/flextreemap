@@ -25,6 +25,7 @@
 package com.flextoolbox.controls.treeMapClasses
 {
 	import com.flextoolbox.controls.TreeMap;
+	import com.flextoolbox.events.TreeMapBranchEvent;
 	import com.flextoolbox.events.TreeMapEvent;
 	import com.flextoolbox.utils.FlexFontUtil;
 	
@@ -290,12 +291,12 @@ include "../../styles/metadata/TextStyles.inc"
 		{
 			if(event.ctrlKey)
 			{
-				var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);
+				var zoom:TreeMapBranchEvent = new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_ZOOM);
 				this.dispatchEvent(zoom);
 			}
 			else
 			{
-				var select:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_SELECT, this);
+				var select:TreeMapBranchEvent = new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_SELECT);
 				this.dispatchEvent(select);
 			}
 		}
@@ -306,7 +307,7 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function doubleClickHandler(event:MouseEvent):void
 		{
-			var zoom:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this);
+			var zoom:TreeMapBranchEvent = new TreeMapBranchEvent(TreeMapBranchEvent.REQUEST_ZOOM);
 			this.dispatchEvent(zoom);
 		}
 		
@@ -325,7 +326,7 @@ include "../../styles/metadata/TextStyles.inc"
 		 */
 		protected function rollOutHandler(event:MouseEvent):void
 		{
-			this.mouseIsOver = false;;
+			this.mouseIsOver = false;
 		}
 	}
 }

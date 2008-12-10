@@ -29,8 +29,8 @@ package com.flextoolbox.controls.treeMapClasses
 	/**
 	 * The data passed to drop-in TreeMap leaf renderers.
 	 * 
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class TreeMapLeafData extends BaseTreeMapData
 	{
@@ -39,6 +39,9 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Constructor
 	//--------------------------------------
 	
+		/**
+		 * Constructor.
+		 */
 		public function TreeMapLeafData()
 		{
 		}
@@ -47,6 +50,9 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Properties
 	//--------------------------------------
 		
+		/**
+		 * The color of the leaf.
+		 */
 		public var color:uint = 0x000000;
 		
 	}

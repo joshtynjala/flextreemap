@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="Flex TreeMap" default="build-all" basedir=".">
+<project name="Flex TreeMap" default="build" basedir=".">
 
+	<property file="./sdk.properties"/>
 	<property file="./build.properties"/>
 	
-	<target name="build-all" depends="prepare,build-lib,build-docs,build-examples,cleanup"/>
+	<target name="build" depends="prepare,build-lib,cleanup"/>
+	<target name="build-all" depends="build,build-docs,build-examples,package"/>
 	
 	<target name="prepare">
 		<!-- delete old build -->
@@ -24,22 +26,26 @@
 				<include name="readme.txt"/>
 			</fileset>
 		</copy>
+		
+		<!-- some useful timestamps that we'll need later -->
+		<tstamp>
+			<format property="date.today" pattern="MMddyyyy"/>
+		</tstamp>
+		<tstamp>
+			<format property="date.year" pattern="yyyy"/>
+		</tstamp>
 	</target>
 
 	<target name="cleanup">
-		<!-- get rid of the example build.xml files -->
-		<delete>
-			<fileset dir="${output}" includes="**/build.xml"/>
-		</delete>
 	</target>
 	
 	<target name="build-lib" depends="prepare">
 	    <exec executable="${compc}" dir="${basedir}" failonerror="true">
-			<arg line="--namespace http://www.flextoolbox.com/2006/mxml manifest.xml"/>
+			<arg line="--namespace ${library.mxmlNamespace} manifest.xml"/>
 			<arg line="--source-path '${source.output}'"/>
-			<arg line="--include-namespaces http://www.flextoolbox.com/2006/mxml"/>
+			<arg line="--include-namespaces ${library.mxmlNamespace}"/>
 			<arg line="--include-classes com.flextoolbox.controls.treeMapClasses.SliceAndDiceLayout"/>
-			<arg line="--include-classes com.flextoolbox.controls.treeMapClasses.RecursiveSquarifyLayout"/>
+			<arg line="com.flextoolbox.controls.treeMapClasses.RecursiveSquarifyLayout"/>
 			<arg line="com.flextoolbox.controls.treeMapClasses.LiteTreeMapBranchRenderer"/>
 			<arg line="com.flextoolbox.controls.treeMapClasses.LiteTreeMapLeafRenderer"/>
 			<arg line="--external-library-path+='${flexsdk.lib}'"/>
@@ -59,7 +65,7 @@
 		<exec executable="${asdoc}" dir="${basedir}" failonerror="true">
 			<arg line="--source-path '${source.output}'"/>
 			<arg line="--doc-sources '${source.output}'"/>
-			<arg line="--footer 'Copyright 2008 Josh Tynjala. All rights reserved.'"/>
+			<arg line="--footer 'Copyright ${date.year} Josh Tynjala. All rights reserved.'"/>
 			<arg line="--main-title '${library.name} by Josh Tynjala'"/>
 			<arg line="--window-title '${library.name} by Josh Tynjala'"/>
 			<arg line="--templates-path '${docs.template}'"/>
@@ -86,14 +92,14 @@
 		<ant antfile="${examples.output}/StockMarket/build.xml" target="build">
 			<property name="basedir" value="${examples.output}/StockMarket"/>
 		</ant>
+		
+		<!-- get rid of the example build.xml files -->
+		<delete>
+			<fileset dir="${output}" includes="**/build.xml"/>
+		</delete>
 	</target>
 	
-	<target name="package">
-		<tstamp>
-			<format property="date.today" pattern="MMddyyyy"/>
-		</tstamp>
-	
-		<zip destfile="${library.shortName}${date.today}.zip">
+	<target name="package">		<zip destfile="${library.shortName}${date.today}.zip">
 			<zipfileset dir="${output}"/>
 		</zip>
 	</target>

@@ -33,7 +33,21 @@ package com.flextoolbox.controls.treeMapClasses
 	 */
 	public interface IDropInTreeMapItemRenderer
 	{
+		/**
+		 * When a component is used as a drop-in item renderer Flex initializes
+		 * the treeMapData property of the component with the additional data
+		 * from the TreeMap control. The component can then use the treeMapData
+		 * property and the data property to display the appropriate information
+		 * as a drop-in item renderer.
+		 * 
+		 * <p>You do not set this property in MXML or ActionScript; Flex sets it
+		 * when the component is used as a drop-in item renderer.</p>
+		 */
 		function get treeMapData():BaseTreeMapData;
+		
+		/**
+		 * @private
+		 */
 		function set treeMapData(value:BaseTreeMapData):void;
 	}
 }

@@ -40,7 +40,14 @@ package com.flextoolbox.controls.treeMapClasses
 	 */
 	public interface ITreeMapItemRenderer extends IDataRenderer, IUIComponent, IEventDispatcher, IFlexDisplayObject, IStyleClient, IInvalidating
 	{
+		/**
+		 * Indicates if the item is selected or not.
+		 */
 		function get selected():Boolean;
+		
+		/**
+		 * @private
+		 */
 		function set selected(value:Boolean):void;
 	}
 }

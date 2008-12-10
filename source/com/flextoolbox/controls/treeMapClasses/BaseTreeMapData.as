@@ -29,8 +29,8 @@ package com.flextoolbox.controls.treeMapClasses
 	/**
 	 * The data passed to drop-in TreeMap item renderers.
 	 * 
-	 * @author Josh Tynjala
 	 * @see com.flextoolbox.controls.TreeMap
+	 * @author Josh Tynjala
 	 */
 	public class BaseTreeMapData
 	{
@@ -39,6 +39,9 @@ package com.flextoolbox.controls.treeMapClasses
 	//  Constructor
 	//--------------------------------------
 	
+		/**
+		 * Constructor.
+		 */
 		public function BaseTreeMapData()
 		{
 		}
@@ -52,16 +55,29 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		public var uid:String;
 		
+		/**
+		 * The TreeMap that displays this data.
+		 */
 		public var owner:TreeMap;
 		
-		private var _depth:int = 0;
+		/**
+		 * The depth of the renderer.
+		 */
+		public var depth:int = 0;
 		
-		public var depth:int;
-		
+		/**
+		 * The weight (area) of the item.
+		 */
 		public var weight:Number = 0
 		
+		/**
+		 * The label to be displayed by the renderer.
+		 */
 		public var label:String = "";
 		
+		/**
+		 * THe data tip to be displayed by the renderer.
+		 */
 		public var dataTip:String = "";
 	}
 }

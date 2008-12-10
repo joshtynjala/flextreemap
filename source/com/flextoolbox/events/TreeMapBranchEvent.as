@@ -39,8 +39,19 @@ package com.flextoolbox.events
 	//  Static Properties
 	//--------------------------------------
 	
+		/**
+		 * Dispatched when the branch finishes laying out its children.
+		 */
 		public static const LAYOUT_COMPLETE:String = "layoutComplete";
+		
+		/**
+		 * Dispatched when the user interacts with the branch to zoom it.
+		 */
 		public static const REQUEST_ZOOM:String = "requestZoom";
+		
+		/**
+		 * Dispatched when the user interacts when the branch to select it.
+		 */
 		public static const REQUEST_SELECT:String = "requestSelect";
 		
 	//--------------------------------------

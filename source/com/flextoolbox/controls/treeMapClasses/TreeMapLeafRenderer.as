@@ -171,10 +171,10 @@ include "../../styles/metadata/TextStyles.inc"
 				this.fillColors = [0xff00ff, 0xff00ff]; // if you see pink, there's a problem!
 				this.fontSizeMode = FontSizeMode.NO_CHANGE;
 				this.highlightAlphas = [0.2, 0];
-				this.paddingLeft = 0;
-				this.paddingRight = 0;
-				this.paddingTop = 0;
-				this.paddingBottom = 0;
+				this.paddingLeft = 2;
+				this.paddingRight = 2;
+				this.paddingTop = 2;
+				this.paddingBottom = 2;
 				this.textRollOverColor = 0xffffff;
 				this.textSelectedColor = 0x2b333c;
 				this.skin = TreeMapLeafRendererSkin;

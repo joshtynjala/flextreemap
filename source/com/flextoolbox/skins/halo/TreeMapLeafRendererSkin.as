@@ -169,7 +169,7 @@ package com.flextoolbox.skins.halo
 						[ themeColor, themeColorDrk1 ], 1,
 						verticalGradientMatrix(0, 0, unscaledWidth, unscaledHeight ),
 						GradientType.LINEAR, null, 
-						{ x: 1, y: 1, w: unscaledWidth - 2, h: unscaledHeight - 2, r: cornerRadius - 1 }); 
+						{ x: 2, y: 2, w: unscaledWidth - 4, h: unscaledHeight - 4, r: cornerRadius - 1 }); 
 													
 					// button fill
 					drawRoundRect(

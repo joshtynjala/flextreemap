@@ -694,9 +694,14 @@ include "../styles/metadata/TextStyles.inc"
 		
 	    [Bindable("labelFieldChanged")]
 	    /**
-	     * The name of the field in the data provider items to display as the label
-	     * of the data renderer. As a special case, if the nodes are <code>TreeMap</code>
-	     * components, this function applies to the TreeMap label.
+	     * The name of the field in the data provider items to display as the
+	     * label of the data renderer. If the item is a branch, the treemap will
+	     * first check to see whether <code>branchLabelField</code> or
+	     * <code>branchLabelFunction</code> are defined.
+	     * 
+	     * @see #labelFunction
+	     * @see #branchLabelField
+	     * @see #branchLabelFunction
 	     */
 	    public function get labelField():String
 	    {
@@ -728,6 +733,10 @@ include "../styles/metadata/TextStyles.inc"
 		 * <blockquote>
 		 * <code>labelFunction(item:Object):String</code>
 		 * </blockquote></p>
+		 * 
+	     * @see #labelField
+	     * @see #branchLabelField
+	     * @see #branchLabelFunction
 	     */
 	    public function get labelFunction():Function
 	    {
@@ -744,7 +753,7 @@ include "../styles/metadata/TextStyles.inc"
 	    	this.dispatchEvent(new Event("labelFunctionChanged"));
 	    }
 	    
-	//-- ToolTip
+	//-- Data Tip
 	    
 		/**
 		 * @private
@@ -801,6 +810,136 @@ include "../styles/metadata/TextStyles.inc"
 			this._dataTipFunction = value;
 	    	this.invalidateProperties();
 	    	this.dispatchEvent(new Event("dataTipFunctionChanged"));
+	    }
+	    
+	//-- Branch Label
+	    
+		/**
+		 * @private
+		 * Storage for the field used to calculate a branch's label.
+		 */
+		private var _branchLabelField:String;
+		
+	    [Bindable("branchLabelFieldChange")]
+	    /**
+	     * The name of the field in the data provider branches to display as the
+	     * label of the data renderer. If both <code>branchLabelField</code> and
+	     * <code>branchLabelFunction</code> are null, then the standard
+	     * <code>labelField</code> and <code>labelFunction</code> properties
+	     * will be used.
+	     * 
+	     * @see #labelField
+	     * @see #labelFunction
+	     * @see #branchLabelFunction
+	     */
+	    public function get branchLabelField():String
+	    {
+	    	return this._branchLabelField;
+	    }
+	    
+	    /**
+		 * @private
+		 */
+	    public function set branchLabelField(value:String):void
+	    {
+	    	this._branchLabelField = value;
+	    	this.invalidateProperties();
+	    	this.dispatchEvent(new Event("branchLabelFieldChange"));
+	    }
+	    
+		/**
+		 * @private
+		 * Storage for the function used to calculate a branch's label.
+		 */
+		private var _branchLabelFunction:Function;
+		
+	    [Bindable("branchLabelFunctionChange")]
+	    /**
+	     * A user-supplied function to run on each branch to determine its label.
+	     *
+		 * <p>The branch label function takes one argument, the item in the data
+		 * provider. It returns a String.
+		 * <blockquote>
+		 * <code>branchLabelFunction(item:Object):String</code>
+		 * </blockquote></p>
+	     * 
+	     * @see #labelField
+	     * @see #labelFunction
+	     * @see #branchLabelField
+	     */
+	    public function get branchLabelFunction():Function
+	    {
+	    	return this._branchLabelFunction;
+	    }
+	    
+	    /**
+		 * @private
+		 */
+	    public function set branchLabelFunction(value:Function):void
+	    {
+			this._branchLabelFunction = value;
+			this.invalidateProperties();
+	    	this.dispatchEvent(new Event("branchLabelFunctionChange"));
+	    }
+		
+	//-- Branch Data Tip
+	    
+		/**
+		 * @private
+		 * Storage for the field used to calculate a branch's datatip.
+		 */
+		private var _branchDataTipField:String = "dataTip";
+		
+	    [Bindable("branchDataTipFieldChange")]
+	    /**
+	     * The name of the field in the data provider items to display as the
+	     * datatip of the branch data renderer.
+	     */
+	    public function get branchDataTipField():String
+	    {
+	    	return this._branchDataTipField;
+	    }
+		
+	    /**
+		 * @private
+		 */
+	    public function set branchDataTipField(value:String):void
+	    {
+			this._branchDataTipField = value;
+			this.invalidateProperties();
+	    	this.dispatchEvent(new Event("branchDataTipFieldChange"));
+	    }
+	    
+		/**
+		 * @private
+		 * Storage for the function used to calculate a branch's datatip.
+		 */
+		private var _branchDataTipFunction:Function;
+		
+		[Bindable("branchDataTipFunctionChange")]
+	    /**
+	     * A user-supplied function to run on each branch to determine its
+	     * datatip.
+	     *
+		 * <p>The datatip function takes one argument, the item in the data
+		 * provider. It returns a String.
+		 * <blockquote>
+		 * <code>dataTipFunction(item:Object):String</code>
+		 * </blockquote></p>
+	     */
+	    public function get branchDataTipFunction():Function
+	    {
+	    	return this._branchDataTipFunction;
+	    }
+	    
+	    /**
+		 * @private
+		 */
+	    public function set branchDataTipFunction(value:Function):void
+	    {
+			this._branchDataTipFunction = value;
+	    	this.invalidateProperties();
+	    	this.dispatchEvent(new Event("branchDataTipFunctionChange"));
 	    }
 		
 	//-- Selection
@@ -939,7 +1078,8 @@ include "../styles/metadata/TextStyles.inc"
 		
 		[Bindable]
 		/**
-		 * If true, branches may be zoomed in (maximized) to display in the full bounds of the treemap.
+		 * If true, branches may be zoomed in (maximized) to display in the full
+		 * bounds of the treemap.
 		 */
 		public function get zoomEnabled():Boolean
 		{
@@ -963,8 +1103,8 @@ include "../styles/metadata/TextStyles.inc"
 		
 		[Bindable]
 		/**
-		 * Determines the way that zoom out actions work. Values are defined by the
-		 * constants in the <code>TreeMapZoomOutType</code> class.
+		 * Determines the way that zoom out actions work. Values are defined by
+		 * the constants in the <code>TreeMapZoomOutType</code> class.
 		 */
 		public function get zoomOutType():String
 		{
@@ -1013,18 +1153,39 @@ include "../styles/metadata/TextStyles.inc"
 	
 		/**
 		 * Determines the label text for an item from the data provider.
-		 * If no label is specfied, returns the result of the item's
+		 * If no label is specified, returns the result of the item's
 		 * toString() method. If item is null, returns an empty string.
+		 * 
+		 * <p>The label is derived from the <code>labelField</code> and
+		 * <code>labelFunction</code> properties. The <code>labelFunction</code>
+		 * takes precedence. If it is <code>null</code>, then
+		 * <code>labelField</code> is used. As a special case, if the item is
+		 * a branch, and either <code>branchLabelField</code> or
+		 * <code>branchLabelFunction</code> is defined, then those values take
+		 * precedence over the standard <code>labelField</code> and
+		 * <code>labelFunction</code> values.</p>
 		 */
 		public function itemToLabel(item:Object):String
 		{
 			if(item === null) return "";
 			
+			if(this._dataDescriptor.isBranch(item))
+			{
+				if(this._branchLabelFunction != null)
+				{
+					return this._branchLabelFunction(item);
+				}
+				else if(this._branchLabelField && item.hasOwnProperty(this._branchLabelField))
+				{
+					return item[this._branchLabelField];
+				}
+			}
+			
 			if(this._labelFunction != null)
 			{
 				return this._labelFunction(item);
 			}
-			else if(item.hasOwnProperty(this._labelField))
+			else if(this._labelField && item.hasOwnProperty(this._labelField))
 			{
 				return item[this._labelField];
 			}
@@ -1039,15 +1200,28 @@ include "../styles/metadata/TextStyles.inc"
 		{
 			if(item === null) return "";
 			
+			if(this._dataDescriptor.isBranch(item))
+			{
+				if(this._branchDataTipFunction != null)
+				{
+					return this._branchDataTipFunction(item);
+				}
+				else if(this._branchDataTipField && item.hasOwnProperty(this._branchDataTipField))
+				{
+					return item[this._branchDataTipField];
+				}
+			}
+			
 			if(this._dataTipFunction != null)
 			{
 				return this._dataTipFunction(item);
 			}
-			else if(item.hasOwnProperty(this._dataTipField))
+			else if(this._dataTipField && item.hasOwnProperty(this._dataTipField))
 			{
 				return item[this._dataTipField];
 			}
-			//normally, I'd do toString(), but I think an
+			
+			//normally, I'd do toString() like itemToLabel(), but I think an
 			//empty string makes sense so that there's no dataTip.
 			return "";
 		}
@@ -1070,7 +1244,7 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				return this._colorFunction(item);
 			}
-			else if(item.hasOwnProperty(this._colorField))
+			else if(this._colorField && item.hasOwnProperty(this._colorField))
 			{
 				return item[this._colorField];
 			}
@@ -1110,7 +1284,7 @@ include "../styles/metadata/TextStyles.inc"
 				{
 					weight = this._weightFunction(item);
 				}
-				else if(item.hasOwnProperty(this._weightField))
+				else if(this._weightField && item.hasOwnProperty(this._weightField))
 				{
 					weight = item[this._weightField];
 				}

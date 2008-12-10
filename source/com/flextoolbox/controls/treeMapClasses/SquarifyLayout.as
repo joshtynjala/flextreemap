@@ -60,6 +60,12 @@ package com.flextoolbox.controls.treeMapClasses
 		 */
 		private var _totalRemainingWeightSum:Number = 0;
 
+		/**
+		 * @private
+		 * The number of items remaining to be drawn.
+		 */
+		private var _itemsRemaining:int = 0;
+
 	//--------------------------------------
 	//  Public Methods
 	//--------------------------------------
@@ -85,6 +91,7 @@ package com.flextoolbox.controls.treeMapClasses
 		{
 			items = items.sortOn("weight", Array.DESCENDING | Array.NUMERIC);
 			this._totalRemainingWeightSum = this.sumWeights(items);
+			this._itemsRemaining = items.length;
 			var lastAspectRatio:Number = Number.POSITIVE_INFINITY;
 			var lengthOfShorterEdge:Number = Math.min(bounds.width, bounds.height);
 			var row:Array = [];
@@ -141,6 +148,15 @@ package com.flextoolbox.controls.treeMapClasses
 			}
 			
 			var totalArea:Number = bounds.width * bounds.height;
+			var lengthSquared:Number = lengthOfShorterEdge * lengthOfShorterEdge;
+			
+			//special case where there is zero weight (to avoid divide by zero problems)
+			if(this._totalRemainingWeightSum == 0)
+			{
+				var oneItemArea:Number = totalArea * (1 / this._itemsRemaining);
+				var rowAreaSquared:Number = Math.pow(oneItemArea * row.length, 2);
+				return Math.max(lengthSquared * oneItemArea / rowAreaSquared, rowAreaSquared / (lengthSquared * oneItemArea));
+			}
 			
 			var firstItem:TreeMapItemLayoutData = TreeMapItemLayoutData(row[0]);
 			var firstItemArea:Number = totalArea * (firstItem.weight / this._totalRemainingWeightSum);
@@ -159,7 +175,6 @@ package com.flextoolbox.controls.treeMapClasses
 			
 			// max(w^2 * r+ / s^2, s^2 / (w^2 / r-))
 			var sumSquared:Number = sumOfAreas * sumOfAreas;
-			var lengthSquared:Number = lengthOfShorterEdge * lengthOfShorterEdge;
 			return Math.max(lengthSquared * maxArea / sumSquared, sumSquared / (lengthSquared * minArea));
 		}
 		
@@ -180,7 +195,14 @@ package com.flextoolbox.controls.treeMapClasses
 			var lengthOfCommonItemEdge:Number = lengthOfLongerEdge * (sumOfRowWeights / this._totalRemainingWeightSum);
 			if(isNaN(lengthOfCommonItemEdge))
 			{
-				lengthOfCommonItemEdge = 0;
+				if(this._totalRemainingWeightSum == 0)
+				{
+					lengthOfCommonItemEdge = lengthOfLongerEdge * row.length / this._itemsRemaining;
+				}
+				else
+				{
+					lengthOfCommonItemEdge = 0;
+				}
 			}
 			
 			var rowCount:int = row.length;
@@ -221,6 +243,7 @@ package com.flextoolbox.controls.treeMapClasses
 					item.height = Math.max(0, lengthOfItemEdge);
 				}
 				position += lengthOfItemEdge;
+				this._itemsRemaining--;
 			}
 			
 			this._totalRemainingWeightSum -= sumOfRowWeights;

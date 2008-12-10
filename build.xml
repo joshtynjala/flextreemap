@@ -53,7 +53,7 @@
 	    </exec>
 	</target>
 	
-	<target name="build-docs" depends="prepare">
+	<target name="build-docs" depends="build-lib">
 		<!-- build the examples that appear within the documentation -->
 		<exec executable="${mxmlc}" failonerror="true">
 			<arg line="--library-path+='${build.output}/${library.shortName}.swc'"/>
@@ -99,7 +99,8 @@
 		</delete>
 	</target>
 	
-	<target name="package">		<zip destfile="${library.shortName}${date.today}.zip">
+	<target name="package">
+		<zip destfile="${library.shortName}${date.today}.zip">
 			<zipfileset dir="${output}"/>
 		</zip>
 	</target>

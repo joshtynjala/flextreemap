@@ -1,51 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- TreeMap control example. -->
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml">
-
-	<mx:Script>
-		<![CDATA[
-
-			[Bindable]
-			public var selectedNode:XML;
-
-			// Event handler for the TreeMap control change event.
-			public function treeChanged(event:Event):void
-			{
-				selectedNode=TreeMap(event.target).selectedItem as XML;
-			}
-		]]>
-	</mx:Script>
-
-	<mx:XMLList id="treeData">
-		<node label="Mail Box">
-			<node label="Inbox">
-				<node label="Marketing"/>
-				<node label="Product Management"/>
-				<node label="Personal"/>
-			</node>
-			<node label="Outbox">
-				<node label="Professional"/>
-				<node label="Personal"/>
-			</node>
-			<node label="Spam"/>
-			<node label="Sent"/>
-		</node>    
-	</mx:XMLList>
-
-	<mx:Panel title="TreeMap Control Example" height="75%" width="75%" 
-		paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10">
-
-		<mx:Label width="100%" color="blue" 
-			text="Select a node in the TreeMap control."/>
-
-		<mx:HDividedBox width="100%" height="100%">
-			<toolbox:TreeMap id="myTreeMap" width="50%" height="100%" labelField="@label"
-				dataProvider="{treeData}" selectable="true" branchesSelectable="true"
-				change="treeChanged(event)"/>
-			<mx:TextArea height="100%" width="50%"
-				text="Selected Item: {selectedNode.@label}"/>
-		</mx:HDividedBox>
-
-	</mx:Panel>
-</mx:Application>
+<?xml version="1.0" encoding="utf-8"?><!-- TreeMap control example. --><mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"	xmlns:toolbox="http://www.flextoolbox.com/2006/mxml">	<mx:Script>		<![CDATA[			[Bindable]			public var selectedNode:XML;			// Event handler for the TreeMap control change event.			public function treeChanged(event:Event):void			{				selectedNode=TreeMap(event.target).selectedItem as XML;			}		]]>	</mx:Script>	<mx:XMLList id="treeData">		<node label="Mail Box">			<node label="Inbox">				<node label="Marketing"/>				<node label="Product Management"/>				<node label="Personal"/>			</node>			<node label="Outbox">				<node label="Professional"/>				<node label="Personal"/>			</node>			<node label="Spam"/>			<node label="Sent"/>		</node>    	</mx:XMLList>	<mx:Panel title="TreeMap Control Example" height="75%" width="75%" 		paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10">		<mx:Label width="100%" color="blue" 			text="Select a node in the TreeMap control."/>		<mx:HDividedBox width="100%" height="100%">			<toolbox:TreeMap id="myTreeMap" width="50%" height="100%" labelField="@label"				dataProvider="{treeData}" selectable="true" branchesSelectable="true"				change="treeChanged(event)"/>			<mx:TextArea height="100%" width="50%"				text="Selected Item: {selectedNode.@label}"/>		</mx:HDividedBox>	</mx:Panel></mx:Application>

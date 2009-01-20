@@ -1071,7 +1071,9 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				this._zoomedBranches = [];
 			}
-			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this.itemToItemRenderer(value)));
+			
+			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM));
+			
 			this.zoomChanged = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
@@ -1786,7 +1788,7 @@ include "../styles/metadata/TextStyles.inc"
 			
 			//only display a label on the branch renderer if it's not the root
 			//or if the root is a true root and showRoot == true
-			if(this.itemIsRoot(branch) && (!this.hasRoot || !this.showRoot))
+			if(branch is ICollectionView || (this.itemIsRoot(branch) && (!this.hasRoot || !this.showRoot)))
 			{
 				branchData.displaySimple = true;
 			}

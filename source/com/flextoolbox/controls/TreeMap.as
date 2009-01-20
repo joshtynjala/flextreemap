@@ -1071,7 +1071,7 @@ include "../styles/metadata/TextStyles.inc"
 			{
 				this._zoomedBranches = [];
 			}
-			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM));
+			this.dispatchEvent(new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, this.itemToItemRenderer(value)));
 			this.zoomChanged = true;
 			this.invalidateProperties();
 			this.invalidateDisplayList();
@@ -2135,6 +2135,7 @@ include "../styles/metadata/TextStyles.inc"
 			}
 			
 			var zoomEvent:TreeMapEvent = new TreeMapEvent(TreeMapEvent.BRANCH_ZOOM, renderer);
+			this.dispatchEvent(zoomEvent);
 			
 			this.zoomChanged = true;
 			this.invalidateProperties();

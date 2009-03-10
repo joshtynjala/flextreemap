@@ -26,6 +26,10 @@ Author's Blog:
 Release Notes:
 ---------------------------------------------------------------------------------
 
+??/??/2009 - 2.2.0
+   * Fixed bug where weightField and weightFunction changes at runtime would
+     have no effect.
+
 12/10/2008 - 2.1.0
    * Reduced the number of display list manipulations in every redraw to improve
      performance.

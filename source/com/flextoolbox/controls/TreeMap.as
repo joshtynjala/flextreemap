@@ -576,6 +576,14 @@ include "../styles/metadata/TextStyles.inc"
 	
 		/**
 		 * @private
+		 * Flag indicating that the weight value cache should be cleared and
+		 * the weight values should be recalculated. Also happens when the
+		 * <code>dataProviderChanged</code> flag is set.
+		 */
+		protected var weightChanged:Boolean = false;
+	
+		/**
+		 * @private
 		 * Storage for the field used to calculate a node's weight.
 		 */
 		private var _weightField:String = "weight";
@@ -595,6 +603,7 @@ include "../styles/metadata/TextStyles.inc"
 	    public function set weightField(value:String):void
 	    {
 	    	this._weightField = value;
+	    	this.weightChanged = true;
 	    	this.invalidateProperties();
 	    	this.invalidateDisplayList();
 	    	this.dispatchEvent(new Event("weightFieldChanged"));
@@ -627,6 +636,7 @@ include "../styles/metadata/TextStyles.inc"
 	    public function set weightFunction(value:Function):void
 	    {
 		    this._weightFunction = value;
+	    	this.weightChanged = true;
 		    this.invalidateProperties();
 		    this.invalidateDisplayList();
 	    	this.dispatchEvent(new Event("weightFunctionChanged"));
@@ -1448,6 +1458,11 @@ include "../styles/metadata/TextStyles.inc"
 			if(this.dataProviderChanged)
 			{
 				this.initializeData();
+			}
+			else if(this.weightChanged)
+			{
+				//quick change for only weight
+				this._uidToWeight = {};
 			}
 			
 			//if something has changed in the data provider,

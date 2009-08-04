@@ -27,7 +27,14 @@ package com.flextoolbox.utils
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
+	import mx.core.EmbeddedFont;
+	import mx.core.EmbeddedFontRegistry;
+	import mx.core.IEmbeddedFontRegistry;
+	import mx.core.IFlexModuleFactory;
+	import mx.core.Singleton;
 	import mx.core.UIComponent;
+	
+	import mx.managers.ISystemManager;
 	
 	/**
 	 * Utility methods for use with fonts in Flex.
@@ -172,36 +179,68 @@ package com.flextoolbox.utils
 	     *
 	     * @see		flash.text.TextFormat
 	     */
-	    public static function applyTextStyles(target:TextField, source:UIComponent):void
-	    {
-	        var textFormat:TextFormat = new TextFormat();
+		public static function applyTextStyles(target:TextField, source:UIComponent):void
+		{
+	    	var textFormat:TextFormat = new TextFormat();
 
-	        textFormat.font = source.getStyle("fontFamily");
-	        textFormat.size = source.getStyle("fontSize");
+			textFormat.font = source.getStyle("fontFamily");
+			textFormat.size = source.getStyle("fontSize");
 			if(source.enabled)
-	        {
-	            textFormat.color = source.getStyle("color");
-	        }
-	        else
-	        {
-	            textFormat.color = source.getStyle("disabledColor");
-	        }
-	        textFormat.bold = source.getStyle("fontWeight") == "bold";
-	        textFormat.italic = source.getStyle("fontStyle") == "italic";
-	        textFormat.underline = source.getStyle("textDecoration") == "underline";
-	        textFormat.align = source.getStyle("textAlign");
-
-	        textFormat.leading = source.getStyle("leading");
-	        textFormat.kerning = source.getStyle("kerning");
-	        textFormat.letterSpacing = source.getStyle("letterSpacing");
-	        textFormat.indent = source.getStyle("textIndent");
-
-	        target.setTextFormat(textFormat);
-	        target.antiAliasType = source.getStyle("fontAntiAliasType");
-	        target.gridFitType = source.getStyle("fontGridFitType");
-	        target.sharpness = source.getStyle("fontSharpness");
-	        target.thickness = source.getStyle("fontThickness");
-	    }
-		
+			{
+				textFormat.color = source.getStyle("color");
+			}
+			else
+			{
+				textFormat.color = source.getStyle("disabledColor");
+			}
+			textFormat.bold = source.getStyle("fontWeight") == "bold";
+			textFormat.italic = source.getStyle("fontStyle") == "italic";
+			textFormat.underline = source.getStyle("textDecoration") == "underline";
+			textFormat.align = source.getStyle("textAlign");
+			
+			textFormat.leading = source.getStyle("leading");
+			textFormat.kerning = source.getStyle("kerning");
+			textFormat.letterSpacing = source.getStyle("letterSpacing");
+			textFormat.indent = source.getStyle("textIndent");
+			
+			target.setTextFormat(textFormat);
+			if(source.getStyle("fontAntiAliasType") != undefined)
+			{
+				target.antiAliasType = source.getStyle("fontAntiAliasType");
+				target.gridFitType = source.getStyle("fontGridFitType");
+				target.sharpness = source.getStyle("fontSharpness");
+				target.thickness = source.getStyle("fontThickness");
+			}
+			
+			var embedFonts:Boolean = false;
+			if(textFormat.font)
+			{
+				var embeddedFont:EmbeddedFont = new EmbeddedFont(textFormat.font, textFormat.bold, textFormat.italic);
+				
+				var embeddedFontRegistry:IEmbeddedFontRegistry =
+					IEmbeddedFontRegistry(Singleton.getInstance("mx.core::IEmbeddedFontRegistry"));
+				var fontModuleFactory:IFlexModuleFactory = 
+					embeddedFontRegistry.getAssociatedModuleFactory(
+				    embeddedFont, source.systemManager);
+				
+				// if we found the font, then it is embedded. 
+				// Some fonts are not listed in info(), so are not in the above registry.
+				// Call isFontFaceEmbedded() which get the list of embedded fonts from the player.
+				if(fontModuleFactory != null) 
+				{
+					embedFonts = true;
+				}
+				else
+				{
+					var sm:ISystemManager = source.systemManager;
+					embedFonts = sm != null && sm.isFontFaceEmbedded(textFormat);
+				}
+			}
+			else
+			{
+				embedFonts = source.getStyle("embedFonts");
+			}
+			target.embedFonts = embedFonts;
+		}
 	}
 }

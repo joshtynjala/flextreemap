@@ -30,6 +30,7 @@ Unknown - 2.2.0
    * Fixed bug where weightField and weightFunction changes at runtime would
      have no effect.
    * Fonts can now be embedded for leaf renderers.
+   * Fixed bug where SquarifyLayout could get stuck in an infinite loop.
    * Now supports Flex 4.0.0. Minimum version is probably 3.5.0 now.
 
 12/10/2008 - 2.1.0

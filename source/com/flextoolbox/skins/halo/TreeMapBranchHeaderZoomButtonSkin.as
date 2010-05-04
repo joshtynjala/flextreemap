@@ -15,7 +15,7 @@
 //	The Initial Developer of the Original Code is Adobe Systems, Inc.
 //
 //	Portions created by Josh Tynjala (joshtynjala.com) are
-//  Copyright (C) 2008 Josh Tynjala. All Rights Reserved.
+//  Copyright (c) 2007-2010 Josh Tynjala. All Rights Reserved.
 //
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -150,7 +150,7 @@ package com.flextoolbox.controls.treeMapClasses
 			var iterator:IViewCursor = data.createCursor();
 			do
 			{
-				var currentData:TreeMapItemLayoutData = iterator.current;
+				var currentData:TreeMapItemLayoutData = TreeMapItemLayoutData(iterator.current);
 				var weight:Number = currentData.weight;
 				sum += weight;
 			}

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -71,47 +71,6 @@ include "../../styles/metadata/TextStyles.inc"
 	 */
 	public class LiteTreeMapBranchRenderer extends BaseTreeMapBranchRenderer
 	{
-		
-	//--------------------------------------
-	//  Static Methods
-	//--------------------------------------
-	
-		/**
-		 * @private
-		 * Sets the default style values for instances of this type.
-		 */
-		public static function initializeStyles():void
-		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("LiteTreeMapBranchRenderer");
-			
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			
-			selector.defaultFactory = function():void
-			{
-				
-				this.paddingLeft = 2;
-				this.paddingRight = 2;
-				this.paddingTop = 2;
-				this.paddingBottom = 2;
-				
-				this.backgroundColor = 0xcccccc;
-				this.rollOverColor = 0xeefee6;
-				this.selectionColor = 0x7fceff;
-				this.selectionDisabledColor = 0xdddddd;
-				
-				this.textSelectedColor = 0x2b333c;
-				this.textRollOverColor = 0x2b333c;
-				
-				this.fontSize = 10;
-				this.fontWeight = "bold";
-			}
-			
-			StyleManager.setStyleDeclaration("LiteTreeMapBranchRenderer", selector, false);
-		}
-		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor

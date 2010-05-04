@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <componentPackage>
     <component id="TreeMap" class="com.flextoolbox.controls.TreeMap"/>
+    <component id="TreeMapLeafRenderer" class="com.flextoolbox.controls.treeMapClasses.TreeMapLeafRenderer"/>
+    <component id="TreeMapBranchRenderer" class="com.flextoolbox.controls.treeMapClasses.TreeMapBranchRenderer"/>
+    <component id="TreeMapBranchHeader" class="com.flextoolbox.controls.treeMapClasses.TreeMapBranchHeader"/>
+    <component id="LiteTreeMapLeafRenderer" class="com.flextoolbox.controls.treeMapClasses.LiteTreeMapLeafRenderer"/>
+    <component id="LiteTreeMapBranchRenderer" class="com.flextoolbox.controls.treeMapClasses.LiteTreeMapBranchRenderer"/>
 </componentPackage>

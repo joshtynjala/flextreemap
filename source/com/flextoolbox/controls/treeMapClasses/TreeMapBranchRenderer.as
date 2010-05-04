@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -81,42 +81,6 @@ include "../../styles/metadata/PaddingStyles.inc"
 	 */
 	public class TreeMapBranchRenderer extends BaseTreeMapBranchRenderer
 	{
-		
-	//--------------------------------------
-	//  Static Methods
-	//--------------------------------------
-	
-		/**
-		 * @private
-		 * Sets the default style values for instances of this type.
-		 */
-		public static function initializeStyles():void
-		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapBranchRenderer");
-			
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			
-			selector.defaultFactory = function():void
-			{
-				this.backgroundColor = 0xcccccc;
-				
-				this.paddingLeft = 2;
-				this.paddingRight = 2;
-				this.paddingTop = 2;
-				this.paddingBottom = 2;
-				
-				this.borderSkin = HaloBorder;
-				this.borderStyle = "solid";
-				this.borderColor = 0xaaaaaa;
-				this.borderThickness = 1;
-			}
-			
-			StyleManager.setStyleDeclaration("TreeMapBranchRenderer", selector, false);
-		}
-		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor

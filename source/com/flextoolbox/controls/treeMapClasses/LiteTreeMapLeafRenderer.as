@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -58,41 +58,6 @@ include "../../styles/metadata/TextStyles.inc"
 	 */
 	public class LiteTreeMapLeafRenderer extends UIComponent implements ITreeMapLeafRenderer, IDropInTreeMapItemRenderer
 	{
-		
-	//--------------------------------------
-	//  Static Methods
-	//--------------------------------------
-	
-		/**
-		 * @private
-		 * Sets the default style values for instances of this type.
-		 */
-		private static function initializeStyles():void
-		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("LiteTreeMapLeafRenderer");
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			
-			selector.defaultFactory = function():void
-			{
-				this.fontSizeMode = FlexFontUtil.SIZE_MODE_NO_CHANGE;
-				this.color = 0xffffff;
-				this.cornerRadius = 0;
-				this.borderColor = 0x676a6c;
-				this.borderThickness = 1;
-				this.textAlign = "center";
-				this.paddingLeft = 0;
-				this.paddingRight = 0;
-				this.paddingTop = 0;
-				this.paddingBottom = 0;
-				this.rollOverColor = 0x009DFF;
-			}
-			
-			StyleManager.setStyleDeclaration("LiteTreeMapLeafRenderer", selector, false);
-		}
-		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor

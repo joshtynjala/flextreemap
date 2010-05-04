@@ -55,12 +55,13 @@
 		 */
 		private function linkClickHandler(event:MouseEvent):void
 		{
-			navigateToURL(new URLRequest("http://code.google.com/p/flex2treemap/"));
+			navigateToURL(new URLRequest("http://github.com/joshtynjala/flextreemap"));
 		}
 		
 	]]></mx:Script>
 	
 	<mx:Style>
+		@namespace "http://www.adobe.com/2006/mxml";
 		LinkButton
 		{
 			fontSize: 8;

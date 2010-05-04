@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -124,7 +124,7 @@ include "../styles/metadata/TextStyles.inc"
 	 * using size and color coding.
 	 * 
 	 * @author Josh Tynjala
-	 * @see http://code.google.com/p/flex2treemap/
+	 * @see http://github.com/joshtynjala/flextreemap
 	 * @see http://en.wikipedia.org/wiki/Treemapping
 	 * @see http://www.cs.umd.edu/hcil/treemap-history/
 	 * @includeExample examples/TreeMapExample.mxml
@@ -147,29 +147,6 @@ include "../styles/metadata/TextStyles.inc"
 		 * The default height of the TreeMap.
 		 */
 		private static const DEFAULT_MEASURED_HEIGHT:Number = 200;
-		
-	//--------------------------------------
-	//  Static Methods
-	//--------------------------------------
-		
-		/**
-		 * @private
-		 * Initializes the default style values.
-		 */
-		public static function initializeStyles():void
-		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMap");
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			selector.defaultFactory = function():void
-			{
-				this.itemDefaultColor = 0x000000;
-			}
-			StyleManager.setStyleDeclaration("TreeMap", selector, false);
-		}
-		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor

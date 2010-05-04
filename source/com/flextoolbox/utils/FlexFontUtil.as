@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -215,13 +215,13 @@ package com.flextoolbox.utils
 			var embedFonts:Boolean = false;
 			if(textFormat.font)
 			{
-				var embeddedFont:EmbeddedFont = new EmbeddedFont(textFormat.font, textFormat.bold, textFormat.italic);
+				/*var embeddedFont:EmbeddedFont = new EmbeddedFont(textFormat.font, textFormat.bold, textFormat.italic);
 				
 				var embeddedFontRegistry:IEmbeddedFontRegistry =
 					IEmbeddedFontRegistry(Singleton.getInstance("mx.core::IEmbeddedFontRegistry"));
 				var fontModuleFactory:IFlexModuleFactory = 
 					embeddedFontRegistry.getAssociatedModuleFactory(
-				    embeddedFont, source.systemManager);
+				    embeddedFont.fontName, source.systemManager);
 				
 				// if we found the font, then it is embedded. 
 				// Some fonts are not listed in info(), so are not in the above registry.
@@ -234,7 +234,7 @@ package com.flextoolbox.utils
 				{
 					var sm:ISystemManager = source.systemManager;
 					embedFonts = sm != null && sm.isFontFaceEmbedded(textFormat);
-				}
+				}*/
 			}
 			else
 			{

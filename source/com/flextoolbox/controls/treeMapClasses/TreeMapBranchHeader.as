@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -71,7 +71,8 @@ include "../../styles/metadata/TextStyles.inc"
 	 * to zoom out.
 	 */
 	[Style(name="zoomOutIcon", type="Class", inherit="no")]
-    
+	
+	[ExcludeClass]
 	/**
 	 * The TreeMapBranchHeader class defines the appearance of the header buttons
 	 * of the branches in a TreeMap.
@@ -81,105 +82,6 @@ include "../../styles/metadata/TextStyles.inc"
 	 */
 	public class TreeMapBranchHeader extends UIComponent implements IDataRenderer
 	{
-		
-    //----------------------------------
-	//  Static Properties
-    //----------------------------------
-		
-		/**
-		 * @private
-		 * The default style name for the selection button.
-		 */
-		private static const SELECTION_BUTTON_STYLE_NAME:String = "com_flextoolbox_TreeMapBranchHeaderSelectionButton";
-		
-		/**
-		 * @private
-		 * The default style name for the zoom button.
-		 */
-		private static const ZOOM_BUTTON_STYLE_NAME:String = "com_flextoolbox_TreeMapBranchHeaderZoomButton";
-		
-    //----------------------------------
-	//  Static Methods
-    //----------------------------------
-    
-		/**
-		 * @private
-		 * Initializes the default styles for instances of this type.
-		 */
-		private static function initializeStyles():void
-		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapBranchHeader");
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			selector.defaultFactory = function():void
-			{
-				//TODO: Define all styles with metadata
-				this.selectionButtonStyleName = SELECTION_BUTTON_STYLE_NAME;
-				this.zoomButtonStyleName = ZOOM_BUTTON_STYLE_NAME;
-				this.resizeIcon = TreeMapResizeIcon;
-				this.paddingTop = 2;
-				this.paddingRight = 6;
-				this.paddingBottom = 2;
-				this.paddingLeft = 6;
-				this.horizontalGap = 6;
- 				this.textAlign = "left";
- 				this.fontWeight = "bold";
-			}
-			StyleManager.setStyleDeclaration("TreeMapBranchHeader", selector, false);
-			
-			selector = StyleManager.getStyleDeclaration("." + SELECTION_BUTTON_STYLE_NAME);
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			selector.defaultFactory = function():void
-			{
-				this.fillAlphas = [1.0, 1.0];
-				this.upSkin = TreeMapBranchHeaderSkin;
-				this.downSkin = TreeMapBranchHeaderSkin;
-				this.overSkin = TreeMapBranchHeaderSkin;
-				this.disabledSkin = TreeMapBranchHeaderSkin;
-				this.selectedUpSkin = TreeMapBranchHeaderSkin;
-				this.selectedDownSkin = TreeMapBranchHeaderSkin;
-				this.selectedOverSkin = TreeMapBranchHeaderSkin;
-				this.selectedDisabledSkin = TreeMapBranchHeaderSkin;
-				this.labelPlacement = "right";
-			};
-			StyleManager.setStyleDeclaration("." + SELECTION_BUTTON_STYLE_NAME, selector, false);
-			
-			
-			selector = StyleManager.getStyleDeclaration("." + ZOOM_BUTTON_STYLE_NAME);
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			selector.defaultFactory = function():void
-			{
-				this.fillAlphas = [1.0, 1.0];
-				this.paddingTop = 2;
-				this.paddingRight = 5;
-				this.paddingBottom = 2;
-				this.paddingLeft = 5;
-				this.upSkin = TreeMapBranchHeaderZoomButtonSkin;
-				this.downSkin = TreeMapBranchHeaderZoomButtonSkin;
-				this.overSkin = TreeMapBranchHeaderZoomButtonSkin;
-				this.disabledSkin = TreeMapBranchHeaderZoomButtonSkin;
-				this.selectedUpSkin = TreeMapBranchHeaderZoomButtonSkin;
-				this.selectedDownSkin = TreeMapBranchHeaderZoomButtonSkin;
-				this.selectedOverSkin = TreeMapBranchHeaderZoomButtonSkin;
-				this.selectedDisabledSkin = TreeMapBranchHeaderZoomButtonSkin;
-				
-				this.icon = TreeMapZoomInIcon;
-				this.selectedUpIcon = TreeMapZoomOutIcon;
-				this.selectedOverIcon = TreeMapZoomOutIcon;
-				this.selectedDownIcon = TreeMapZoomOutIcon;
-				this.selectedDisabledIcon = TreeMapZoomOutIcon;
-			};
-			StyleManager.setStyleDeclaration("." + ZOOM_BUTTON_STYLE_NAME, selector, false);
-		}
-		initializeStyles();
 	
     //----------------------------------
 	//  Constructor

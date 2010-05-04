@@ -11,13 +11,13 @@ Links:
 ---------------------------------------------------------------------------------
 
 Project Page:
-   * http://code.google.com/p/flex2treemap/
+   * http://github.com/joshtynjala/flextreemap
    
 API Documentation:
    * http://www.flextoolbox.com/documentation/treemap/2/index.html
 
-Getting Started:
-   * http://code.google.com/p/flex2treemap/wiki/GettingStarted
+Mailing List:
+	* http://groups.google.com/group/flextreemap
 
 Author's Blog:
    * http://joshblog.net/
@@ -26,10 +26,11 @@ Author's Blog:
 Release Notes:
 ---------------------------------------------------------------------------------
 
-??/??/2009 - 2.2.0
+Unknown - 2.2.0
    * Fixed bug where weightField and weightFunction changes at runtime would
      have no effect.
    * Fonts can now be embedded for leaf renderers.
+   * Now supports Flex 4.0.0. Minimum version is probably 3.5.0 now.
 
 12/10/2008 - 2.1.0
    * Reduced the number of display list manipulations in every redraw to improve

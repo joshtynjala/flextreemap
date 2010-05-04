@@ -1,0 +1,131 @@
+/* CSS file */
+@namespace "http://www.flextoolbox.com/2006/mxml";
+
+TreeMap
+{
+	itemDefaultColor: #000000;
+}
+
+/* default renderers */
+
+TreeMapLeafRenderer
+{
+	color: #ffffff;
+	cornerRadius: 0;
+	fillAlphas: 0, 0;
+	fillColors: #ff00ff, #ff00ff; /* if you see pink, there's a problem! */
+	fontSizeMode: noChange;
+	highlightAlphas: 0.2, 0;
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	paddingBottom: 2;
+	textRollOverColor: #ffffff;
+	textSelectedColor: #2b333c;
+	skin: ClassReference("com.flextoolbox.skins.halo.TreeMapLeafRendererSkin");
+	textAlign: center;
+}
+
+TreeMapBranchRenderer
+{
+	backgroundColor: #cccccc;
+	
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	paddingBottom: 2;
+	
+	borderSkin: ClassReference("mx.skins.halo.HaloBorder");
+	borderStyle: solid;
+	borderColor: #aaaaaa;
+	borderThickness: 1;
+}
+
+/* default branch header */
+
+TreeMapBranchHeader
+{
+	selectionButtonStyleName: TreeMapBranchHeaderSelectionButton;
+	zoomButtonStyleName: TreeMapBranchHeaderZoomButton;
+	resizeIcon: ClassReference("com.flextoolbox.skins.halo.TreeMapResizeIcon");
+	paddingTop: 2;
+	paddingRight: 6;
+	paddingBottom: 2;
+	paddingLeft: 6;
+	horizontalGap: 6;
+	textAlign: left;
+	fontWeight: bold;
+}
+
+.TreeMapBranchHeaderSelectionButton
+{
+	fillAlphas: 1.0, 1.0;
+	upSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	downSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	overSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	disabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	selectedUpSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	selectedDownSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	selectedOverSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	selectedDisabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderSkin");
+	labelPlacement: right;
+}
+
+.TreeMapBranchHeaderZoomButton
+{
+	fillAlphas: 1.0, 1.0;
+	paddingTop: 2;
+	paddingRight: 5;
+	paddingBottom: 2;
+	paddingLeft: 5;
+	upSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	downSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	overSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	disabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	selectedUpSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	selectedDownSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	selectedOverSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	selectedDisabledSkin: ClassReference("com.flextoolbox.skins.halo.TreeMapBranchHeaderZoomButtonSkin");
+	
+	icon: ClassReference("com.flextoolbox.skins.halo.TreeMapZoomInIcon");
+	selectedUpIcon: ClassReference("com.flextoolbox.skins.halo.TreeMapZoomOutIcon");
+	selectedOverIcon: ClassReference("com.flextoolbox.skins.halo.TreeMapZoomOutIcon");
+	selectedDownIcon: ClassReference("com.flextoolbox.skins.halo.TreeMapZoomOutIcon");
+	selectedDisabledIcon: ClassReference("com.flextoolbox.skins.halo.TreeMapZoomOutIcon");
+}
+
+/* lite renderers */
+
+LiteTreeMapLeafRenderer
+{
+	fontSizeMode: noChange;
+	color: #ffffff;
+	cornerRadius: 0;
+	borderColor: #676a6c;
+	borderThickness: 1;
+	textAlign: center;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	paddingBottom: 0;
+	rollOverColor: #009DFF;
+}
+
+LiteTreeMapBranchRenderer
+{
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	paddingBottom: 2;
+	
+	backgroundColor: #cccccc;
+	rollOverColor: #eefee6;
+	selectionColor: #7fceff;
+	selectionDisabledColor: #dddddd;
+	
+	textSelectedColor: #2b333c;
+	textRollOverColor: #2b333c;
+	
+	fontSize: 10;
+	fontWeight: bold;
+}

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Copyright (c) 2008 Josh Tynjala
+//  Copyright (c) 2007-2010 Josh Tynjala
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to 
@@ -153,44 +153,6 @@ include "../../styles/metadata/TextStyles.inc"
 	 */
 	public class TreeMapLeafRenderer extends UIComponent implements ITreeMapLeafRenderer, IDropInTreeMapItemRenderer
 	{
-		
-	//--------------------------------------
-	//  Static Methods
-	//--------------------------------------
-	
-		/**
-		 * @private
-		 * Sets the default style values for instances of this type.
-		 */
-		private static function initializeStyles():void
-		{
-			var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("TreeMapLeafRenderer");
-			if(!selector)
-			{
-				selector = new CSSStyleDeclaration();
-			}
-			
-			selector.defaultFactory = function():void
-			{
-				this.color = 0xffffff;
-				this.cornerRadius = 0;
-				this.fillAlphas = [0, 0];
-				this.fillColors = [0xff00ff, 0xff00ff]; // if you see pink, there's a problem!
-				this.fontSizeMode = FlexFontUtil.SIZE_MODE_NO_CHANGE;
-				this.highlightAlphas = [0.2, 0];
-				this.paddingLeft = 2;
-				this.paddingRight = 2;
-				this.paddingTop = 2;
-				this.paddingBottom = 2;
-				this.textRollOverColor = 0xffffff;
-				this.textSelectedColor = 0x2b333c;
-				this.skin = TreeMapLeafRendererSkin;
-				this.textAlign = "center";
-			}
-			
-			StyleManager.setStyleDeclaration("TreeMapLeafRenderer", selector, false);
-		}
-		initializeStyles();
 		
 	//--------------------------------------
 	//  Constructor

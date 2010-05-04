@@ -101,7 +101,7 @@ package com.flextoolbox.controls.treeMapClasses
 				row.push(nextItem);
 				var drawRow:Boolean = true;
 				var aspectRatio:Number = this.calculateWorstAspectRatioInRow(row, lengthOfShorterEdge, bounds);
-				if(lastAspectRatio >= aspectRatio)
+				if(lastAspectRatio >= aspectRatio || isNaN(aspectRatio))
 				{
 					lastAspectRatio = aspectRatio;
 					
@@ -123,6 +123,7 @@ package com.flextoolbox.controls.treeMapClasses
 					lastAspectRatio = Number.POSITIVE_INFINITY;
 					lengthOfShorterEdge = Math.min(bounds.width, bounds.height);
 					row = [];
+					drawRow = false;
 				}
 			}
 		}

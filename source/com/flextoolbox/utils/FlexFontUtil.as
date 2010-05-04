@@ -27,13 +27,7 @@ package com.flextoolbox.utils
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
-	import mx.core.EmbeddedFont;
-	import mx.core.EmbeddedFontRegistry;
-	import mx.core.IEmbeddedFontRegistry;
-	import mx.core.IFlexModuleFactory;
-	import mx.core.Singleton;
 	import mx.core.UIComponent;
-	
 	import mx.managers.ISystemManager;
 	
 	/**
@@ -215,26 +209,8 @@ package com.flextoolbox.utils
 			var embedFonts:Boolean = false;
 			if(textFormat.font)
 			{
-				/*var embeddedFont:EmbeddedFont = new EmbeddedFont(textFormat.font, textFormat.bold, textFormat.italic);
-				
-				var embeddedFontRegistry:IEmbeddedFontRegistry =
-					IEmbeddedFontRegistry(Singleton.getInstance("mx.core::IEmbeddedFontRegistry"));
-				var fontModuleFactory:IFlexModuleFactory = 
-					embeddedFontRegistry.getAssociatedModuleFactory(
-				    embeddedFont.fontName, source.systemManager);
-				
-				// if we found the font, then it is embedded. 
-				// Some fonts are not listed in info(), so are not in the above registry.
-				// Call isFontFaceEmbedded() which get the list of embedded fonts from the player.
-				if(fontModuleFactory != null) 
-				{
-					embedFonts = true;
-				}
-				else
-				{
-					var sm:ISystemManager = source.systemManager;
-					embedFonts = sm != null && sm.isFontFaceEmbedded(textFormat);
-				}*/
+				var sm:ISystemManager = source.systemManager;
+				embedFonts = sm && sm.isFontFaceEmbedded(textFormat);
 			}
 			else
 			{

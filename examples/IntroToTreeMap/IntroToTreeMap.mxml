@@ -35,7 +35,7 @@
 			<mx:FormItem label="Value">
 				<mx:Label text="{treemap.selectedItem.@value}%"/>
 			</mx:FormItem>
-			<mx:FormItem label="Change since 2007">
+			<mx:FormItem label="Change since 04/2009">
 				<mx:Label text="{treemap.selectedItem.@change}%"/>
 			</mx:FormItem>
 		</mx:Form>
@@ -79,7 +79,7 @@
 			loader.addEventListener(Event.COMPLETE, dataLoadCompleteHandler);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, dataLoadErrorHandler);
 			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, dataLoadErrorHandler);
-			loader.load(new URLRequest("data/tiobe-12-2008.xml"));
+			loader.load(new URLRequest("data/tiobe-04-2010.xml"));
 		}
 		
 		/**

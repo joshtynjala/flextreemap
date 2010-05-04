@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<languages source="TIOBE Programming Community Index for April 2010" url="http://www.tiobe.com/content/paperinfo/tpci/index.html">
+	<language name="C" position="1" last="2" value="18.058" change="2.59"/>
+	<language name="Java" position="1" last="1" value="18.051" change="-1.29"/>
+	<language name="C++" position="3" last="3" value="9.707" change="-1.03"/>
+	<language name="PHP" position="4" last="4" value="9.662" change="-0.23"/>
+	<language name="(Visual) Basic" position="5" last="5" value="6.392" change="-2.70"/>
+	<language name="C#" position="6" last="7" value="4.435" change="0.38"/>
+	<language name="Python" position="7" last="6" value="4.205" change="-1.88"/>
+	<language name="Perl" position="8" last="9" value="3.553" change="0.09"/>
+	<language name="Delphi" position="9" last="11" value="2.715" change="0.44"/>
+	<language name="JavaScript" position="10" last="8" value="2.469" change="-1.21"/>
+	<language name="Objective-C" position="11" last="42" value="2.288" change="2.15"/>
+	<language name="Ruby" position="12" last="10" value="2.221" change="-0.35"/>
+	<language name="SAS" position="13" last="14" value="0.717" change="-0.07"/>
+	<language name="PL/SQL" position="14" last="12" value="0.710" change="-0.38"/>
+	<language name="Go" position="15" last="-" value="0.710" change="0.71"/>
+	<language name="Pascal" position="16" last="15" value="0.648" change="-0.07"/>
+	<language name="ABAP" position="17" last="17" value="0.625" change="-0.03"/>
+	<language name="MATLAB" position="18" last="20" value="0.616" change="0.13"/>
+	<language name="ActionScript" position="19" last="22" value="0.545" change="0.09"/>
+	<language name="Lua" position="20" last="19" value="0.521" change="0.03"/>
+</languages>

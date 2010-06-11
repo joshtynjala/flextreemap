@@ -24,7 +24,7 @@
 				<include name="IntroToTreeMap.html"/>
 				<include name="playerProductInstall.swf"/>
 				<include name="scripts/swfobject.js"/>		
-				<include name="data/tiobe-12-2008.xml"/>		
+				<include name="data/tiobe-04-2010.xml"/>		
 			</fileset>
 		</copy>
 	</target>
@@ -36,6 +36,7 @@
 		We don't want extra build clutter left behind.
 		-->
 		<exec executable="${mxmlc}" failonerror="true">
+			<arg line="--use-network=false"/>
 			<arg line="--library-path+='${libs}'"/>
 			<arg line="--output '${output}/IntroToTreeMap.swf'"/>
 			<arg line="'${output}/IntroToTreeMap.mxml'"/>

@@ -39,6 +39,7 @@
 	    <exec executable="${compc}" dir="${basedir}" failonerror="true">
 			<arg line="--namespace ${library.mxmlNamespace} manifest.xml"/>
 			<arg line="--source-path '${source.output}'"/>
+			<arg line="--include-stylesheet defaults.css source/defaults.css"/>
 			<arg line="--include-namespaces ${library.mxmlNamespace}"/>
 			<arg line="--include-classes com.flextoolbox.controls.treeMapClasses.SliceAndDiceLayout"/>
 			<arg line="com.flextoolbox.controls.treeMapClasses.RecursiveSquarifyLayout"/>

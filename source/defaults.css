@@ -38,6 +38,8 @@ TreeMapBranchRenderer
 	borderStyle: solid;
 	borderColor: #aaaaaa;
 	borderThickness: 1;
+	
+	dropShadowEnabled: false;
 }
 
 /* default branch header */

@@ -6,4 +6,7 @@
     <component id="TreeMapBranchHeader" class="com.flextoolbox.controls.treeMapClasses.TreeMapBranchHeader"/>
     <component id="LiteTreeMapLeafRenderer" class="com.flextoolbox.controls.treeMapClasses.LiteTreeMapLeafRenderer"/>
     <component id="LiteTreeMapBranchRenderer" class="com.flextoolbox.controls.treeMapClasses.LiteTreeMapBranchRenderer"/>
+    <component id="SquarifyLayout" class="com.flextoolbox.controls.treeMapClasses.SquarifyLayout"/>
+    <component id="SliceAndDiceLayout" class="com.flextoolbox.controls.treeMapClasses.SliceAndDiceLayout"/>
+    <component id="StripLayout" class="com.flextoolbox.controls.treeMapClasses.StripLayout"/>
 </componentPackage>

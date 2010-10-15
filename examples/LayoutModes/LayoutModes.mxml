@@ -23,9 +23,10 @@
 			<mx:RadioButtonGroup id="layoutStrategy" change="treeMap.layoutStrategy = new layoutStrategy.selectedValue();"/>
 			<mx:RadioButton groupName="layoutStrategy" label="Squarify" value="{SquarifyLayout}" selected="true"/>
 			<mx:RadioButton groupName="layoutStrategy" label="Slice-and-Dice" value="{SliceAndDiceLayout}"/>
+			<mx:RadioButton groupName="layoutStrategy" label="Strip" value="{StripLayout}"/>
 		</mx:VBox>
 		
-		<toolbox:TreeMap id="treeMap" width="400" height="300"
+		<toolbox:TreeMap id="treeMap" width="500" height="350"
 			dataProvider="{marketData}" labelField="@name" weightField="@value"/>
 	</mx:HBox>
 	

@@ -1,4 +1,3 @@
-/* CSS file */
 @namespace "http://www.flextoolbox.com/2006/mxml";
 
 TreeMap
@@ -30,10 +29,10 @@ TreeMapBranchRenderer
 {
 	backgroundColor: #cccccc;
 	
-	paddingLeft: 2;
-	paddingRight: 2;
-	paddingTop: 2;
-	paddingBottom: 2;
+	paddingLeft: 1;
+	paddingRight: 1;
+	paddingTop: 1;
+	paddingBottom: 1;
 	
 	borderSkin: ClassReference("mx.skins.halo.HaloBorder");
 	borderStyle: solid;
@@ -113,10 +112,10 @@ LiteTreeMapLeafRenderer
 
 LiteTreeMapBranchRenderer
 {
-	paddingLeft: 2;
-	paddingRight: 2;
-	paddingTop: 2;
-	paddingBottom: 2;
+	paddingLeft: 1;
+	paddingRight: 1;
+	paddingTop: 1;
+	paddingBottom: 1;
 	
 	backgroundColor: #cccccc;
 	rollOverColor: #eefee6;

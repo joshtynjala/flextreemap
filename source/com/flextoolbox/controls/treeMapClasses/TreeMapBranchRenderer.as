@@ -301,10 +301,10 @@ include "../../styles/metadata/PaddingStyles.inc"
 			if(this.border && this.border is RectangularBorder)
 			{
 				var rectBorder:RectangularBorder = this.border as RectangularBorder;
-				/*paddingLeft += rectBorder.borderMetrics.left;
+				paddingLeft += rectBorder.borderMetrics.left;
 				paddingTop += rectBorder.borderMetrics.top;
 				paddingRight += rectBorder.borderMetrics.right;
-				paddingBottom += rectBorder.borderMetrics.bottom;*/
+				paddingBottom += rectBorder.borderMetrics.bottom;
 			}
 			
 			var boundsX:Number = Math.min(unscaledWidth, paddingLeft);

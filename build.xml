@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="Flex TreeMap" default="build" basedir=".">
 
+	<property file="./sdk.local.properties"/>
 	<property file="./sdk.properties"/>
+	<property file="./build.local.properties"/>
 	<property file="./build.properties"/>
 	
 	<target name="build" depends="prepare,build-lib,cleanup"/>
@@ -42,6 +44,7 @@
 			<arg line="--include-stylesheet defaults.css source/defaults.css"/>
 			<arg line="--include-namespaces ${library.mxmlNamespace}"/>
 			<arg line="--include-classes com.flextoolbox.controls.treeMapClasses.SliceAndDiceLayout"/>
+			<arg line="com.flextoolbox.controls.treeMapClasses.StripLayout"/>
 			<arg line="com.flextoolbox.controls.treeMapClasses.RecursiveSquarifyLayout"/>
 			<arg line="com.flextoolbox.controls.treeMapClasses.LiteTreeMapBranchRenderer"/>
 			<arg line="com.flextoolbox.controls.treeMapClasses.LiteTreeMapLeafRenderer"/>

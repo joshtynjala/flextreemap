@@ -58,6 +58,40 @@ package com.flextoolbox.controls.treeMapClasses
 		
 		/**
 		 * @private
+		 */
+		override public function set x(value:Number):void
+		{
+			super.x = value;
+			//we need to invalidate the display list because the positions of
+			//the "children" depends on our position and bounds. however, the
+			//"children" are actually not display list children.
+			this.invalidateDisplayList();
+			//note: this appears to work correctly without the extra
+			//invalidation in flex 3, but not in flex 4
+		}
+		
+		/**
+		 * @private
+		 */
+		override public function set y(value:Number):void
+		{
+			super.y = value;
+			//for explanation, see comment in set x
+			this.invalidateDisplayList();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function move(x:Number, y:Number):void
+		{
+			super.move(x, y);
+			//for explanation, see comment in set x
+			this.invalidateDisplayList();
+		}
+		
+		/**
+		 * @private
 		 * Storage for the items that are contained by this branch.
 		 */
 		protected var items:Array = [];

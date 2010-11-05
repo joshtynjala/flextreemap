@@ -1789,9 +1789,9 @@ include "../styles/metadata/TextStyles.inc"
 				branchData.displaySimple = false;
 			}
 			
-			var branchDepth:int = this._uidToDepth[branch];
-			
-			this.commitItemProperties(branch, branchData, branchDepth, zoomDepth);
+			var uid:String = this.itemToUID(branch);
+			var branchDepth:int = this._uidToDepth[uid];
+			this.commitItemProperties(branch, uid, branchData, branchDepth, zoomDepth);
 			
 			if(this.isMaxDepthActive())
 			{
@@ -1830,7 +1830,8 @@ include "../styles/metadata/TextStyles.inc"
 					var leafData:TreeMapLeafData = new TreeMapLeafData();
 					leafData.owner = this;
 					leafData.color = this.itemToColor(item);
-					this.commitItemProperties(item, leafData, depth, zoomDepth);
+					var uid:String = this.itemToUID(item);
+					this.commitItemProperties(item, uid, leafData, depth, zoomDepth);
 				}
 				
 				var layoutData:TreeMapItemLayoutData = new TreeMapItemLayoutData(item);
@@ -1845,9 +1846,8 @@ include "../styles/metadata/TextStyles.inc"
 		 * @private
 		 * Updates the item's treeMapData. Sets visibility and depth.
 		 */
-		protected function commitItemProperties(item:Object, treeMapData:BaseTreeMapData, depth:int, zoomDepth:int):void
+		protected function commitItemProperties(item:Object, uid:String, treeMapData:BaseTreeMapData, depth:int, zoomDepth:int):void
 		{
-			var uid:String = this.itemToUID(item);
 			treeMapData.uid = uid;
 			treeMapData.depth = depth;
 			treeMapData.weight = this.itemToWeight(item);

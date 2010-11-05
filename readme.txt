@@ -26,6 +26,9 @@ Author's Blog:
 Release Notes:
 ---------------------------------------------------------------------------------
 
+Future Release
+   * Fixed incorrect branch depth value.
+
 October 15, 2010 - 2.2.0
    * Added StripLayout.
    * Fixed issue where border metrics and padding didn't combine.

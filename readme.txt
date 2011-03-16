@@ -23,6 +23,22 @@ Author's Blog:
    * http://joshblog.net/
 
 ---------------------------------------------------------------------------------
+Usage Tips:
+---------------------------------------------------------------------------------
+
+1. flextreemap uses a defaults.css for maximum compatibility with Flex 4. The
+default styles and skins only get included automatically when you link the
+project into your Flex application as a SWC. If you need to make source code
+changes, you should build a new SWC. See build.xml for details on recommended
+compiler arguments.
+
+2. Two custom renderers are included with flextreemap. Use them for a more
+basic looking treemap without gradients.
+
+	com.flextoolbox.controls.treeMapClasses.LiteTreeMapBranchRenderer
+	com.flextoolbox.controls.treeMapClasses.LiteTreeMapLeafRenderer
+
+---------------------------------------------------------------------------------
 Release Notes:
 ---------------------------------------------------------------------------------
 

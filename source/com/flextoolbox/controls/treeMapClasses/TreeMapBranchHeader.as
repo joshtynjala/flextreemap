@@ -273,9 +273,9 @@ include "../../styles/metadata/TextStyles.inc"
 			var branchRenderer:ITreeMapBranchRenderer = this.data as ITreeMapBranchRenderer;
 			if(branchRenderer)
 			{
-				var treeMap:TreeMap = branchRenderer.owner as TreeMap;
 				var branch:Object = branchRenderer.data;
 				var branchData:TreeMapBranchData = IDropInTreeMapItemRenderer(branchRenderer).treeMapData as TreeMapBranchData;
+				var treeMap:TreeMap = TreeMap(branchData.owner);
 				
 				this.selectionButton.selected = branchRenderer.selected;
 				this.selectionButton.toolTip = branchData.dataTip;
@@ -468,7 +468,8 @@ include "../../styles/metadata/TextStyles.inc"
 			var newHeight:Number = Math.max(this.unscaledHeight, this.measuredHeight);
 				
 			var branchRenderer:ITreeMapBranchRenderer = this.data as ITreeMapBranchRenderer;
-			var treeMap:TreeMap = branchRenderer.owner as TreeMap;
+			var branchData:TreeMapBranchData = IDropInTreeMapItemRenderer(branchRenderer).treeMapData as TreeMapBranchData;
+			var treeMap:TreeMap = TreeMap(branchData.owner);
 			
 			var treeMapPosition:Point = DisplayObjectUtil.localToLocal(new Point(this.x, this.y), this.parent, treeMap);
 			

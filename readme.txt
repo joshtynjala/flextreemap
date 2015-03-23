@@ -12,15 +12,6 @@ Links:
 
 Project Page:
    * http://github.com/joshtynjala/flextreemap
-   
-API Documentation:
-   * http://www.flextoolbox.com/documentation/treemap/2/index.html
-
-Mailing List:
-	* http://groups.google.com/group/flextreemap
-
-Author's Blog:
-   * http://joshblog.net/
 
 ---------------------------------------------------------------------------------
 Usage Tips:
